@@ -169,6 +169,10 @@ or refer to the official [Discord server][Discord].
 
 You can find the changelog [here][Changelog].
 
+## Security Policy
+
+You can find the Security Policy of `wraps` [here][Security].
+
 ## Contributing
 
 If you are interested in contributing to `wraps`, make sure to take a look at the
