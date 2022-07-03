@@ -7,10 +7,8 @@
 
 [![Documentation][Documentation Badge]][Documentation]
 [![Check][Check Badge]][Actions]
-<!--
 [![Test][Test Badge]][Actions]
 [![Coverage][Coverage Badge]][Coverage]
--->
 
 **Meaningful and safe wrapping types.**
 
@@ -204,8 +202,7 @@ If you are interested in contributing to `wraps`, make sure to take a look at th
 [Version Badge]: https://img.shields.io/pypi/v/wraps
 [Downloads Badge]: https://img.shields.io/pypi/dm/wraps
 
-[Documentation Badge]: https://img.shields.io/badge/docs-material-blue
-
+[Documentation Badge]: https://github.com/nekitdev/wraps/workflows/docs/badge.svg
 [Check Badge]: https://github.com/nekitdev/wraps/workflows/check/badge.svg
 [Test Badge]: https://github.com/nekitdev/wraps/workflows/test/badge.svg
 [Coverage Badge]: https://codecov.io/gh/nekitdev/wraps/branch/main/graph/badge.svg
