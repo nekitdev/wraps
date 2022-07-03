@@ -21,8 +21,6 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-include = ["CHANGELOG.md", "tests"]
-
 [tool.poetry.urls]
 Discord = "https://nekit.dev/discord"
 Funding = "https://patreon.com/nekitdev"
@@ -134,5 +132,5 @@ wrap_size = 100
 display = ["feature", "change", "fix", "security", "deprecation", "removal", "internal"]
 
 [build-system]
-requires = ["poetry-core >= 1.0.0"]
+requires = ["poetry-core >= 1.1.0b2"]
 build-backend = "poetry.core.masonry.api"
