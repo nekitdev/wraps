@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import (
     Callable,
-    Generic,
     Iterator,
     Optional,
     Tuple,
@@ -15,7 +14,7 @@ from typing import (
 )
 
 from attrs import frozen
-from typing_extensions import Literal, Never, ParamSpec, TypeGuard
+from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
 from wraps.errors import OptionShortcut, panic
 from wraps.typing import AnyException, Binary, Nullary, Predicate, Unary
@@ -33,7 +32,7 @@ E = TypeVar("E")
 UNWRAP_ON_NULL = "called `unwrap` on null"
 
 
-class BaseOption(ABC, Generic[T]):
+class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     def __iter__(self) -> Iterator[T]:
         return self.iter()
 
@@ -118,15 +117,15 @@ class BaseOption(ABC, Generic[T]):
         ...
 
     @abstractmethod
-    def unzip(self: BaseOption[Tuple[U, V]]) -> Tuple[Option[U], Option[V]]:
+    def unzip(self: OptionProtocol[Tuple[U, V]]) -> Tuple[Option[U], Option[V]]:
         ...
 
     @abstractmethod
-    def transpose(self: BaseOption[BaseResult[T, E]]) -> Result[Option[T], E]:
+    def transpose(self: OptionProtocol[ResultProtocol[T, E]]) -> Result[Option[T], E]:
         ...
 
     @abstractmethod
-    def flatten(self: BaseOption[BaseOption[U]]) -> Option[U]:
+    def flatten(self: OptionProtocol[OptionProtocol[U]]) -> Option[U]:
         ...
 
     @abstractmethod
@@ -141,7 +140,7 @@ class BaseOption(ABC, Generic[T]):
 
 @final
 @frozen()
-class Null(BaseOption[Never]):
+class Null(OptionProtocol[Never]):
     def __bool__(self) -> Literal[False]:
         return False
 
@@ -209,10 +208,10 @@ class Null(BaseOption[Never]):
     def unzip(self) -> Tuple[Null, Null]:
         return self, self
 
-    def transpose(self: BaseOption[Result[T, E]]) -> Result[Null, E]:
+    def transpose(self: OptionProtocol[Result[T, E]]) -> Result[Null, E]:
         return Ok(self)  # type: ignore
 
-    def flatten(self: BaseOption[BaseOption[U]]) -> Null:
+    def flatten(self: OptionProtocol[OptionProtocol[U]]) -> Null:
         return self  # type: ignore
 
     def contains(self, value: U) -> Literal[False]:
@@ -225,7 +224,7 @@ class Null(BaseOption[Never]):
 
 @final
 @frozen()
-class Some(BaseOption[T]):
+class Some(OptionProtocol[T]):
     value: T
 
     def __iter__(self) -> Iterator[T]:
@@ -391,4 +390,4 @@ def convert_optional(optional: Optional[T]) -> Option[T]:
 
 
 # import cycle solution
-from wraps.result import BaseResult, Error, Ok, Result, is_ok
+from wraps.result import Error, Ok, Result, ResultProtocol, is_ok

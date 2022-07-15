@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from functools import wraps
 from typing import Callable, Generic, Iterator, Type, TypeVar, Union, final, overload
 
 from attrs import frozen
-from typing_extensions import Literal, Never, ParamSpec, TypeGuard
+from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
 from wraps.errors import ResultShortcut, panic
-from wraps.option import BaseOption, Null, Option, Some, is_some
+from wraps.option import OptionProtocol, Null, Option, Some, is_some
 from wraps.typing import AnyException, Nullary, Predicate, Unary
 
 __all__ = ("Result", "Ok", "Error", "is_ok", "is_error", "WrapResult", "wrap_result")
@@ -24,7 +24,7 @@ UNWRAP_ON_ERROR = "called `unwrap` on error"
 UNWRAP_ERROR_ON_OK = "called `unwrap_error` on ok"
 
 
-class BaseResult(ABC, Generic[T, E]):
+class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     def __iter__(self) -> Iterator[T]:
         return self.iter()
 
@@ -129,7 +129,7 @@ class BaseResult(ABC, Generic[T, E]):
         ...
 
     @abstractmethod
-    def transpose(self: BaseResult[BaseOption[T], E]) -> Option[Result[T, E]]:
+    def transpose(self: ResultProtocol[OptionProtocol[T], E]) -> Option[Result[T, E]]:
         ...
 
     @abstractmethod
@@ -148,7 +148,7 @@ class BaseResult(ABC, Generic[T, E]):
 
 @final
 @frozen()
-class Ok(BaseResult[T, Never]):
+class Ok(ResultProtocol[T, Never]):
     value: T
 
     @classmethod
@@ -263,7 +263,7 @@ class Ok(BaseResult[T, Never]):
 
 @final
 @frozen()
-class Error(Generic[E]):
+class Error(ResultProtocol[Never, E]):
     value: E
 
     def __bool__(self) -> Literal[False]:
@@ -276,7 +276,7 @@ class Error(Generic[E]):
     def is_ok(self) -> Literal[False]:
         return False
 
-    def is_ok_and(self) -> Literal[False]:
+    def is_ok_and(self, predicate: Predicate[T]) -> Literal[False]:
         return False
 
     def is_error(self) -> Literal[True]:
