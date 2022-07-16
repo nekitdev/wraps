@@ -56,15 +56,15 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
         Example:
             ```python
-            ok = Ok(42)
-            assert ok.is_ok()
+            error = Error(34)
+            assert error.is_error()
 
-            error = Error(13)
-            assert not error.is_ok()
+            ok = Ok(69)
+            assert not ok.is_error()
             ```
 
         Returns:
-            Whether the result is [`Ok[T]`][wraps.result.Ok].
+            Whether the result is [`Error[E]`][wraps.result.Error].
         """
         ...
 

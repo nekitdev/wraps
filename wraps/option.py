@@ -125,6 +125,15 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     def is_null(self) -> bool:
         """Checks if the option is [`Null`][wraps.option.Null].
 
+        Example:
+            ```python
+            null = Null()
+            assert null.is_null()
+
+            some = Some(34)
+            assert not some.is_null()
+            ```
+
         Returns:
             Whether the option is [`Null`][wraps.option.Null].
         """
