@@ -1,7 +1,7 @@
 from __future__ import annotations
 from functools import wraps
 
-from typing import AsyncIterator, Awaitable, Callable, Generator, Type, TypeVar
+from typing import TYPE_CHECKING, AsyncIterator, Awaitable, Callable, Generator, Type, TypeVar
 
 from attrs import define, field, frozen
 from typing_extensions import ParamSpec
@@ -182,6 +182,9 @@ class Future(Awaitable[T]):
 
 @frozen()
 class FutureResult(Future[Result[T, E]]):
+    if TYPE_CHECKING:
+        awaitable: Awaitable[Result[T, E]]  # should be `ReAwaitable[Result[T, E]]`
+
     @classmethod
     def create(cls, awaitable: Awaitable[Result[U, F]]) -> FutureResult[U, F]:  # type: ignore
         return cls(awaitable)  # type: ignore
@@ -205,7 +208,7 @@ class FutureResult(Future[Result[T, E]]):
         result = await self.awaitable
 
         if is_ok(result):
-            return result.create(await function(result.unwrap()))
+            return result.create(await function(result.unwrap()))  # type: ignore
 
         return result  # type: ignore  # guaranteed `Error[E]`
 
@@ -213,7 +216,7 @@ class FutureResult(Future[Result[T, E]]):
         result = await self.awaitable
 
         if is_error(result):
-            return result.create(await function(result.unwrap_error()))
+            return result.create(await function(result.unwrap_error()))  # type: ignore
 
         return result  # type: ignore  # guaranteed `Ok[T]`
 
@@ -227,7 +230,7 @@ class FutureResult(Future[Result[T, E]]):
         result = await self.awaitable
 
         if is_ok(result):
-            return await function(result.unwrap()).awaitable
+            return await function(result.unwrap()).awaitable  # type: ignore
 
         return result  # type: ignore  # guaranteed `Error[E]`
 
@@ -235,7 +238,7 @@ class FutureResult(Future[Result[T, E]]):
         result = await self.awaitable
 
         if is_error(result):
-            return await function(result.unwrap_error()).awaitable
+            return await function(result.unwrap_error()).awaitable  # type: ignore
 
         return result  # type: ignore  # guaranteed `Ok[T]`
 
@@ -263,6 +266,6 @@ def wrap_future_result(
 
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> FutureResult[T, Exception]:
-        return FutureResult(wrapping(*args, **kwargs))
+        return FutureResult(wrapping(*args, **kwargs))  # type: ignore
 
     return wrap

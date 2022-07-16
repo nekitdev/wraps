@@ -357,7 +357,7 @@ class Ok(ResultProtocol[T, Never]):
 
     def iter_error(self) -> Iterator[Never]:
         return
-        yield
+        yield  # type: ignore
 
     def and_then(self, function: Unary[T, Result[U, E]]) -> Result[U, E]:
         return function(self.value)
