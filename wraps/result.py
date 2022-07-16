@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from functools import wraps
-from typing import Callable, Generic, Iterator, Type, TypeVar, Union, final, overload
+from typing import Callable, Iterator, Type, TypeVar, Union, final, overload
 
 from attrs import frozen
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
@@ -11,14 +11,22 @@ from wraps.errors import ResultShortcut, panic
 from wraps.option import OptionProtocol, Null, Option, Some, is_some
 from wraps.typing import AnyException, Nullary, Predicate, Unary
 
-__all__ = ("Result", "Ok", "Error", "is_ok", "is_error", "WrapResult", "wrap_result")
+__all__ = ("Result", "Ok", "Error", "is_ok", "is_error", "wrap_result")
 
 P = ParamSpec("P")
 
 T = TypeVar("T", covariant=True)
 U = TypeVar("U")
+
 E = TypeVar("E", covariant=True)
 F = TypeVar("F")
+
+V = TypeVar("V")
+
+
+def identity(value: V) -> V:
+    return value
+
 
 UNWRAP_ON_ERROR = "called `unwrap` on error"
 UNWRAP_ERROR_ON_OK = "called `unwrap_error` on ok"
@@ -48,6 +56,30 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def is_ok_and(self, predicate: Predicate[T]) -> bool:
+        """Checks if the result is [`Ok[T]`][wraps.result.Ok] and the value
+        inside of it matches the `predicate`.
+
+        Example:
+            ```python
+            def is_positive(value: int) -> bool:
+                return value > 0
+
+            ok = Ok(13)
+            assert ok.is_ok_and(is_positive)
+
+            zero = Ok(0)
+            assert not zero.is_ok_and(is_positive)
+
+            error = Error(7)
+            assert not error.is_ok_and(is_positive)
+            ```
+
+        Arguments:
+            predicate: The predicate to check the contained value against.
+
+        Returns:
+            Whether the result is [`Ok[T]`][wraps.result.Ok] and the predicate is matched.
+        """
         ...
 
     @abstractmethod
@@ -70,14 +102,60 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def is_error_and(self, predicate: Predicate[E]) -> bool:
+        """Checks if the result is [`Error[E]`][wraps.result.Error] and the value
+        inside of it matches the `predicate`.
+
+        Example:
+            ```python
+            def is_positive(value: int) -> bool:
+                return value > 0
+
+            error = Error(13)
+            assert error.is_error_and(is_positive)
+
+            zero = Error(0)
+            assert not zero.is_error_and(is_positive)
+
+            ok = Ok(7)
+            assert not ok.is_error_and(is_positive)
+            ```
+
+        Arguments:
+            predicate: The predicate to check the contained value against.
+
+        Returns:
+            Whether the result is [`Error[E]`][wraps.result.Error] and the predicate is matched.
+        """
         ...
 
     @abstractmethod
     def expect(self, message: str) -> T:
+        """Returns the contained [`Ok[T]`][wraps.result.Ok] value.
+
+        Arguments:
+            message: The message used in panicking.
+
+        Raises:
+            Panic: Panics with `message` if the result is [`Error[E]`][wraps.result.Error].
+
+        Returns:
+            The contained value.
+        """
         ...
 
     @abstractmethod
     def expect_error(self, message: str) -> E:
+        """Returns the contained [`Error[E]`][wraps.result.Error] value.
+
+        Arguments:
+            message: The message used in panicking.
+
+        Raises:
+            Panic: Panics with `message` if the result is [`Ok[T]`][wraps.result.Ok].
+
+        Returns:
+            The contained value.
+        """
         ...
 
     @abstractmethod
@@ -114,10 +192,25 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def ok(self) -> Option[T]:
+        """Converts [`Result[T, E]`][wraps.result.Result] to [`Option[T]`][wraps.option.Option].
+
+        Converts `self` into an [`Option[T]`][wraps.option.Option], discarding the error, if any.
+
+        Returns:
+            The converted option.
+        """
         ...
 
     @abstractmethod
     def error(self) -> Option[E]:
+        """Converts [`Result[T, E]`][wraps.result.Result] to [`Option[E]`][wraps.option.Option].
+
+        Converts `self` into an [`Option[E]`][wraps.option.Option], discarding the success value,
+        if any.
+
+        Returns:
+            The converted option.
+        """
         ...
 
     @abstractmethod
@@ -146,6 +239,10 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def iter(self) -> Iterator[T]:
+        ...
+
+    @abstractmethod
+    def iter_error(self) -> Iterator[E]:
         ...
 
     @abstractmethod
@@ -258,6 +355,10 @@ class Ok(ResultProtocol[T, Never]):
     def iter(self) -> Iterator[T]:
         yield self.value
 
+    def iter_error(self) -> Iterator[Never]:
+        return
+        yield
+
     def and_then(self, function: Unary[T, Result[U, E]]) -> Result[U, E]:
         return function(self.value)
 
@@ -352,6 +453,9 @@ class Error(ResultProtocol[Never, E]):
         return
         yield  # type: ignore
 
+    def iter_error(self) -> Iterator[E]:
+        yield self.value
+
     def expect(self, message: str) -> Never:
         panic(message)
 
@@ -363,12 +467,6 @@ class Error(ResultProtocol[Never, E]):
 
     def unwrap_error(self) -> E:
         return self.value
-
-    def and_then(self, function: Unary[T, Result[U, E]]) -> Error[E]:
-        return self
-
-    def or_else(self, function: Unary[E, Result[T, F]]) -> Result[T, F]:
-        return function(self.value)
 
     def unwrap_or(self, default: U) -> U:
         return default
@@ -387,6 +485,12 @@ class Error(ResultProtocol[Never, E]):
 
     def unwrap_error_or_raise(self, exception: AnyException) -> E:
         return self.value
+
+    def and_then(self, function: Unary[T, Result[U, E]]) -> Error[E]:
+        return self
+
+    def or_else(self, function: Unary[E, Result[T, F]]) -> Result[T, F]:
+        return function(self.value)
 
     def transpose(self: Error[E], some_type: Type[Some[Error[E]]] = Some) -> Some[Error[E]]:
         return some_type(self)
@@ -419,35 +523,35 @@ def is_error(result: Result[T, E]) -> TypeGuard[Error[E]]:
     return result.is_error()
 
 
-AE = TypeVar("AE", bound=AnyException)
-AF = TypeVar("AF", bound=AnyException)
+def wrap_result(function: Callable[P, T]) -> Callable[P, Result[T, Exception]]:
+    """Wraps a `function` returning `T` into a function returning
+    [`Result[T, Exception]`][wraps.result.Result].
 
+    This handles all exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,
+    wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].
 
-class WrapResult(Generic[AE]):
-    def __init__(self, error_type: Type[AE]) -> None:
-        self._error_type = error_type
+    Example:
+        ```python
+        @wrap_result
+        def parse(string: str) -> int:
+            return int(string)
 
-    @classmethod
-    def create(cls, error_type: Type[AF]) -> WrapResult[AF]:
-        return cls(error_type)  # type: ignore
+        assert parse("256").is_ok()
+        assert parse("uwu").is_error()
+        ```
 
-    @property
-    def error_type(self) -> Type[AE]:
-        return self._error_type
+    Arguments:
+        function: The function to wrap.
 
-    def __call__(self, function: Callable[P, T]) -> Callable[P, Result[T, AE]]:
-        @wraps(function)
-        def wrap(*args: P.args, **kwargs: P.kwargs) -> Result[T, AE]:
-            try:
-                return Ok(function(*args, **kwargs))
+    Returns:
+        The wrapping function.
+    """
+    @wraps(function)
+    def wrap(*args: P.args, **kwargs: P.kwargs) -> Result[T, Exception]:
+        try:
+            return Ok(function(*args, **kwargs))
 
-            except self.error_type as error:
-                return Error(error)
+        except Exception as error:
+            return Error(error)
 
-        return wrap
-
-    def __getitem__(self, error_type: Type[AF]) -> WrapResult[AF]:
-        return self.create(error_type)
-
-
-wrap_result = WrapResult(Exception)
+    return wrap

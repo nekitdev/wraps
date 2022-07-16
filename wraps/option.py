@@ -758,6 +758,28 @@ def is_null(option: Option[T]) -> TypeGuard[Null]:
 
 
 def wrap_option(function: Callable[P, T]) -> Callable[P, Option[T]]:
+    """Wraps a `function` returning `T` into a function returning
+    [`Option[T]`][wraps.option.Option].
+
+    This handles all exceptions via returning [`Null`][wraps.option.Null] on errors,
+    wrapping the resulting `value` into [`Some(value)`][wraps.option.Some].
+
+    Example:
+        ```python
+        @wrap_option
+        def parse(string: str) -> int:
+            return int(string)
+
+        assert parse("128").is_some()
+        assert parse("uwu").is_null()
+        ```
+
+    Arguments:
+        function: The function to wrap.
+
+    Returns:
+        The wrapping function.
+    """
     def wrap(*args: P.args, **kwargs: P.kwargs) -> Option[T]:
         try:
             return Some(function(*args, **kwargs))
