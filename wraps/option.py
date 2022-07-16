@@ -1,3 +1,42 @@
+"""Optional values.
+
+[`Option[T]`][wraps.option.Option] represents an optional value:
+every [`Option[T]`][wraps.option.Option] is either [`Some[T]`][wraps.option.Some] and
+contains a value (of type `T`), or [`Null`][wraps.option.Null], and does not.
+
+[`Option[T]`][wraps.option.Option] types can be very common in python code,
+as they have a number of uses:
+
+- Initial values;
+- Return values for functions not defined over their entire input range (partial functions);
+- Return value for otherwise reporting simple errors, where [`Null`][wraps.option.Null]
+    is returned on error;
+- Optional function arguments.
+
+[`Option[T]`][wraps.option.Option] is commonly paired with pattern matching to query
+the presence of [`Some[T]`][wraps.option.Some] value (`T`) and take action,
+always accounting for the [`Null`][wraps.option.Null] case:
+
+```python
+def divide(numerator: float, denominator: float) -> Option[float]:
+    if not denominator:
+        return Null()
+
+    return Some(numerator / denominator)
+```
+
+```python
+option = divide(1.0, 2.0)
+
+match option:
+    case Some(result):
+        print(result)
+
+    case Null():
+        print("can not divide by 0")
+```
+"""
+
 from __future__ import annotations
 
 from abc import abstractmethod
@@ -38,109 +77,442 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
     @abstractmethod
     def is_some(self) -> bool:
+        """Checks if the option is [`Some[T]`][wraps.option.Some].
+
+        Example:
+            ```python
+            some = Some(42)
+            assert some.is_some()
+
+            null = Null()
+            assert not null.is_some()
+            ```
+
+        Returns:
+            Whether the option is [`Some[T]`][wraps.option.Some].
+        """
         ...
 
     @abstractmethod
     def is_some_and(self, predicate: Predicate[T]) -> bool:
+        """Checks if the option is [`Some[T]`][wraps.option.Some] and the value
+        inside of it matches the `predicate`.
+
+        Example:
+            ```python
+            def is_positive(value: int) -> bool:
+                return value > 0
+
+            some = Some(13)
+            assert some.is_some_and(is_positive)
+
+            zero = Some(0)
+            assert not zero.is_some_and(is_positive)
+
+            null = Null()
+            assert not null.is_some_and(is_positive)
+            ```
+
+        Arguments:
+            predicate: The predicate to check the contained value against.
+
+        Returns:
+            Whether the option is [`Some[T]`][wraps.option.Some] and the predicate is matched.
+        """
         ...
 
     @abstractmethod
     def is_null(self) -> bool:
+        """Checks if the option is [`Null`][wraps.option.Null].
+
+        Returns:
+            Whether the option is [`Null`][wraps.option.Null].
+        """
         ...
 
     @abstractmethod
     def expect(self, message: str) -> T:
+        """Returns the contained [`Some[T]`][wraps.option.Some] value.
+
+        Arguments:
+            message: The message used in panicking.
+
+        Raises:
+            Panic: Panics with `message` if the option is [`Null`][wraps.option.Null].
+
+        Returns:
+            The contained value.
+        """
         ...
 
     @abstractmethod
     def unwrap(self) -> T:
+        """Returns the contained [`Some[T]`][wraps.option.Some] value.
+
+        Because this function may panic, its use is generally discouraged.
+
+        Instead, prefer to use pattern matching and handle the [`Null`][wraps.option.Null]
+        case explicitly, or call [`unwrap_or`][wraps.option.OptionProtocol.unwrap_or]
+        or [`unwrap_or_else`][wraps.option.OptionProtocol.unwrap_or_else].
+
+        Raises:
+            Panic: Panics if the option is [`Null`][wraps.option.Null].
+
+        Returns:
+            The contained value.
+        """
         ...
 
     @abstractmethod
     def unwrap_or(self, default: T) -> T:  # type: ignore
+        """Returns the contained [`Some[T]`][wraps.option.Some] value or a provided default.
+
+        Arguments:
+            default: The default value to use.
+
+        Returns:
+            The contained value or `default` one.
+        """
         ...
 
     @abstractmethod
     def unwrap_or_else(self, default: Nullary[T]) -> T:  # type: ignore
+        """Returns the contained [`Some[T]`][wraps.option.Some] value or
+        computes it from the function.
+
+        Arguments:
+            default: The default function to use.
+
+        Returns:
+            The contained value or `default()` result.
+        """
         ...
 
     @abstractmethod
     def unwrap_or_raise(self, exception: AnyException) -> T:
+        """Returns the contained [`Some[T]`][wraps.option.Some] value or
+        raises an exception.
+
+        Arguments:
+            exception: The exception to raise.
+
+        Returns:
+            The contained value.
+        """
         ...
 
     @abstractmethod
     def map(self, function: Unary[T, U]) -> Option[U]:
+        """Maps an [`Option[T]`][wraps.option.Option] to [`Option[U]`][wraps.option.Option]
+        by applying `function` to the contained value.
+
+        Example:
+            ```python
+            some = Some("Hello, world!")
+
+            print(some.map(len).unwrap())  # 13
+            ```
+
+        Arguments:
+            function: The function to apply.
+
+        Returns:
+            The mapped option.
+        """
         ...
 
     @abstractmethod
     def map_or(self, default: U, function: Unary[T, U]) -> U:
+        """Returns the default value (if none), or applies `function`
+        to the contained value (if any).
+
+        Example:
+            ```python
+            some = Some("nekit")
+
+            print(some.map_or(42, len))  # 5
+
+            null = Null()
+
+            print(null.map_or(42, len))  # 42
+            ```
+
+        Arguments:
+            default: The default value to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default value.
+        """
         ...
 
     @abstractmethod
     def map_or_else(self, default: Nullary[U], function: Unary[T, U]) -> U:
+        """Computes the default value (if none), or applies `function`
+        to the contained value (if any).
+
+        Example:
+            ```python
+            default = lambda: 42
+
+            some = Some("Hello, world!")
+
+            print(some.map_or_else(default, len))  # 13
+
+            null = Null()
+
+            print(null.map_or_else(default, len))  # 42
+            ```
+
+        Arguments:
+            default: The default function to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default computed value.
+        """
         ...
 
     @abstractmethod
     def ok_or(self, error: E) -> Result[T, E]:
+        """Transforms the [`Option[T]`][wraps.option.Option]
+        into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
+        to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
+        to [`Error(error)`][wraps.result.Error].
+
+        Arguments:
+            error: The error to use.
+
+        Returns:
+            The transformed result.
+        """
         ...
 
     @abstractmethod
     def ok_or_else(self, error: Nullary[E]) -> Result[T, E]:
+        """Transforms the [`Option[T]`][wraps.option.Option]
+        into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
+        to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
+        to [`Error(error())`][wraps.result.Error].
+
+        Arguments:
+            error: The error function to use.
+
+        Returns:
+            The transformed result.
+        """
         ...
 
     @abstractmethod
     def iter(self) -> Iterator[T]:
+        """Returns an iterator over the possibly contained value.
+
+        Example:
+            ```python
+            >>> some = Some(42)
+            >>> next(some.iter())
+            42
+
+            >>> null = Null()
+            >>> next(null.iter())
+            Traceback (most recent call last):
+              ...
+            StopIteration
+            ```
+
+        Returns:
+            An iterator over the possible value.
+        """
         ...
 
     @abstractmethod
     def and_then(self, function: Unary[T, Option[U]]) -> Option[U]:
+        """Returns [`Null`][wraps.option.Null] if the option is [`Null`][wraps.option.Null],
+        otherwise calls `function` with the wrapped value and returns the result.
+
+        This function is also known as *bind* in functional programming.
+
+        Example:
+            ```python
+            def inverse(value: float) -> Option[float]:
+                return Some(1.0 / value) if value else Null()
+
+            some = Some(2.0)
+            print(some.and_then(inverse).unwrap())  # 0.5
+
+            zero = Some(0.0)
+            assert zero.and_then(inverse).is_null()
+
+            null = Null()
+            assert null.and_then(inverse).is_null()
+            ```
+
+        Arguments:
+            function: The function to apply.
+
+        Returns:
+            The resulting option.
+        """
         ...
 
     @abstractmethod
     def filter(self, predicate: Predicate[T]) -> Option[T]:
+        """Returns [`Null`][wraps.option.Null] if the option is [`Null`][wraps.option.Null],
+        otherwise calls `predicate` with the wrapped value and returns:
+
+        - [`Some(value)`][wraps.option.Some] if the contained `value` matches the predicate, and
+        - [`Null`][wraps.option.Null] otherwise.
+
+        Example:
+            ```python
+            def is_even(value: int) -> bool:
+                return not value % 2
+
+            null = Null()
+            assert null.filter(is_even).is_null()
+
+            even = Some(2)
+            assert even.filter(is_even).is_some()
+
+            odd = Some(1)
+            assert odd.filter(is_even).is_null()
+            ```
+
+        Arguments:
+            predicate: The predicate to check the contained value with.
+
+        Returns:
+            The resulting option.
+        """
         ...
 
     @abstractmethod
     def or_else(self, default: Nullary[Option[T]]) -> Option[T]:
+        """Returns the option if it contains a value, otherwise calls
+        `default` and returns the result.
+
+        Example:
+            ```python
+            # TODO
+            ```
+
+        Arguments:
+            default: The default function to use.
+
+        Returns:
+            The resulting option.
+        """
         ...
 
     @abstractmethod
     def xor(self, option: Option[T]) -> Option[T]:
+        """Returns [`Some[T]`][wraps.option.Some] if exactly one of `self` and `option`
+        is [`Some[T]`][wraps.option.Option], otherwise returns [`Null`][wraps.option.Null].
+
+        Arguments:
+            option: The option to *xor* `self` with.
+
+        Returns:
+            The resulting option.
+        """
         ...
 
     @abstractmethod
     def zip(self, option: Option[U]) -> Option[Tuple[T, U]]:
+        """Zips `self` with an `option`.
+
+        If `self` is [`Some(s)`][wraps.option.Some] and `option` is [`Some(o)`][wraps.option.Some],
+        this method returns [`Some(s, o)`][wraps.option.Some]. Otherwise,
+        [`Null`][wraps.option.Null] is returned.
+
+        Arguments:
+            option: The option to *zip* `self` with.
+
+        Returns:
+            The resulting option.
+        """
         ...
 
     @abstractmethod
     def zip_with(self, option: Option[U], function: Binary[T, U, V]) -> Option[V]:
+        """Zips `self` with an `option` using `function`.
+
+        If `self` is [`Some(s)`][wraps.option.Some] and `option` is [`Some(o)`][wraps.option.Some],
+        this method returns [`Some(function(s, o))`][wraps.option.Some]. Otherwise,
+        [`Null`][wraps.option.Null] is returned.
+
+        Arguments:
+            option: The option to *zip* `self` with.
+            function: The function to use for zipping.
+
+        Returns:
+            The resulting option.
+        """
         ...
 
     @abstractmethod
     def unzip(self: OptionProtocol[Tuple[U, V]]) -> Tuple[Option[U], Option[V]]:
+        """Unzips an option into two options.
+
+        If `self` is [`Some((u, v))`][wraps.option.Some], this method returns
+        ([`Some(u)`][wraps.option.Some], [`Some(v)`][wraps.option.Some]) tuple.
+        Otherwise, ([`Null`][wraps.option.Null], [`Null`][wraps.option.Null]) is returned.
+
+        Returns:
+            The resulting tuple of two options.
+        """
         ...
 
     @abstractmethod
     def transpose(self: OptionProtocol[ResultProtocol[T, E]]) -> Result[Option[T], E]:
+        """Transposes an option of a result into result of an option.
+        This function maps [`Option[Result[T, E]]`][wraps.option.Option] into
+        [`Result[Option[T], E]]`][wraps.result.Result] in the following way:
+
+        - [`Null()`][wraps.option.Null] is mapped to [`Ok(Null())`][wraps.result.Ok];
+        - [`Some(Ok(value))`][wraps.option.Some] is mapped to [`Ok(Some(value))`][wraps.result.Ok];
+        - [`Some(Error(error))`][wraps.option.Some] is mapped to
+          [`Error(Some(error))`][wraps.result.Error].
+
+        Returns:
+            The transposed result.
+        """
         ...
 
     @abstractmethod
     def flatten(self: OptionProtocol[OptionProtocol[U]]) -> Option[U]:
+        """Flattens an [`Option[Option[T]]`][wraps.option.Option]
+        to [`Option[T]`][wraps.option.Option].
+
+        Returns:
+            The flattened option.
+        """
         ...
 
     @abstractmethod
     def contains(self, value: U) -> bool:
+        """Checks if the contained value (if any) is equal to `value`.
+
+        Arguments:
+            value: The value to check against.
+
+        Returns:
+            Whether the contained value is equal to `value`.
+        """
         ...
 
     @property
     @abstractmethod
     def Q(self) -> T:
+        """Functionally similar to `?` operator in Rust."""
         ...
 
 
 @final
 @frozen()
 class Null(OptionProtocol[Never]):
+    """[`Null`][wraps.option.Null] variant of [`Option[T]`][wraps.option.Option]."""
+
     def __bool__(self) -> Literal[False]:
         return False
 
@@ -225,6 +597,8 @@ class Null(OptionProtocol[Never]):
 @final
 @frozen()
 class Some(OptionProtocol[T]):
+    """[`Some[T]`][wraps.option.Some] variant of [`Option[T]`][wraps.option.Option]."""
+
     value: T
 
     def __iter__(self) -> Iterator[T]:
@@ -361,6 +735,9 @@ class Some(OptionProtocol[T]):
 
 
 Option = Union[Some[T], Null]
+"""Optional value, expressed as the union of [`Some[T]`][wraps.option.Some]
+and [`Null`][wraps.option.Null].
+"""
 
 
 def is_some(option: Option[T]) -> TypeGuard[Some[T]]:

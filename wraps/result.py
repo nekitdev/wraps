@@ -149,6 +149,8 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 @final
 @frozen()
 class Ok(ResultProtocol[T, Never]):
+    """[`Ok[T]`][wraps.result.Ok] variant of [`Result[T, E]`][wraps.result.Result]."""
+
     value: T
 
     @classmethod
@@ -264,6 +266,8 @@ class Ok(ResultProtocol[T, Never]):
 @final
 @frozen()
 class Error(ResultProtocol[Never, E]):
+    """[`Error[E]`][wraps.result.Error] variant of [`Result[T, E]`][wraps.result.Result]."""
+
     value: E
 
     def __bool__(self) -> Literal[False]:
@@ -363,6 +367,9 @@ class Error(ResultProtocol[Never, E]):
 
 
 Result = Union[Ok[T], Error[E]]
+"""Result value, expressed as the union of [`Ok[T]`][wraps.result.Ok]
+and [`Error[E]`][wraps.result.Error].
+"""
 
 
 def is_ok(result: Result[T, E]) -> TypeGuard[Ok[T]]:

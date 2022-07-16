@@ -6,7 +6,7 @@ __all__ = ("Panic", "panic", "OptionShortcut", "ResultShortcut")
 
 
 class Panic(BaseException):
-    pass
+    """Represents the panic as an error."""
 
 
 def panic(message: str) -> Never:

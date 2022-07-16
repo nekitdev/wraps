@@ -9,7 +9,11 @@ remote_branch: github-pages
 
 nav:
   - Index: "index.md"
-  - Reference: "reference.md"
+  - Option: "option.md"
+  - Result: "result.md"
+  - Shortcuts: "shortcuts.md"
+  - Future: "future.md"
+  - Errors: "errors.md"
   - Changelog: "changelog.md"
   - Security: "security.md"
 
@@ -46,6 +50,9 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
+          options:
+            members_order: source
+
           paths: [wraps]
 
           import:
