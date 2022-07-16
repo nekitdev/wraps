@@ -495,6 +495,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#wraps.option.wrap_option" class="md-nav__link">
+    wrap_option()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -829,6 +836,13 @@
         <li class="md-nav__item">
   <a href="#wraps.option.Some" class="md-nav__link">
     Some
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wraps.option.wrap_option" class="md-nav__link">
+    wrap_option()
   </a>
   
 </li>
@@ -4336,8 +4350,8 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
 <code class="highlight language-python"><span class="n">Q</span><span class="p">()</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 </h3>
@@ -4902,6 +4916,144 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
 
 </div>
 
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="wraps.option.wrap_option" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">wrap_option</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Wraps a <code>function</code> returning <code>T</code> into a function returning
+<a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Option[T]</code></a>.</p>
+<p>This handles all exceptions via returning <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</code></a> on errors,
+wrapping the resulting <code>value</code> into <a class="autorefs autorefs-internal" href="#wraps.option.Some"><code>Some(value)</code></a>.</p>
+
+<details class="example">
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nd">@wrap_option</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">assert</span> <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;128&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_some</span><span class="p">()</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">assert</span> <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;uwu&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span>
+</code></pre></div>
+</details>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>function</code></td>
+          <td>
+                <code><a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a>[<span title="wraps.option.P">P</span>, <span title="wraps.option.T">T</span>]</code>
+          </td>
+          <td><p>The function to wrap.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a>[<span title="wraps.option.P">P</span>, <a class="autorefs autorefs-internal" title="wraps.option.Option" href="#wraps.option.Option">Option</a>[<span title="wraps.option.T">T</span>]]</code>
+          </td>
+          <td><p>The wrapping function.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+      <details class="quote">
+        <summary>Source code in <code>wraps/option.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-760">760</a></span>
+<span class="normal"><a href="#__codelineno-0-761">761</a></span>
+<span class="normal"><a href="#__codelineno-0-762">762</a></span>
+<span class="normal"><a href="#__codelineno-0-763">763</a></span>
+<span class="normal"><a href="#__codelineno-0-764">764</a></span>
+<span class="normal"><a href="#__codelineno-0-765">765</a></span>
+<span class="normal"><a href="#__codelineno-0-766">766</a></span>
+<span class="normal"><a href="#__codelineno-0-767">767</a></span>
+<span class="normal"><a href="#__codelineno-0-768">768</a></span>
+<span class="normal"><a href="#__codelineno-0-769">769</a></span>
+<span class="normal"><a href="#__codelineno-0-770">770</a></span>
+<span class="normal"><a href="#__codelineno-0-771">771</a></span>
+<span class="normal"><a href="#__codelineno-0-772">772</a></span>
+<span class="normal"><a href="#__codelineno-0-773">773</a></span>
+<span class="normal"><a href="#__codelineno-0-774">774</a></span>
+<span class="normal"><a href="#__codelineno-0-775">775</a></span>
+<span class="normal"><a href="#__codelineno-0-776">776</a></span>
+<span class="normal"><a href="#__codelineno-0-777">777</a></span>
+<span class="normal"><a href="#__codelineno-0-778">778</a></span>
+<span class="normal"><a href="#__codelineno-0-779">779</a></span>
+<span class="normal"><a href="#__codelineno-0-780">780</a></span>
+<span class="normal"><a href="#__codelineno-0-781">781</a></span>
+<span class="normal"><a href="#__codelineno-0-782">782</a></span>
+<span class="normal"><a href="#__codelineno-0-783">783</a></span>
+<span class="normal"><a href="#__codelineno-0-784">784</a></span>
+<span class="normal"><a href="#__codelineno-0-785">785</a></span>
+<span class="normal"><a href="#__codelineno-0-786">786</a></span>
+<span class="normal"><a href="#__codelineno-0-787">787</a></span>
+<span class="normal"><a href="#__codelineno-0-788">788</a></span>
+<span class="normal"><a href="#__codelineno-0-789">789</a></span>
+<span class="normal"><a href="#__codelineno-0-790">790</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-760" name="__codelineno-0-760"></a><span class="k">def</span> <span class="nf">wrap_option</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]]:</span>
+<a id="__codelineno-0-761" name="__codelineno-0-761"></a>    <span class="sd">&quot;&quot;&quot;Wraps a `function` returning `T` into a function returning</span>
+<a id="__codelineno-0-762" name="__codelineno-0-762"></a><span class="sd">    [`Option[T]`][wraps.option.Option].</span>
+<a id="__codelineno-0-763" name="__codelineno-0-763"></a>
+<a id="__codelineno-0-764" name="__codelineno-0-764"></a><span class="sd">    This handles all exceptions via returning [`Null`][wraps.option.Null] on errors,</span>
+<a id="__codelineno-0-765" name="__codelineno-0-765"></a><span class="sd">    wrapping the resulting `value` into [`Some(value)`][wraps.option.Some].</span>
+<a id="__codelineno-0-766" name="__codelineno-0-766"></a>
+<a id="__codelineno-0-767" name="__codelineno-0-767"></a><span class="sd">    Example:</span>
+<a id="__codelineno-0-768" name="__codelineno-0-768"></a><span class="sd">        ```python</span>
+<a id="__codelineno-0-769" name="__codelineno-0-769"></a><span class="sd">        @wrap_option</span>
+<a id="__codelineno-0-770" name="__codelineno-0-770"></a><span class="sd">        def parse(string: str) -&gt; int:</span>
+<a id="__codelineno-0-771" name="__codelineno-0-771"></a><span class="sd">            return int(string)</span>
+<a id="__codelineno-0-772" name="__codelineno-0-772"></a>
+<a id="__codelineno-0-773" name="__codelineno-0-773"></a><span class="sd">        assert parse(&quot;128&quot;).is_some()</span>
+<a id="__codelineno-0-774" name="__codelineno-0-774"></a><span class="sd">        assert parse(&quot;uwu&quot;).is_null()</span>
+<a id="__codelineno-0-775" name="__codelineno-0-775"></a><span class="sd">        ```</span>
+<a id="__codelineno-0-776" name="__codelineno-0-776"></a>
+<a id="__codelineno-0-777" name="__codelineno-0-777"></a><span class="sd">    Arguments:</span>
+<a id="__codelineno-0-778" name="__codelineno-0-778"></a><span class="sd">        function: The function to wrap.</span>
+<a id="__codelineno-0-779" name="__codelineno-0-779"></a>
+<a id="__codelineno-0-780" name="__codelineno-0-780"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-781" name="__codelineno-0-781"></a><span class="sd">        The wrapping function.</span>
+<a id="__codelineno-0-782" name="__codelineno-0-782"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-783" name="__codelineno-0-783"></a>    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<a id="__codelineno-0-784" name="__codelineno-0-784"></a>        <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-0-785" name="__codelineno-0-785"></a>            <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+<a id="__codelineno-0-786" name="__codelineno-0-786"></a>
+<a id="__codelineno-0-787" name="__codelineno-0-787"></a>        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+<a id="__codelineno-0-788" name="__codelineno-0-788"></a>            <span class="k">return</span> <span class="n">Null</span><span class="p">()</span>
+<a id="__codelineno-0-789" name="__codelineno-0-789"></a>
+<a id="__codelineno-0-790" name="__codelineno-0-790"></a>    <span class="k">return</span> <span class="n">wrap</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
 
 
 
