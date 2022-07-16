@@ -52,6 +52,20 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def is_error(self) -> bool:
+        """Checks if the result is [`Error[E]`][wraps.result.Error].
+
+        Example:
+            ```python
+            ok = Ok(42)
+            assert ok.is_ok()
+
+            error = Error(13)
+            assert not error.is_ok()
+            ```
+
+        Returns:
+            Whether the result is [`Ok[T]`][wraps.result.Ok].
+        """
         ...
 
     @abstractmethod
