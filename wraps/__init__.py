@@ -9,7 +9,7 @@ __license__ = "MIT"
 __version__ = "0.1.0"
 
 from wraps.errors import Panic, panic
-from wraps.future import Future, future
+from wraps.future import Future, wrap_future
 from wraps.option import Null, Option, Some, convert_optional, is_null, is_some, wrap_option
 from wraps.result import Error, Ok, Result, WrapResult, is_error, is_ok, wrap_result
 from wraps.shortcuts import option_shortcut, result_shortcut
@@ -40,5 +40,5 @@ __all__ = (
     "result_shortcut",
     # future
     "Future",
-    "future",
+    "wrap_future",
 )

@@ -8,7 +8,7 @@ from typing_extensions import ParamSpec
 from wraps.option import Null, Option, Some, is_null
 from wraps.typing import Unary
 
-__all__ = ("Future", "future")
+__all__ = ("Future", "wrap_future")
 
 P = ParamSpec("P")
 
@@ -68,11 +68,19 @@ class Future(Awaitable[T]):
         yield await self.awaitable
 
     @classmethod
-    def from_value(cls, value: V) -> Future[V]:
-        return cls(value)  # type: ignore
+    def do(cls, async_iterator: AsyncIterator[T]) -> Future[T]:
+        return cls(cls.actual_do(async_iterator))
+
+    @classmethod
+    async def actual_do(cls, async_iterator: AsyncIterator[T]) -> T:
+        return await async_iterator.__anext__()
+
+    @classmethod
+    def from_value(cls, value: T) -> Future[T]:  # type: ignore
+        return cls(async_identity(value))
 
 
-def future(function: Callable[P, Awaitable[T]]) -> Callable[P, Future[T]]:
+def wrap_future(function: Callable[P, Awaitable[T]]) -> Callable[P, Future[T]]:
     def wrap(*args: P.args, **kwargs: P.kwargs) -> Future[T]:
         return Future(function(*args, **kwargs))
 

@@ -30,6 +30,20 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def is_ok(self) -> bool:
+        """Checks if the result is [`Ok[T]`][wraps.result.Ok].
+
+        Example:
+            ```python
+            ok = Ok(42)
+            assert ok.is_ok()
+
+            error = Error(13)
+            assert not error.is_ok()
+            ```
+
+        Returns:
+            Whether the result is [`Ok[T]`][wraps.result.Ok].
+        """
         ...
 
     @abstractmethod
@@ -138,6 +152,10 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def contains_error(self, error: F) -> bool:
+        ...
+
+    @abstractmethod
+    def swap(self) -> Result[E, T]:
         ...
 
     @property
@@ -258,6 +276,9 @@ class Ok(ResultProtocol[T, Never]):
     def contains_error(self, error: F) -> Literal[False]:
         return False
 
+    def swap(self) -> Error[T]:
+        return Error(self.value)
+
     @property
     def Q(self) -> T:
         return self.value
@@ -362,6 +383,10 @@ class Error(ResultProtocol[Never, E]):
     def contains_error(self, error: F) -> bool:
         return self.value == error
 
+    def swap(self) -> Ok[E]:
+        return Ok(self.value)
+
+    @property
     def Q(self) -> Never:
         raise ResultShortcut(self.value)
 

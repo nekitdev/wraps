@@ -422,7 +422,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """Zips `self` with an `option`.
 
         If `self` is [`Some(s)`][wraps.option.Some] and `option` is [`Some(o)`][wraps.option.Some],
-        this method returns [`Some(s, o)`][wraps.option.Some]. Otherwise,
+        this method returns [`Some((s, o))`][wraps.option.Some]. Otherwise,
         [`Null`][wraps.option.Null] is returned.
 
         Arguments:

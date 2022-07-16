@@ -17,6 +17,16 @@ E = TypeVar("E")
 
 
 def option_shortcut(function: Callable[P, Option[T]]) -> Callable[P, Option[T]]:
+    """Decorates the `function` returning [`Option[T]`][wraps.result.Option]
+    to handle *early returns* via `Q` (`?` in Rust) operator.
+
+    Arguments:
+        function: The function to wrap.
+
+    Returns:
+        The wrapping function.
+    """
+
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> Option[T]:
         try:
@@ -29,6 +39,16 @@ def option_shortcut(function: Callable[P, Option[T]]) -> Callable[P, Option[T]]:
 
 
 def result_shortcut(function: Callable[P, Result[T, E]]) -> Callable[P, Result[T, E]]:
+    """Decorates the `function` returning [`Result[T, E]`][wraps.result.Result]
+    to handle *early returns* via `Q` (`?` in Rust) operator.
+
+    Arguments:
+        function: The function to wrap.
+
+    Returns:
+        The wrapping function.
+    """
+
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> Result[T, E]:
         try:
