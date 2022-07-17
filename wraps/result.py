@@ -132,6 +132,19 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     def expect(self, message: str) -> T:
         """Returns the contained [`Ok[T]`][wraps.result.Ok] value.
 
+        Example:
+            ```python
+            >>> ok = Ok(42)
+            >>> ok.expect("error!")
+            42
+
+            >>> error = Error(0)
+            >>> error.expect("error!")
+            Traceback (most recent call last):
+              ...
+            wraps.errors.Panic: error!
+            ```
+
         Arguments:
             message: The message used in panicking.
 
@@ -147,6 +160,19 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     def expect_error(self, message: str) -> E:
         """Returns the contained [`Error[E]`][wraps.result.Error] value.
 
+        Example:
+            ```python
+            >>> ok = Ok(42)
+            >>> ok.expect_error("ok!")
+            Traceback (most recent call last):
+              ...
+            wraps.errors.Panic: ok!
+
+            >>> error = Error(0)
+            >>> error.expect_error("ok!")
+            0
+            ```
+
         Arguments:
             message: The message used in panicking.
 
@@ -160,34 +186,210 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def unwrap(self) -> T:
+        """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`).
+
+        Because this function may panic, its use is generally discouraged.
+
+        Instead, prefer to use pattern matching and handle the [`Error[E]`][wraps.result.Error]
+        case explicitly, or call [`unwrap_or`][wraps.result.ResultProtocol.unwrap_or]
+        or [`unwrap_or_else`][wraps.result.ResultProtocol.unwrap_or_else].
+
+        Example:
+            ```python
+            >>> ok = Ok(13)
+            >>> ok.unwrap()
+            13
+
+            >>> error = Error(0)
+            >>> error.unwrap()
+            Traceback (most recent call last):
+              ...
+            wraps.errors.Panic: called `unwrap` on error
+            ```
+
+        Raises:
+            Panic: Panics if the result is [`Error[E]`][wraps.result.Error].
+
+        Returns:
+            The contained value.
+        """
         ...
 
     @abstractmethod
     def unwrap_or(self, default: T) -> T:  # type: ignore
+        """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`)
+        or a provided default.
+
+        Example:
+            ```python
+            default = 0
+
+            ok = Ok(69)
+            assert ok.unwrap_or(default)
+
+            error = Error(0)
+            assert not error.unwrap_or(default)
+            ```
+
+        Arguments:
+            default: The default value to use.
+
+        Returns:
+            The contained value or `default` one.
+        """
         ...
 
     @abstractmethod
     def unwrap_or_else(self, default: Nullary[T]) -> T:
+        """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`) or
+        computes it from the function.
+
+        Example:
+            ```python
+            ok = Ok(5)
+            assert ok.unwrap_or_else(int)
+
+            error = Error(8)
+            assert not error.unwrap_or_else(int)
+
+        Arguments:
+            default: The default function to use.
+
+        Returns:
+            The contained value or `default()` one.
+        """
         ...
 
     @abstractmethod
     def unwrap_or_raise(self, exception: AnyException) -> T:
+        """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`) or
+        raises an exception.
+
+        Example:
+            ```python
+            >>> exception = ValueError("error!")
+
+            >>> ok = Ok(42)
+            >>> ok.unwrap_or_raise(exception)
+            42
+
+            >>> error = Error(1)
+            >>> error.unwrap_or_raise(exception)
+            Traceback (most recent call last):
+              ...
+            ValueError: error!
+            ```
+
+        Arguments:
+            exception: The exception to raise.
+
+        Returns:
+            The contained value.
+        """
         ...
 
     @abstractmethod
     def unwrap_error(self) -> E:
+        """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`).
+
+        Because this function may panic, its use is generally discouraged.
+
+        Instead, prefer to use pattern matching and handle the [`Ok[T]`][wraps.result.Ok]
+        case explicitly, or call [`unwrap_error_or`][wraps.result.ResultProtocol.unwrap_error_or]
+        or [`unwrap_error_or_else`][wraps.result.ResultProtocol.unwrap_error_or_else].
+
+        Example:
+            ```python
+            >>> error = Error(13)
+            >>> error.unwrap_error()
+            13
+
+            >>> ok = Ok(42)
+            >>> ok.unwrap_error()
+            Traceback (most recent call last):
+              ...
+            wraps.errors.Panic: called `unwrap_error` on ok
+            ```
+
+        Raises:
+            Panic: Panics if the result is [`Ok[T]`][wraps.result.Ok].
+
+        Returns:
+            The contained error value.
+        """
         ...
 
     @abstractmethod
     def unwrap_error_or(self, default: E) -> E:  # type: ignore
+        """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`)
+        or a provided default.
+
+        Example:
+            ```python
+            default = 0
+
+            error = Error(1)
+            assert error.unwrap_error_or(default)
+
+            ok = Ok(2)
+            assert not ok.unwrap_error_or(default)
+            ```
+
+        Arguments:
+            default: The default value to use.
+
+        Returns:
+            The contained error value or `default` one.
+        """
         ...
 
     @abstractmethod
     def unwrap_error_or_else(self, default: Nullary[E]) -> E:
+        """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`) or
+        computes it from the function.
+
+        Example:
+            ```python
+            error = Error(5)
+            assert error.unwrap_error_or_else(int)
+
+            ok = Ok(8)
+            assert not ok.unwrap_error_or_else(int)
+
+        Arguments:
+            default: The default function to use.
+
+        Returns:
+            The contained error value or `default()` one.
+        """
         ...
 
     @abstractmethod
     def unwrap_error_or_raise(self, exception: AnyException) -> E:
+        """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`) or
+        raises an exception.
+
+        Example:
+            ```python
+            >>> exception = ValueError("error!")
+
+            >>> ok = Ok(42)
+            >>> ok.unwrap_or_raise(exception)
+            42
+
+            >>> error = Error(1)
+            >>> error.unwrap_or_raise(exception)
+            Traceback (most recent call last):
+              ...
+            ValueError: error!
+            ```
+
+        Arguments:
+            exception: The exception to raise.
+
+        Returns:
+            The contained value.
+        """
         ...
 
     @abstractmethod
@@ -195,6 +397,17 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """Converts [`Result[T, E]`][wraps.result.Result] to [`Option[T]`][wraps.option.Option].
 
         Converts `self` into an [`Option[T]`][wraps.option.Option], discarding the error, if any.
+
+        Example:
+            ```python
+            ok = Ok(42)
+
+            assert ok.ok().is_some()
+
+            error = Error(0)
+
+            assert error.ok().is_null()
+            ```
 
         Returns:
             The converted option.
@@ -208,6 +421,17 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         Converts `self` into an [`Option[E]`][wraps.option.Option], discarding the success value,
         if any.
 
+        Example:
+            ```python
+            error = Error(13)
+
+            assert error.error().is_some()
+
+            ok = Ok(2)
+
+            assert error.ok().is_null()
+            ```
+
         Returns:
             The converted option.
         """
@@ -215,58 +439,374 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def map(self, function: Unary[T, U]) -> Result[U, E]:
+        """Maps [`Result[T, E]`][wraps.result.Result] to [`Result[U, E]`][wraps.result.Result]
+        by applying `function` to the contained [`Ok[T]`][wraps.result.Ok] value,
+        leaving any [`Error[E]`][wraps.result.Error] untouched.
+
+        This function can be used to compose the results of two functions.
+
+        Example:
+            ```python
+            value = 69
+            mapped = "69"
+
+            ok = Ok(value)
+
+            assert ok.map(str) == Ok(mapped)
+
+            error = Error(0)
+
+            assert error.map(str) == error
+            ```
+
+        Arguments:
+            function: The function to apply.
+
+        Returns:
+            The mapped result.
+        """
         ...
 
     @abstractmethod
     def map_or(self, default: U, function: Unary[T, U]) -> U:
+        """Returns the default value (if errored), or applies `function`
+        to the contained value (if succeeded).
+
+        Example:
+            ```python
+            ok = Ok("Hello, world!")
+            print(ok.map_or(42, len))  # 13
+
+            error = Error("error...")
+            print(error.map_or(42, len))  # 42
+            ```
+
+        Arguments:
+            default: The default value to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default value.
+        """
         ...
 
     @abstractmethod
     def map_or_else(self, default: Nullary[U], function: Unary[T, U]) -> U:
+        """Computes the default value (if errored), or applies `function`
+        to the contained value (if succeeded).
+
+        Example:
+            ```python
+            ok = Ok("Hello, world!")
+            print(ok.map_or_else(int, len))  # 13
+
+            error = Error("error!")
+            print(error.map_or_else(int, len))  # 0
+            ```
+
+        Arguments:
+            default: The default function to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default computed value.
+        """
         ...
 
     @abstractmethod
     def map_error(self, function: Unary[E, F]) -> Result[T, F]:
+        """Maps [`Result[T, E]`][wraps.result.Result] to [`Result[T, F]`][wraps.result.Result]
+        by applying `function` to the contained [`Error[E]`][wraps.result.Error] value,
+        leaving any [`Ok[T]`][wraps.result.Ok] untouched.
+
+        Example:
+            ```python
+            value = 42
+            mapped = "42"
+
+            error = Error(value)
+
+            assert error.map_error(str) == Error(mapped)
+
+            ok = Ok(2)
+
+            assert ok.map_error(str) == ok
+            ```
+
+        Arguments:
+            function: The function to apply.
+
+        Returns:
+            The mapped result.
+        """
         ...
 
     @abstractmethod
     def map_error_or(self, default: F, function: Unary[E, F]) -> F:
+        """Returns the default value (if succeeded), or applies `function`
+        to the contained error value (if errored).
+
+        Example:
+            ```python
+            error = Error("nekit")
+            print(error.map_error_or(13, len))  # 5
+
+            ok = Ok("ok")
+            print(error.map_error_or(13, len))  # 13
+            ```
+
+        Arguments:
+            default: The default value to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default value.
+        """
         ...
 
     @abstractmethod
     def map_error_or_else(self, default: Nullary[F], function: Unary[E, F]) -> F:
+        """Computes the default value (if succeeded), or applies `function`
+        to the contained value (if errored).
+
+        Example:
+            ```python
+            error = Error("error...")
+            print(ok.map_error_or_else(int, len))  # 8
+
+            ok = Ok("ok!")
+            print(error.map_error_or_else(int, len))  # 0
+            ```
+
+        Arguments:
+            default: The default function to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default computed value.
+        """
         ...
 
     @abstractmethod
     def iter(self) -> Iterator[T]:
+        """Returns an iterator over the possibly contained value.
+
+        Example:
+            ```python
+            >>> ok = Ok(42)
+            >>> next(ok.iter())
+            42
+
+            >>> error = Error(0)
+            >>> next(error.iter())
+            Traceback (most recent call last):
+              ...
+            StopIteration
+            ```
+
+        Returns:
+            An iterator over the possibly contained value.
+        """
         ...
 
     @abstractmethod
     def iter_error(self) -> Iterator[E]:
+        """Returns an iterator over the possibly contained error value.
+
+        Example:
+            ```python
+            >>> error = Error(13)
+            >>> next(error.iter_error())
+            13
+
+            >>> ok = Ok(1)
+            >>> next(ok.iter_error())
+            Traceback (most recent call last):
+              ...
+            StopIteration
+            ```
+
+        Returns:
+            An iterator over the possibly contained error value.
+        """
         ...
 
     @abstractmethod
     def and_then(self, function: Unary[T, Result[U, E]]) -> Result[U, E]:
+        """Returns [`Error[E]`][wraps.result.Error] if the result
+        is [`Error[E]`][wraps.result.Error], otherwise calls `function`
+        with the wrapped value and returns the result.
+
+        This function is also known as *bind* in functional programming.
+
+        Example:
+            ```python
+            def inverse(value: float) -> Result[float, str]:
+                return Ok(1.0 / value) if value else Error("can not divide by zero")
+
+            ok = Ok(2.0)
+            print(ok.and_then(inverse).unwrap())  # 0.5
+
+            zero = Ok(0.0)
+            assert zero.and_then(inverse).is_error()
+
+            error = Error()
+            assert error.and_then(inverse).is_error()
+            ```
+
+        Arguments:
+            function: The function to apply.
+
+        Returns:
+            The bound result.
+        """
         ...
 
     @abstractmethod
     def or_else(self, function: Unary[E, Result[T, F]]) -> Result[T, F]:
+        """Returns [`Ok[T]`][wraps.result.Ok] if the result
+        is [`Ok[T]`][wraps.result.Ok], otherwise calls `function`
+        with the wrapped error value and returns the result.
+
+        Example:
+            ```python
+            def check_non_zero(value: int) -> Result[int, str]:
+                return Ok(value) if value else Error("the value is zero")
+
+            error = Error(13)
+
+            print(error.or_else(check_non_zero).unwrap())  # 13
+
+            zero = Error(0)
+            assert zero.or_else(check_non_zero).is_error()
+
+            ok = Ok(42)
+            assert ok.or_else(check_non_zero).is_ok()
+            ```
+
+        Arguments:
+            function: The function to apply.
+
+        Returns:
+            The bound result.
+        """
         ...
 
     @abstractmethod
     def transpose(self: ResultProtocol[OptionProtocol[T], E]) -> Option[Result[T, E]]:
+        """Transposes a result of an option into option of a result.
+        This function maps [`Result[Option[T], E]`][wraps.result.Result] into
+        [`Option[Result[T, E]]`][wraps.option.Option] in the following way:
+
+        - [`Ok(Null())`][wraps.result.Ok] is mapped to [`Null()`][wraps.option.Null];
+        - [`Ok(Some(value))`][wraps.result.Ok] is mapped to [`Some(Ok(value))`][wraps.option.Some];
+        - [`Error(error)`][wraps.result.Error] is mapped to
+          [`Some(Error(error))`][wraps.option.Some].
+
+        Example:
+            ```python
+            result = Ok(Some(64))
+            option = Some(Ok(64))
+
+            assert result.transpose() == option
+            ```
+
+        Returns:
+            The transposed option.
+        """
         ...
 
     @abstractmethod
     def contains(self, value: U) -> bool:
+        """Checks if the contained value is equal to `value`.
+
+        Example:
+            ```python
+            value = 42
+            other = 69
+
+            ok = Ok(value)
+            assert ok.contains(value)
+            assert not ok.contains(other)
+
+            error = Error(value)
+            assert not error.contains(value)
+            ```
+
+        Arguments:
+            value: The value to check against.
+
+        Returns:
+            Whether the contained value is equal to `value`.
+        """
         ...
 
     @abstractmethod
     def contains_error(self, error: F) -> bool:
+        """Checks if the contained error value is equal to `error`.
+
+        Example:
+            ```python
+            value = 42
+            other = 69
+
+            error = Error(value)
+            assert error.contains_error(value)
+            assert not error.contains_error(other)
+
+            ok = Ok(value)
+            assert not ok.contains_error(value)
+            ```
+
+        Arguments:
+            error: The error value to check against.
+
+        Returns:
+            Whether the contained error value is equal to `error`.
+        """
         ...
 
     @abstractmethod
     def swap(self) -> Result[E, T]:
+        """Converts [`Result[T, E]`][wraps.result.Result] to [`Result[E, T]`][wraps.result.Result].
+
+        [`Ok(value)`][wraps.result.Ok] and [`Error(error)`][wraps.result.Error] get swapped to
+        [`Error(value)`][wraps.result.Error] and [`Ok(error)`][wraps.result.Ok], respectfully.
+
+        Example:
+            ```python
+            value = 42
+
+            result = Ok(value)
+            swapped = Error(value)
+
+            assert result.swap() == swapped
+            ```
+
+        Returns:
+            The swapped result.
+        """
+        ...
+
+    @abstractmethod
+    def into_ok_or_error(self: ResultProtocol[T, T]) -> T:
+        """Returns the [`Ok[T]`][wraps.result.Ok] value if `self` is [`Ok[T]`][wraps.result.Ok],
+        and the [`Error[T]`][wraps.result.Error] value if `self` is [`Error[T]`][wraps.result.Error].
+
+        In other words, this function returns the value (of type `T`) of
+        a [`Result[T, T]`][wraps.result.Result], regardless of whether or not that result
+        is [`Ok[T]`][wraps.result.Ok] or [`Error[T]`][wraps.result.Error].
+
+        Example:
+            ```python
+            result: Result[int, int] = Ok(69)
+
+            print(result.into_ok_or_error())  # 69
+            ```
+
+        Returns:
+            The contained value, regardless of whether or not it is an error one.
+        """
         ...
 
     @property
@@ -394,6 +934,9 @@ class Ok(ResultProtocol[T, Never]):
     def swap(self) -> Error[T]:
         return Error(self.value)
 
+    def into_ok_or_error(self: Ok[T]) -> T:
+        return self.value
+
     @property
     def Q(self) -> T:
         return self.value
@@ -504,6 +1047,9 @@ class Error(ResultProtocol[Never, E]):
     def swap(self) -> Ok[E]:
         return Ok(self.value)
 
+    def into_ok_or_error(self: Error[T]) -> T:
+        return self.value
+
     @property
     def Q(self) -> Never:
         raise ResultShortcut(self.value)
@@ -516,10 +1062,16 @@ and [`Error[E]`][wraps.result.Error].
 
 
 def is_ok(result: Result[T, E]) -> TypeGuard[Ok[T]]:
+    """This is the same as [`Result.is_ok`][wraps.result.ResultProtocol.is_ok],
+    except it works as a *type guard*.
+    """
     return result.is_ok()
 
 
 def is_error(result: Result[T, E]) -> TypeGuard[Error[E]]:
+    """This is the same as [`Result.is_error`][wraps.result.ResultProtocol.is_error],
+    except it works as a *type guard*.
+    """
     return result.is_error()
 
 
@@ -536,7 +1088,7 @@ def wrap_result(function: Callable[P, T]) -> Callable[P, Result[T, Exception]]:
         def parse(string: str) -> int:
             return int(string)
 
-        assert parse("256").is_ok()
+        assert parse("512").is_ok()
         assert parse("uwu").is_error()
         ```
 

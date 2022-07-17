@@ -143,6 +143,18 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     def expect(self, message: str) -> T:
         """Returns the contained [`Some[T]`][wraps.option.Some] value.
 
+        Example:
+            ```python
+            >>> some = Some(42)
+            >>> some.expect("panic!")
+            42
+            >>> null = Null()
+            >>> null.expect("panic!")
+            Traceback (most recent call last):
+              ...
+            wraps.errors.Panic: panic!
+            ```
+
         Arguments:
             message: The message used in panicking.
 
@@ -164,6 +176,19 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         case explicitly, or call [`unwrap_or`][wraps.option.OptionProtocol.unwrap_or]
         or [`unwrap_or_else`][wraps.option.OptionProtocol.unwrap_or_else].
 
+        Example:
+            ```python
+            >>> some = Some(42)
+            >>> some.unwrap()
+            42
+
+            >>> null = Null()
+            >>> null.unwrap()
+            Traceback (most recent call last):
+              ...
+            wraps.errors.Panic: called `unwrap` on null
+            ```
+
         Raises:
             Panic: Panics if the option is [`Null`][wraps.option.Null].
 
@@ -175,6 +200,17 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     @abstractmethod
     def unwrap_or(self, default: T) -> T:  # type: ignore
         """Returns the contained [`Some[T]`][wraps.option.Some] value or a provided default.
+
+        Example:
+            ```python
+            default = 0
+
+            some = Some(13)
+            assert some.unwrap_or(default)
+
+            null = Null()
+            assert not null.unwrap_or(default)
+            ```
 
         Arguments:
             default: The default value to use.
@@ -189,6 +225,15 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """Returns the contained [`Some[T]`][wraps.option.Some] value or
         computes it from the function.
 
+        Example:
+            ```python
+            some = Some(13)
+            assert some.unwrap_or_else(int)
+
+            null = Null()
+            assert not null.unwrap_or_else(int)
+            ```
+
         Arguments:
             default: The default function to use.
 
@@ -201,6 +246,21 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     def unwrap_or_raise(self, exception: AnyException) -> T:
         """Returns the contained [`Some[T]`][wraps.option.Some] value or
         raises an exception.
+
+        Example:
+            ```python
+            >>> error = ValueError("error!")
+
+            >>> some = Some(42)
+            >>> some.unwrap_or_raise(error)
+            42
+
+            >>> null = Null()
+            >>> null.unwrap_or_raise(error)
+            Traceback (most recent call last):
+              ...
+            ValueError: error!
+            ```
 
         Arguments:
             exception: The exception to raise.
@@ -289,6 +349,17 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
         to [`Error(error)`][wraps.result.Error].
 
+        Example:
+            ```python
+            error = Error(13)
+
+            some = Some(42)
+            assert some.ok_or(error).is_ok()
+
+            null = Null()
+            assert null.ok_or(error).is_error()
+            ```
+
         Arguments:
             error: The error to use.
 
@@ -303,6 +374,18 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
         to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
         to [`Error(error())`][wraps.result.Error].
+
+        Example:
+            ```python
+            def error() -> Error[int]:
+                return Error(0)
+
+            some = Some(7)
+            assert some.ok_or_else(error).is_ok()
+
+            null = Null()
+            assert null.ok_or_else(error).is_error()
+            ```
 
         Arguments:
             error: The error function to use.
@@ -402,7 +485,14 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
         Example:
             ```python
-            # TODO
+            def default() -> Null:
+                return Null()
+
+            some = Some(42)
+            null = Null()
+
+            assert some.or_else(default).is_some()
+            assert null.or_else(default).is_null()
             ```
 
         Arguments:
@@ -417,6 +507,19 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     def xor(self, option: Option[T]) -> Option[T]:
         """Returns [`Some[T]`][wraps.option.Some] if exactly one of `self` and `option`
         is [`Some[T]`][wraps.option.Option], otherwise returns [`Null`][wraps.option.Null].
+
+        Example:
+            ```python
+            some = Some(69)
+            other = Some(7)
+
+            null = Null()
+
+            assert some.xor(other) == null
+            assert null.xor(other) == other
+            assert some.xor(null) == some
+            assert null.xor(null) == null
+            ```
 
         Arguments:
             option: The option to *xor* `self` with.
@@ -434,6 +537,23 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         this method returns [`Some((s, o))`][wraps.option.Some]. Otherwise,
         [`Null`][wraps.option.Null] is returned.
 
+        Example:
+            ```python
+            x = 0.7
+            y = 1.3
+
+            some_x = Some(x)
+            some_y = Some(y)
+
+            some_tuple = Some((x, y))
+
+            assert some_x.zip(some_y) == some_point
+
+            null = Null()
+
+            assert some_y.zip(null) == null
+            ```
+
         Arguments:
             option: The option to *zip* `self` with.
 
@@ -449,6 +569,28 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         If `self` is [`Some(s)`][wraps.option.Some] and `option` is [`Some(o)`][wraps.option.Some],
         this method returns [`Some(function(s, o))`][wraps.option.Some]. Otherwise,
         [`Null`][wraps.option.Null] is returned.
+
+        Example:
+            ```python
+            @frozen()
+            class Point:
+                x: float
+                y: float
+
+            x = 1.3
+            y = 4.2
+
+            some_x = Some(x)
+            some_y = Some(y)
+
+            some_point = Some(Point(x, y))
+
+            assert some_x.zip_with(some_y, Point) == some_point
+
+            null = Null()
+
+            assert some_x.zip_with(null, Point) == null
+            ```
 
         Arguments:
             option: The option to *zip* `self` with.
@@ -467,6 +609,19 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         ([`Some(u)`][wraps.option.Some], [`Some(v)`][wraps.option.Some]) tuple.
         Otherwise, ([`Null`][wraps.option.Null], [`Null`][wraps.option.Null]) is returned.
 
+        Example:
+            ```python
+            value = 13
+            other = 42
+
+            zipped = Some((value, other))
+
+            assert zipped.unzip() == (Some(value), Some(other))
+
+            null = Null()
+
+            assert null.unzip() == (Null(), Null())
+
         Returns:
             The resulting tuple of two options.
         """
@@ -483,6 +638,14 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         - [`Some(Error(error))`][wraps.option.Some] is mapped to
           [`Error(Some(error))`][wraps.result.Error].
 
+        Example:
+            ```python
+            option = Some(Ok(7))
+            result = Ok(Some(7))
+
+            assert option.transpose() == result
+            ```
+
         Returns:
             The transposed result.
         """
@@ -493,6 +656,19 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """Flattens an [`Option[Option[T]]`][wraps.option.Option]
         to [`Option[T]`][wraps.option.Option].
 
+        Example:
+            ```python
+            some = Some(42)
+            some_nested = Some(some)
+            assert some_nested.flatten() == some
+
+            null = Null()
+            null_nested = Some(null)
+            assert null_nested.flatten() == null
+
+            assert null.flatten() == null
+            ```
+
         Returns:
             The flattened option.
         """
@@ -501,6 +677,19 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     @abstractmethod
     def contains(self, value: U) -> bool:
         """Checks if the contained value (if any) is equal to `value`.
+
+        Example:
+            ```python
+            value = 42
+            other = 69
+
+            some = Some(value)
+            assert some.contains(value)
+            assert not some.contains(other)
+
+            null = Null()
+            assert not null.contains(value)
+            ```
 
         Arguments:
             value: The value to check against.
@@ -513,7 +702,12 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     @property
     @abstractmethod
     def Q(self) -> T:
-        """Functionally similar to `?` operator in Rust."""
+        """Functionally similar to `?` operator in Rust.
+
+        See [shortcuts][shortcuts] for more information.
+
+        [shortcuts]: /shortcuts
+        """
         ...
 
 
@@ -750,10 +944,16 @@ and [`Null`][wraps.option.Null].
 
 
 def is_some(option: Option[T]) -> TypeGuard[Some[T]]:
+    """This is the same as [`Option.is_some`][wraps.option.OptionProtocol.is_some],
+    except it works as a *type guard*.
+    """
     return option.is_some()
 
 
 def is_null(option: Option[T]) -> TypeGuard[Null]:
+    """This is the same as [`Option.is_null`][wraps.option.OptionProtocol.is_null],
+    except it works as a *type guard*.
+    """
     return option.is_null()
 
 
