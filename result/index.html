@@ -2574,13 +2574,13 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 <a id="__codelineno-0-789" name="__codelineno-0-789"></a>        <span class="o">...</span>
 <a id="__codelineno-0-790" name="__codelineno-0-790"></a>
 <a id="__codelineno-0-791" name="__codelineno-0-791"></a>    <span class="nd">@abstractmethod</span>
-<a id="__codelineno-0-792" name="__codelineno-0-792"></a>    <span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-<a id="__codelineno-0-793" name="__codelineno-0-793"></a>        <span class="sd">&quot;&quot;&quot;Returns the [`Ok[T]`][wraps.result.Ok] value if `self` is [`Ok[T]`][wraps.result.Ok],</span>
-<a id="__codelineno-0-794" name="__codelineno-0-794"></a><span class="sd">        and the [`Error[T]`][wraps.result.Error] value if `self` is [`Error[T]`][wraps.result.Error].</span>
+<a id="__codelineno-0-792" name="__codelineno-0-792"></a>    <span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">V</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">V</span><span class="p">:</span>
+<a id="__codelineno-0-793" name="__codelineno-0-793"></a>        <span class="sd">&quot;&quot;&quot;Returns the [`Ok[V]`][wraps.result.Ok] value if `self` is [`Ok[V]`][wraps.result.Ok],</span>
+<a id="__codelineno-0-794" name="__codelineno-0-794"></a><span class="sd">        and the [`Error[V]`][wraps.result.Error] value if `self` is [`Error[V]`][wraps.result.Error].</span>
 <a id="__codelineno-0-795" name="__codelineno-0-795"></a>
-<a id="__codelineno-0-796" name="__codelineno-0-796"></a><span class="sd">        In other words, this function returns the value (of type `T`) of</span>
-<a id="__codelineno-0-797" name="__codelineno-0-797"></a><span class="sd">        a [`Result[T, T]`][wraps.result.Result], regardless of whether or not that result</span>
-<a id="__codelineno-0-798" name="__codelineno-0-798"></a><span class="sd">        is [`Ok[T]`][wraps.result.Ok] or [`Error[T]`][wraps.result.Error].</span>
+<a id="__codelineno-0-796" name="__codelineno-0-796"></a><span class="sd">        In other words, this function returns the value (of type `V`) of</span>
+<a id="__codelineno-0-797" name="__codelineno-0-797"></a><span class="sd">        a [`Result[V, V]`][wraps.result.Result], regardless of whether or not that result</span>
+<a id="__codelineno-0-798" name="__codelineno-0-798"></a><span class="sd">        is [`Ok[V]`][wraps.result.Ok] or [`Error[V]`][wraps.result.Error].</span>
 <a id="__codelineno-0-799" name="__codelineno-0-799"></a>
 <a id="__codelineno-0-800" name="__codelineno-0-800"></a><span class="sd">        Example:</span>
 <a id="__codelineno-0-801" name="__codelineno-0-801"></a><span class="sd">            ```python</span>
@@ -6353,11 +6353,11 @@ This function maps <a class="autorefs autorefs-internal" href="#wraps.result.Res
 
   <div class="doc doc-contents ">
   
-      <p>Returns the <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> value if <code>self</code> is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a>,
-and the <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[T]</code></a> value if <code>self</code> is <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[T]</code></a>.</p>
-<p>In other words, this function returns the value (of type <code>T</code>) of
-a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, T]</code></a>, regardless of whether or not that result
-is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> or <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[T]</code></a>.</p>
+      <p>Returns the <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[V]</code></a> value if <code>self</code> is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[V]</code></a>,
+and the <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[V]</code></a> value if <code>self</code> is <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[V]</code></a>.</p>
+<p>In other words, this function returns the value (of type <code>V</code>) of
+a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[V, V]</code></a>, regardless of whether or not that result
+is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[V]</code></a> or <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[V]</code></a>.</p>
 
 <details class="example">
   <summary>Example</summary>
@@ -6377,7 +6377,7 @@ is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</co
     <tbody>
         <tr>
           <td>
-                <code><span title="wraps.result.T">T</span></code>
+                <code><span title="wraps.result.V">V</span></code>
           </td>
           <td><p>The contained value, regardless of whether or not it is an error one.</p></td>
         </tr>
@@ -6406,13 +6406,13 @@ is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</co
 <span class="normal"><a href="#__codelineno-0-808">808</a></span>
 <span class="normal"><a href="#__codelineno-0-809">809</a></span>
 <span class="normal"><a href="#__codelineno-0-810">810</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-791" name="__codelineno-0-791"></a><span class="nd">@abstractmethod</span>
-<a id="__codelineno-0-792" name="__codelineno-0-792"></a><span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-<a id="__codelineno-0-793" name="__codelineno-0-793"></a>    <span class="sd">&quot;&quot;&quot;Returns the [`Ok[T]`][wraps.result.Ok] value if `self` is [`Ok[T]`][wraps.result.Ok],</span>
-<a id="__codelineno-0-794" name="__codelineno-0-794"></a><span class="sd">    and the [`Error[T]`][wraps.result.Error] value if `self` is [`Error[T]`][wraps.result.Error].</span>
+<a id="__codelineno-0-792" name="__codelineno-0-792"></a><span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">V</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">V</span><span class="p">:</span>
+<a id="__codelineno-0-793" name="__codelineno-0-793"></a>    <span class="sd">&quot;&quot;&quot;Returns the [`Ok[V]`][wraps.result.Ok] value if `self` is [`Ok[V]`][wraps.result.Ok],</span>
+<a id="__codelineno-0-794" name="__codelineno-0-794"></a><span class="sd">    and the [`Error[V]`][wraps.result.Error] value if `self` is [`Error[V]`][wraps.result.Error].</span>
 <a id="__codelineno-0-795" name="__codelineno-0-795"></a>
-<a id="__codelineno-0-796" name="__codelineno-0-796"></a><span class="sd">    In other words, this function returns the value (of type `T`) of</span>
-<a id="__codelineno-0-797" name="__codelineno-0-797"></a><span class="sd">    a [`Result[T, T]`][wraps.result.Result], regardless of whether or not that result</span>
-<a id="__codelineno-0-798" name="__codelineno-0-798"></a><span class="sd">    is [`Ok[T]`][wraps.result.Ok] or [`Error[T]`][wraps.result.Error].</span>
+<a id="__codelineno-0-796" name="__codelineno-0-796"></a><span class="sd">    In other words, this function returns the value (of type `V`) of</span>
+<a id="__codelineno-0-797" name="__codelineno-0-797"></a><span class="sd">    a [`Result[V, V]`][wraps.result.Result], regardless of whether or not that result</span>
+<a id="__codelineno-0-798" name="__codelineno-0-798"></a><span class="sd">    is [`Ok[V]`][wraps.result.Ok] or [`Error[V]`][wraps.result.Error].</span>
 <a id="__codelineno-0-799" name="__codelineno-0-799"></a>
 <a id="__codelineno-0-800" name="__codelineno-0-800"></a><span class="sd">    Example:</span>
 <a id="__codelineno-0-801" name="__codelineno-0-801"></a><span class="sd">        ```python</span>
@@ -6703,7 +6703,7 @@ is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</co
 <a id="__codelineno-0-934" name="__codelineno-0-934"></a>    <span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Error</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <a id="__codelineno-0-935" name="__codelineno-0-935"></a>        <span class="k">return</span> <span class="n">Error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 <a id="__codelineno-0-936" name="__codelineno-0-936"></a>
-<a id="__codelineno-0-937" name="__codelineno-0-937"></a>    <span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Ok</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<a id="__codelineno-0-937" name="__codelineno-0-937"></a>    <span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Ok</span><span class="p">[</span><span class="n">V</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">V</span><span class="p">:</span>
 <a id="__codelineno-0-938" name="__codelineno-0-938"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 <a id="__codelineno-0-939" name="__codelineno-0-939"></a>
 <a id="__codelineno-0-940" name="__codelineno-0-940"></a>    <span class="nd">@property</span>
@@ -6968,7 +6968,7 @@ is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</co
 <a id="__codelineno-0-1047" name="__codelineno-0-1047"></a>    <span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ok</span><span class="p">[</span><span class="n">E</span><span class="p">]:</span>
 <a id="__codelineno-0-1048" name="__codelineno-0-1048"></a>        <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 <a id="__codelineno-0-1049" name="__codelineno-0-1049"></a>
-<a id="__codelineno-0-1050" name="__codelineno-0-1050"></a>    <span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Error</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<a id="__codelineno-0-1050" name="__codelineno-0-1050"></a>    <span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Error</span><span class="p">[</span><span class="n">V</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">V</span><span class="p">:</span>
 <a id="__codelineno-0-1051" name="__codelineno-0-1051"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 <a id="__codelineno-0-1052" name="__codelineno-0-1052"></a>
 <a id="__codelineno-0-1053" name="__codelineno-0-1053"></a>    <span class="nd">@property</span>
