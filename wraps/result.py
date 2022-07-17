@@ -789,13 +789,13 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         ...
 
     @abstractmethod
-    def into_ok_or_error(self: ResultProtocol[T, T]) -> T:
-        """Returns the [`Ok[T]`][wraps.result.Ok] value if `self` is [`Ok[T]`][wraps.result.Ok],
-        and the [`Error[T]`][wraps.result.Error] value if `self` is [`Error[T]`][wraps.result.Error].
+    def into_ok_or_error(self: ResultProtocol[V, V]) -> V:
+        """Returns the [`Ok[V]`][wraps.result.Ok] value if `self` is [`Ok[V]`][wraps.result.Ok],
+        and the [`Error[V]`][wraps.result.Error] value if `self` is [`Error[V]`][wraps.result.Error].
 
-        In other words, this function returns the value (of type `T`) of
-        a [`Result[T, T]`][wraps.result.Result], regardless of whether or not that result
-        is [`Ok[T]`][wraps.result.Ok] or [`Error[T]`][wraps.result.Error].
+        In other words, this function returns the value (of type `V`) of
+        a [`Result[V, V]`][wraps.result.Result], regardless of whether or not that result
+        is [`Ok[V]`][wraps.result.Ok] or [`Error[V]`][wraps.result.Error].
 
         Example:
             ```python
@@ -934,7 +934,7 @@ class Ok(ResultProtocol[T, Never]):
     def swap(self) -> Error[T]:
         return Error(self.value)
 
-    def into_ok_or_error(self: Ok[T]) -> T:
+    def into_ok_or_error(self: Ok[V]) -> V:
         return self.value
 
     @property
@@ -1047,7 +1047,7 @@ class Error(ResultProtocol[Never, E]):
     def swap(self) -> Ok[E]:
         return Ok(self.value)
 
-    def into_ok_or_error(self: Error[T]) -> T:
+    def into_ok_or_error(self: Error[V]) -> V:
         return self.value
 
     @property
