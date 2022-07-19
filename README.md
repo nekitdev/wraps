@@ -102,8 +102,8 @@ def multiply(x: str, y: str) -> Result[int, ValueError]:
     return parse(x).and_then(lambda m: parse(y).map(lambda n: m * n))
 
 
-print(multiply("21", "2"))  # Ok(value=42)
-print(multiply("!", "42"))  # Error(value=ValueError(...))
+print(multiply("21", "2").unwrap())  # 42
+print(multiply("!", "42").unwrap_error())  # invalid literal for `int` with base 10: `!`
 ```
 
 In python versions before 3.9 (where grammar restrictions on decorators were relaxed),
