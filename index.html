@@ -387,69 +387,113 @@
   
   
     <li class="md-nav__item">
-      <a href="option/" class="md-nav__link">
+      <a href="usage/" class="md-nav__link">
+        Usage
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/option/" class="md-nav__link">
         Option
       </a>
     </li>
   
 
-    
-      
-      
-      
-
+            
+          
+            
+              
   
   
   
     <li class="md-nav__item">
-      <a href="result/" class="md-nav__link">
+      <a href="reference/result/" class="md-nav__link">
         Result
       </a>
     </li>
   
 
-    
-      
-      
-      
-
+            
+          
+            
+              
   
   
   
     <li class="md-nav__item">
-      <a href="shortcuts/" class="md-nav__link">
+      <a href="reference/shortcuts/" class="md-nav__link">
         Shortcuts
       </a>
     </li>
   
 
-    
-      
-      
-      
-
+            
+          
+            
+              
   
   
   
     <li class="md-nav__item">
-      <a href="future/" class="md-nav__link">
+      <a href="reference/future/" class="md-nav__link">
         Future
       </a>
     </li>
   
 
-    
-      
-      
-      
-
+            
+          
+            
+              
   
   
   
     <li class="md-nav__item">
-      <a href="errors/" class="md-nav__link">
+      <a href="reference/errors/" class="md-nav__link">
         Errors
       </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -666,9 +710,9 @@
 </code></pre></div>
 <h2 id="examples">Examples</h2>
 <h3 id="option">Option</h3>
-<p><a href="https://nekitdev.github.io/wraps/reference#wraps.Option"><code>Option[T]</code></a> type represents an optional value: every option is either
-<a href="https://nekitdev.github.io/wraps/reference#wraps.Some"><code>Some[T]</code></a> and contains a value, or <a href="https://nekitdev.github.io/wraps/reference#wraps.Null"><code>Null</code></a>, and does not.</p>
-<p>Here is an example of using <a href="https://nekitdev.github.io/wraps/reference#wraps.wrap_option"><code>wrap_option</code></a> to catch any errors:</p>
+<p><a href="https://nekitdev.github.io/wraps/reference/option#wraps.option.Option"><code>Option[T]</code></a> type represents an optional value: every option is either
+<a href="https://nekitdev.github.io/wraps/reference/option#wraps.option.Some"><code>Some[T]</code></a> and contains a value, or <a href="https://nekitdev.github.io/wraps/reference/option#wraps.option.Null"><code>Null</code></a>, and does not.</p>
+<p>Here is an example of using <a href="https://nekitdev.github.io/wraps/reference/option#wraps.option.wrap_option"><code>wrap_option</code></a> to catch any errors:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">TypeVar</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">wraps</span> <span class="kn">import</span> <span class="n">wrap_option</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
@@ -687,9 +731,9 @@
 <a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="nb">print</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">7</span><span class="p">))</span>  <span class="c1"># Null()</span>
 </code></pre></div>
 <h3 id="result">Result</h3>
-<p><a href="https://nekitdev.github.io/wraps/reference#wraps.Result"><code>Result[T, E]</code></a> is the type used for returning and propagating errors.
-It has two variants, <a href="https://nekitdev.github.io/wraps/reference#wraps.Ok"><code>Ok[T]</code></a>, representing success and containing a value,
-and <a href="https://nekitdev.github.io/wraps/reference#wraps.Error"><code>Error[E]</code></a>, representing error and containing an error value.</p>
+<p><a href="https://nekitdev.github.io/wraps/reference/result#wraps.result.Result"><code>Result[T, E]</code></a> is the type used for returning and propagating errors.
+It has two variants, <a href="https://nekitdev.github.io/wraps/reference/result#wraps.result.Ok"><code>Ok[T]</code></a>, representing success and containing a value,
+and <a href="https://nekitdev.github.io/wraps/reference/result#wraps.result.Error"><code>Error[E]</code></a>, representing error and containing an error value.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">wraps</span> <span class="kn">import</span> <span class="n">Result</span><span class="p">,</span> <span class="n">wrap_result</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
@@ -707,14 +751,14 @@ and <a href="https://nekitdev.github.io/wraps/reference#wraps.Error"><code>Error
 <a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="nb">print</span><span class="p">(</span><span class="n">multiply</span><span class="p">(</span><span class="s2">&quot;!&quot;</span><span class="p">,</span> <span class="s2">&quot;42&quot;</span><span class="p">))</span>  <span class="c1"># Error(value=ValueError(...))</span>
 </code></pre></div>
 <p>In python versions before 3.9 (where grammar restrictions on decorators were relaxed),
-one can use <a href="https://nekitdev.github.io/wraps/reference#wraps.wrap_result"><code>wrap_result</code></a> without a concrete type:</p>
+one can use <a href="https://nekitdev.github.io/wraps/reference/result#wraps.result.wrap_result"><code>wrap_result</code></a> without a concrete type:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nd">@wrap_result</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
 </code></pre></div>
 <p>However this makes the types less specific, since <a href="https://docs.python.org/3/library/exceptions#Exception"><code>Exception</code></a>
 is caught instead of <a href="https://docs.python.org/3/library/exceptions#ValueError"><code>ValueError</code></a>.</p>
-<p>Instead, you can create a new concrete <a href="https://nekitdev.github.io/wraps/reference#wraps.WrapResult"><code>WrapResult[E]</code></a> instance:</p>
+<p>Instead, you can create a new concrete <a href="https://nekitdev.github.io/wraps/reference/result#wraps.result.WrapResult"><code>WrapResult[E]</code></a> instance:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span> <span class="nn">wraps</span> <span class="kn">import</span> <span class="n">WrapResult</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">wrap_value_error</span> <span class="o">=</span> <span class="n">WrapResult</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">)</span>
@@ -725,9 +769,9 @@ is caught instead of <a href="https://docs.python.org/3/library/exceptions#Value
 </code></pre></div>
 <h3 id="early-return">Early Return</h3>
 <p>Early return functionality (<code>?</code> operator in Rust) is implemented via <code>Q</code> property
-(for both <a href="https://nekitdev.github.io/wraps/reference#wraps.Option"><code>Option</code></a> and <a href="https://nekitdev.github.io/wraps/reference#wraps.Result"><code>Result</code></a> types)
-combined with the <a href="https://nekitdev.github.io/wraps/reference#wraps.option_shortcut"><code>@option_shortcut</code></a> or
-<a href="https://nekitdev.github.io/wraps/reference#wraps.result_shortcut"><code>@result_shortcut</code></a> decorator respectively.</p>
+(for both <a href="https://nekitdev.github.io/wraps/reference/option#wraps.option.Option"><code>Option</code></a> and <a href="https://nekitdev.github.io/wraps/reference/result#wraps.result.Result"><code>Result</code></a> types)
+combined with the <a href="https://nekitdev.github.io/wraps/reference/shortcuts#wraps.shortcuts.option_shortcut"><code>@option_shortcut</code></a> or
+<a href="https://nekitdev.github.io/wraps/reference/shortcuts#wraps.shortcuts.result_shortcut"><code>@result_shortcut</code></a> decorator respectively.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span> <span class="nn">wraps</span> <span class="kn">import</span> <span class="n">Option</span><span class="p">,</span> <span class="n">Some</span><span class="p">,</span> <span class="n">option_shortcut</span><span class="p">,</span> <span class="n">wrap_option</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
 <a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
@@ -773,13 +817,13 @@ or refer to the official <a href="https://nekit.dev/discord">Discord server</a>.
       
       
         
-        <a href="option/" class="md-footer__link md-footer__link--next" aria-label="Next: Option" rel="next">
+        <a href="usage/" class="md-footer__link md-footer__link--next" aria-label="Next: Usage" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Option
+              Usage
             </div>
           </div>
           <div class="md-footer__button md-icon">
