@@ -40,23 +40,13 @@ match option:
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import (
-    Callable,
-    Iterator,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    final,
-    overload,
-)
+from typing import Callable, Iterator, Optional, Tuple, Type, TypeVar, Union, final, overload
 
 from attrs import frozen
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
 from wraps.errors import OptionShortcut, panic
-from wraps.typing import AnyException, Binary, Nullary, Predicate, Unary
+from wraps.typing import AnyException, Binary, Inspect, Nullary, Predicate, Unary
 
 __all__ = ("Option", "Some", "Null", "is_some", "is_null", "wrap_option", "convert_optional")
 
@@ -267,6 +257,27 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
         Returns:
             The contained value.
+        """
+        ...
+
+    @abstractmethod
+    def inspect(self, function: Inspect[T]) -> Option[T]:
+        """Inspects a possibly contained [`Option[T]`][wraps.option.Option] value.
+
+        Example:
+            ```python
+            some = Some("Hello, world!")
+
+            same = some.inspect(print)  # Hello, world!
+
+            assert some == same
+            ```
+
+        Arguments:
+            function: The inspecting function.
+
+        Returns:
+            The inspected option.
         """
         ...
 
@@ -743,6 +754,9 @@ class Null(OptionProtocol[Never]):
     def unwrap_or_raise(self, exception: AnyException) -> Never:
         raise exception
 
+    def inspect(self, function: Inspect[T]) -> Null:
+        return self
+
     def map(self, function: Unary[T, U]) -> Null:
         return self
 
@@ -834,6 +848,11 @@ class Some(OptionProtocol[T]):
 
     def unwrap_or_raise(self, exception: AnyException) -> T:
         return self.value
+
+    def inspect(self, function: Inspect[T]) -> Some[T]:
+        function(self.value)
+
+        return self
 
     def map(self, function: Unary[T, U]) -> Some[U]:
         return self.create(function(self.value))

@@ -1,6 +1,6 @@
 from __future__ import annotations
-from functools import wraps
 
+from functools import wraps
 from typing import TYPE_CHECKING, AsyncIterator, Awaitable, Callable, Generator, Type, TypeVar
 
 from attrs import define, field, frozen
@@ -8,7 +8,7 @@ from typing_extensions import ParamSpec
 
 from wraps.option import Null, Option, Some, is_null
 from wraps.result import Error, Ok, Result, is_error, is_ok
-from wraps.typing import Unary
+from wraps.typing import Inspect, Unary
 
 __all__ = ("Future", "FutureResult", "wrap_future", "wrap_future_result")
 
@@ -62,6 +62,24 @@ class Future(Awaitable[T]):
     @classmethod
     def create(cls, awaitable: Awaitable[U]) -> Future[U]:
         return cls(awaitable)  # type: ignore
+
+    def inspect(self, function: Inspect[T]) -> Future[T]:
+        """Inspects the result of a [`Future[T]`][wraps.future.Future].
+
+        Arguments:
+            function: The inspecting function.
+
+        Returns:
+            The inspected future.
+        """
+        return self.create(self.actual_inspect(function))
+
+    async def actual_inspect(self, function: Inspect[T]) -> T:
+        result = await self.awaitable
+
+        function(result)
+
+        return result
 
     def map(self, function: Unary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to [`Future[U]`][wraps.future.Future]
@@ -188,6 +206,18 @@ class FutureResult(Future[Result[T, E]]):
     @classmethod
     def create(cls, awaitable: Awaitable[Result[U, F]]) -> FutureResult[U, F]:  # type: ignore
         return cls(awaitable)  # type: ignore
+
+    def inspect_ok(self, function: Inspect[T]) -> FutureResult[T, E]:
+        return self.create(self.actual_inspect_ok(function))
+
+    async def actual_inspect_ok(self, function: Inspect[T]) -> Result[T, E]:
+        return (await self.awaitable).inspect(function)
+
+    def inspect_error(self, function: Inspect[E]) -> FutureResult[T, E]:
+        return self.create(self.actual_inspect_error(function))
+
+    async def actual_inspect_error(self, function: Inspect[E]) -> Result[T, E]:
+        return (await self.awaitable).inspect_error(function)
 
     def map_ok(self, function: Unary[T, U]) -> FutureResult[U, E]:
         return self.create(self.actual_map_ok(function))

@@ -8,8 +8,8 @@ from attrs import frozen
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
 from wraps.errors import ResultShortcut, panic
-from wraps.option import OptionProtocol, Null, Option, Some, is_some
-from wraps.typing import AnyException, Nullary, Predicate, Unary
+from wraps.option import Null, Option, OptionProtocol, Some, is_some
+from wraps.typing import AnyException, Inspect, Nullary, Predicate, Unary
 
 __all__ = ("Result", "Ok", "Error", "is_ok", "is_error", "wrap_result")
 
@@ -434,6 +434,48 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
         Returns:
             The converted option.
+        """
+        ...
+
+    @abstractmethod
+    def inspect(self, function: Inspect[T]) -> Result[T, E]:
+        """Inspects a possibly contained [`Ok[T]`][wraps.result.Ok] value.
+
+        Example:
+            ```python
+            ok = Ok("Hello, world!")
+
+            same = ok.inspect(print)  # Hello, world!
+
+            assert ok == same
+            ```
+
+        Arguments:
+            function: The inspecting function.
+
+        Returns:
+            The inspected result.
+        """
+        ...
+
+    @abstractmethod
+    def inspect_error(self, function: Inspect[E]) -> Result[T, E]:
+        """Inspects a possibly contained [`Error[E]`][wraps.result.Error] value.
+
+        Example:
+            ```python
+            error = Error("Bye, world!")
+
+            same = error.inspect(print)  # Bye, world!
+
+            assert error == same
+            ```
+
+        Arguments:
+            function: The inspecting function.
+
+        Returns:
+            The inspected result.
         """
         ...
 
@@ -922,6 +964,14 @@ class Ok(ResultProtocol[T, Never]):
     def error(self) -> Null:
         return Null()
 
+    def inspect(self, function: Inspect[T]) -> Ok[T]:
+        function(self.value)
+
+        return self
+
+    def inspect_error(self, function: Inspect[E]) -> Ok[T]:
+        return self
+
     def map(self, function: Unary[T, U]) -> Ok[U]:
         return self.create(function(self.value))
 
@@ -1021,6 +1071,14 @@ class Error(ResultProtocol[Never, E]):
 
     def error(self) -> Some[E]:
         return Some(self.value)
+
+    def inspect(self, function: Inspect[T]) -> Error[E]:
+        return self
+
+    def inspect_error(self, function: Inspect[E]) -> Error[E]:
+        function(self.value)
+
+        return self
 
     def map(self, function: Unary[T, U]) -> Error[E]:
         return self
