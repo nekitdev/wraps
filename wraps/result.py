@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from functools import wraps
-from typing import Callable, Iterator, Type, TypeVar, Union, final, overload
+from typing import Callable, Generic, Iterator, Type, TypeVar, Union, final, overload
 
 from attrs import frozen
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
@@ -692,6 +692,54 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
+    def try_flatten(self: ResultProtocol[ResultProtocol[T, E], E]) -> Result[T, E]:
+        """Flattens a [`Result[Result[T, E], E]`][wraps.result.Result]
+        to [`Result[T, E]`][wraps.result.Result].
+
+        This is equivalent to [`result.and_then(identity)`][wraps.result.ResultProtocol.and_then].
+
+        Example:
+            ```python
+            ok = Ok(42)
+            ok_nested = Ok(ok)
+            assert ok_nested.try_flatten() == ok
+
+            error = Error(13)
+            error_nested = Ok(error)
+            assert error_nested.try_flatten() == error
+
+            assert error.try_flatten() == error
+            ```
+
+        Returns:
+            The flattened result.
+        """
+        return self.and_then(identity)  # type: ignore
+
+    def try_flatten_error(self: ResultProtocol[T, ResultProtocol[T, E]]) -> Result[T, E]:
+        """Flattens a [`Result[T, Result[T, E]]`][wraps.result.Result]
+        to [`Result[T, E]`][wraps.result.Result].
+
+        This is equivalent to [`result.or_else(identity)`][wraps.result.ResultProtocol.or_else].
+
+        Example:
+            ```python
+            ok = Ok(42)
+            ok_nested = Error(ok)
+            assert ok_nested.try_flatten_error() == error
+
+            error = Error(13)
+            error_nested = Error(error)
+            assert error_nested.try_flatten_error() == error
+
+            assert ok.try_flatten_error() == ok
+            ```
+
+        Returns:
+            The flattened result.
+        """
+        return self.or_else(identity)  # type: ignore
+
     @abstractmethod
     def transpose(self: ResultProtocol[OptionProtocol[T], E]) -> Option[Result[T, E]]:
         """Transposes a result of an option into option of a result.
@@ -1075,35 +1123,57 @@ def is_error(result: Result[T, E]) -> TypeGuard[Error[E]]:
     return result.is_error()
 
 
-def wrap_result(function: Callable[P, T]) -> Callable[P, Result[T, Exception]]:
-    """Wraps a `function` returning `T` into a function returning
-    [`Result[T, Exception]`][wraps.result.Result].
+ET = TypeVar("ET", bound=AnyException)
+FT = TypeVar("FT", bound=AnyException)
 
-    This handles all exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,
-    wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].
 
-    Example:
-        ```python
-        @wrap_result
-        def parse(string: str) -> int:
-            return int(string)
+@final
+@frozen()
+class WrapResult(Generic[ET]):
+    error_type: Type[ET]
 
-        assert parse("512").is_ok()
-        assert parse("uwu").is_error()
-        ```
+    @classmethod
+    def create(cls, error_type: Type[FT]) -> WrapResult[FT]:
+        return cls(error_type)  # type: ignore
 
-    Arguments:
-        function: The function to wrap.
+    def __call__(self, function: Callable[P, T]) -> Callable[P, Result[T, ET]]:
+        @wraps(function)
+        def wrap(*args: P.args, **kwargs: P.kwargs) -> Result[T, ET]:
+            try:
+                return Ok(function(*args, **kwargs))
 
-    Returns:
-        The wrapping function.
-    """
-    @wraps(function)
-    def wrap(*args: P.args, **kwargs: P.kwargs) -> Result[T, Exception]:
-        try:
-            return Ok(function(*args, **kwargs))
+            except self.error_type as error:
+                return Error(error)
 
-        except Exception as error:
-            return Error(error)
+        return wrap
 
-    return wrap
+    def __getitem__(self, error_type: Type[FT]) -> WrapResult[FT]:
+        return self.create(error_type)
+
+
+wrap_result = WrapResult(Exception)
+"""Wraps a `function` returning `T` into a function returning
+[`Result[T, ET]`][wraps.result.Result].
+
+By default `ET` is [`Exception`][Exception], so this function returns
+[`Result[T, Exception]`][wraps.result.Result] unless specified otherwise.
+
+This handles exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,
+wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].
+
+Example:
+    ```python
+    @wrap_result[ValueError]
+    def parse(string: str) -> int:
+        return int(string)
+
+    assert parse("512").is_ok()
+    assert parse("uwu").is_error()
+    ```
+
+Arguments:
+    function: The function to wrap.
+
+Returns:
+    The wrapping function.
+"""

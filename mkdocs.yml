@@ -9,11 +9,13 @@ remote_branch: github-pages
 
 nav:
   - Index: "index.md"
-  - Option: "option.md"
-  - Result: "result.md"
-  - Shortcuts: "shortcuts.md"
-  - Future: "future.md"
-  - Errors: "errors.md"
+  - Usage: "usage.md"
+  - Reference:
+    - Option: "reference/option.md"
+    - Result: "reference/result.md"
+    - Shortcuts: "reference/shortcuts.md"
+    - Future: "reference/future.md"
+    - Errors: "reference/errors.md"
   - Changelog: "changelog.md"
   - Security: "security.md"
 

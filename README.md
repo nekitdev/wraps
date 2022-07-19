@@ -207,20 +207,20 @@ If you are interested in contributing to `wraps`, make sure to take a look at th
 [Test Badge]: https://github.com/nekitdev/wraps/workflows/test/badge.svg
 [Coverage Badge]: https://codecov.io/gh/nekitdev/wraps/branch/main/graph/badge.svg
 
-[wraps.option.Option]: https://nekitdev.github.io/wraps/reference#wraps.Option
-[wraps.option.Some]: https://nekitdev.github.io/wraps/reference#wraps.Some
-[wraps.option.Null]: https://nekitdev.github.io/wraps/reference#wraps.Null
-[wraps.option.wrap_option]: https://nekitdev.github.io/wraps/reference#wraps.wrap_option
+[wraps.option.Option]: https://nekitdev.github.io/wraps/reference/option#wraps.option.Option
+[wraps.option.Some]: https://nekitdev.github.io/wraps/reference/option#wraps.option.Some
+[wraps.option.Null]: https://nekitdev.github.io/wraps/reference/option#wraps.option.Null
+[wraps.option.wrap_option]: https://nekitdev.github.io/wraps/reference/option#wraps.option.wrap_option
 
-[wraps.result.Result]: https://nekitdev.github.io/wraps/reference#wraps.Result
-[wraps.result.Ok]: https://nekitdev.github.io/wraps/reference#wraps.Ok
-[wraps.result.Error]: https://nekitdev.github.io/wraps/reference#wraps.Error
-[wraps.result.wrap_result]: https://nekitdev.github.io/wraps/reference#wraps.wrap_result
+[wraps.result.Result]: https://nekitdev.github.io/wraps/reference/result#wraps.result.Result
+[wraps.result.Ok]: https://nekitdev.github.io/wraps/reference/result#wraps.result.Ok
+[wraps.result.Error]: https://nekitdev.github.io/wraps/reference/result#wraps.result.Error
+[wraps.result.wrap_result]: https://nekitdev.github.io/wraps/reference/result#wraps.result.wrap_result
 
-[wraps.result.WrapResult]: https://nekitdev.github.io/wraps/reference#wraps.WrapResult
+[wraps.result.WrapResult]: https://nekitdev.github.io/wraps/reference/result#wraps.result.WrapResult
 
-[wraps.shortcuts.option_shortcut]: https://nekitdev.github.io/wraps/reference#wraps.option_shortcut
-[wraps.shortcuts.result_shortcut]: https://nekitdev.github.io/wraps/reference#wraps.result_shortcut
+[wraps.shortcuts.option_shortcut]: https://nekitdev.github.io/wraps/reference/shortcuts#wraps.shortcuts.option_shortcut
+[wraps.shortcuts.result_shortcut]: https://nekitdev.github.io/wraps/reference/shortcuts#wraps.shortcuts.result_shortcut
 
 [Exception]: https://docs.python.org/3/library/exceptions#Exception
 [ValueError]: https://docs.python.org/3/library/exceptions#ValueError

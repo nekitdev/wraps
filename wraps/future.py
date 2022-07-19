@@ -242,6 +242,12 @@ class FutureResult(Future[Result[T, E]]):
 
         return result  # type: ignore  # guaranteed `Ok[T]`
 
+    def try_flatten(self: FutureResult[FutureResult[T, E], E]) -> FutureResult[T, E]:
+        return self.and_then(identity)
+
+    def try_flatten_error(self: FutureResult[T, FutureResult[T, E]]) -> FutureResult[T, E]:
+        return self.or_else(identity)
+
     def into_future(self, future_type: Type[Future[Result[T, E]]] = Future) -> Future[Result[T, E]]:
         return future_type(self.awaitable)
 
