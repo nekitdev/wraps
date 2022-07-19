@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from functools import wraps
-from typing import Callable, Generic, Iterator, Type, TypeVar, Union, final, overload
+from typing import TYPE_CHECKING, Callable, Generic, Iterator, Type, TypeVar, Union, final, overload
 
 from attrs import frozen
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
@@ -1130,6 +1130,25 @@ FT = TypeVar("FT", bound=AnyException)
 @final
 @frozen()
 class WrapResult(Generic[ET]):
+    """Wraps a `function` returning `T` into a function returning
+    [`Result[T, ET]`][wraps.result.Result].
+
+    This handles exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,
+    wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].
+
+    Example:
+        ```python
+        wrap_value_error = WrapResult(ValueError)
+
+        @wrap_value_error
+        def parse(string: str) -> int:
+            return int(string)
+
+        assert parse("256").is_ok()
+        assert parse("uwu").is_error()
+        ```
+    """
+
     error_type: Type[ET]
 
     @classmethod
@@ -1151,29 +1170,34 @@ class WrapResult(Generic[ET]):
         return self.create(error_type)
 
 
-wrap_result = WrapResult(Exception)
-"""Wraps a `function` returning `T` into a function returning
-[`Result[T, ET]`][wraps.result.Result].
+if TYPE_CHECKING:
+    def wrap_result(function: Callable[P, T]) -> Callable[P, Result[T, Exception]]:
+        """Wraps a `function` returning `T` into a function returning
+        [`Result[T, ET]`][wraps.result.Result].
 
-By default `ET` is [`Exception`][Exception], so this function returns
-[`Result[T, Exception]`][wraps.result.Result] unless specified otherwise.
+        By default `ET` is [`Exception`][Exception], so this function returns
+        [`Result[T, Exception]`][wraps.result.Result] unless specified otherwise.
 
-This handles exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,
-wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].
+        This handles exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,
+        wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].
 
-Example:
-    ```python
-    @wrap_result[ValueError]
-    def parse(string: str) -> int:
-        return int(string)
+        Example:
+            ```python
+            @wrap_result[ValueError]
+            def parse(string: str) -> int:
+                return int(string)
 
-    assert parse("512").is_ok()
-    assert parse("uwu").is_error()
-    ```
+            assert parse("512").is_ok()
+            assert parse("uwu").is_error()
+            ```
 
-Arguments:
-    function: The function to wrap.
+        Arguments:
+            function: The function to wrap.
 
-Returns:
-    The wrapping function.
-"""
+        Returns:
+            The wrapping function.
+        """
+        ...
+
+else:
+    wrap_result = WrapResult(Exception)
