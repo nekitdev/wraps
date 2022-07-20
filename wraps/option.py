@@ -40,17 +40,48 @@ match option:
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import AsyncIterator, Callable, Iterator, Optional, Tuple, Type, TypeVar, Union, final, overload
+from typing import (
+    AsyncIterator,
+    Awaitable,
+    Callable,
+    Iterator,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    final,
+    overload,
+)
 
 from attrs import frozen
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
 from wraps.errors import OptionShortcut, panic
 from wraps.typing import (
-    AnyException, AsyncBinary, AsyncInspect, AsyncNullary, AsyncPredicate, AsyncUnary, Binary, Inspect, Nullary, Predicate, Unary
+    AnyException,
+    AsyncBinary,
+    AsyncInspect,
+    AsyncNullary,
+    AsyncPredicate,
+    AsyncUnary,
+    Binary,
+    Inspect,
+    Nullary,
+    Predicate,
+    Unary,
 )
 
-__all__ = ("Option", "Some", "Null", "is_some", "is_null", "wrap_option", "convert_optional")
+__all__ = (
+    "Option",
+    "Some",
+    "Null",
+    "is_some",
+    "is_null",
+    "wrap_option",
+    "wrap_option_await",
+    "convert_optional",
+)
 
 P = ParamSpec("P")
 
@@ -560,7 +591,9 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         ...
 
     @abstractmethod
-    async def map_await_or_else_await(self, default: AsyncNullary[U], function: AsyncUnary[T, U]) -> U:
+    async def map_await_or_else_await(
+        self, default: AsyncNullary[U], function: AsyncUnary[T, U]
+    ) -> U:
         """Computes the default value (if none), or applies the asynchronous `function`
         to the contained value (if any).
 
@@ -1209,7 +1242,9 @@ class Null(OptionProtocol[Never]):
     async def map_await_or_else(self, default: Nullary[U], function: AsyncUnary[T, U]) -> U:
         return default()
 
-    async def map_await_or_else_await(self, default: AsyncNullary[U], function: AsyncUnary[T, U]) -> U:
+    async def map_await_or_else_await(
+        self, default: AsyncNullary[U], function: AsyncUnary[T, U]
+    ) -> U:
         return await default()
 
     def ok_or(self, error: E) -> Error[E]:
@@ -1351,7 +1386,9 @@ class Some(OptionProtocol[T]):
     async def map_await_or_else(self, default: Nullary[U], function: AsyncUnary[T, U]) -> U:
         return await function(self.value)
 
-    async def map_await_or_else_await(self, default: AsyncNullary[U], function: AsyncUnary[T, U]) -> U:
+    async def map_await_or_else_await(
+        self, default: AsyncNullary[U], function: AsyncUnary[T, U]
+    ) -> U:
         return await function(self.value)
 
     def ok_or(self, error: E) -> Ok[T]:
@@ -1378,7 +1415,9 @@ class Some(OptionProtocol[T]):
     def filter(self, predicate: Predicate[T], null_type: Type[Null] = Null) -> Option[T]:
         return self if predicate(self.value) else null_type()
 
-    async def filter_await(self, predicate: AsyncPredicate[T], null_type: Type[Null] = Null) -> Option[T]:
+    async def filter_await(
+        self, predicate: AsyncPredicate[T], null_type: Type[Null] = Null
+    ) -> Option[T]:
         return self if await predicate(self.value) else null_type()
 
     def or_else(self, default: Nullary[Option[T]]) -> Some[T]:
@@ -1409,36 +1448,52 @@ class Some(OptionProtocol[T]):
         return option  # type: ignore
 
     @overload
-    def zip_with(self, option: Null, function: Binary[T, U, V], null_type: Type[Null] = ...) -> Null:
+    def zip_with(
+        self, option: Null, function: Binary[T, U, V], null_type: Type[Null] = ...
+    ) -> Null:
         ...
 
     @overload
-    def zip_with(self, option: Some[U], function: Binary[T, U, V], null_type: Type[Null] = ...) -> Some[V]:
+    def zip_with(
+        self, option: Some[U], function: Binary[T, U, V], null_type: Type[Null] = ...
+    ) -> Some[V]:
         ...
 
     @overload
-    def zip_with(self, option: Option[U], function: Binary[T, U, V], null_type: Type[Null] = ...) -> Option[V]:
+    def zip_with(
+        self, option: Option[U], function: Binary[T, U, V], null_type: Type[Null] = ...
+    ) -> Option[V]:
         ...
 
-    def zip_with(self, option: Option[U], function: Binary[T, U, V], null_type: Type[Null] = Null) -> Option[V]:
+    def zip_with(
+        self, option: Option[U], function: Binary[T, U, V], null_type: Type[Null] = Null
+    ) -> Option[V]:
         if is_some(option):
             return self.create(function(self.value, option.value))
 
         return null_type()
 
     @overload
-    async def zip_with_await(self, option: Null, function: AsyncBinary[T, U, V], null_type: Type[Null] = ...) -> Null:
+    async def zip_with_await(
+        self, option: Null, function: AsyncBinary[T, U, V], null_type: Type[Null] = ...
+    ) -> Null:
         ...
 
     @overload
-    async def zip_with_await(self, option: Some[U], function: AsyncBinary[T, U, V], null_type: Type[Null] = ...) -> Some[V]:
+    async def zip_with_await(
+        self, option: Some[U], function: AsyncBinary[T, U, V], null_type: Type[Null] = ...
+    ) -> Some[V]:
         ...
 
     @overload
-    async def zip_with_await(self, option: Option[U], function: AsyncBinary[T, U, V], null_type: Type[Null] = ...) -> Option[V]:
+    async def zip_with_await(
+        self, option: Option[U], function: AsyncBinary[T, U, V], null_type: Type[Null] = ...
+    ) -> Option[V]:
         ...
 
-    async def zip_with_await(self, option: Option[U], function: AsyncBinary[T, U, V], null_type: Type[Null] = Null) -> Option[V]:
+    async def zip_with_await(
+        self, option: Option[U], function: AsyncBinary[T, U, V], null_type: Type[Null] = Null
+    ) -> Option[V]:
         if is_some(option):
             return self.create(await function(self.value, option.value))
 
@@ -1523,9 +1578,44 @@ def wrap_option(function: Callable[P, T]) -> Callable[P, Option[T]]:
     Returns:
         The wrapping function.
     """
+
     def wrap(*args: P.args, **kwargs: P.kwargs) -> Option[T]:
         try:
             return Some(function(*args, **kwargs))
+
+        except Exception:
+            return Null()
+
+    return wrap
+
+
+def wrap_option_await(function: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[Option[T]]]:
+    """Wraps an asynchronous `function` returning `T` into an asynchronous function returning
+    [`Option[T]`][wraps.option.Option].
+
+    This handles all exceptions via returning [`Null`][wraps.option.Null] on errors,
+    wrapping the resulting `value` into [`Some(value)`][wraps.option.Some].
+
+    Example:
+        ```python
+        @wrap_option_await
+        async def parse(string: str) -> int:
+            return int(string)
+
+        assert (await parse("256")).is_some()
+        assert (await parse("uwu")).is_null()
+        ```
+
+    Arguments:
+        function: The asynchronous function to wrap.
+
+    Returns:
+        The asynchronous wrapping function.
+    """
+
+    async def wrap(*args: P.args, **kwargs: P.kwargs) -> Option[T]:
+        try:
+            return Some(await function(*args, **kwargs))
 
         except Exception:
             return Null()

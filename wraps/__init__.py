@@ -10,7 +10,16 @@ __version__ = "0.1.0"
 
 from wraps.errors import Panic, panic
 from wraps.future import Future, FutureResult, wrap_future, wrap_future_result
-from wraps.option import Null, Option, Some, convert_optional, is_null, is_some, wrap_option
+from wraps.option import (
+    Null,
+    Option,
+    Some,
+    convert_optional,
+    is_null,
+    is_some,
+    wrap_option,
+    wrap_option_await,
+)
 from wraps.result import Error, Ok, Result, is_error, is_ok, wrap_result
 from wraps.shortcuts import option_shortcut, result_shortcut
 
@@ -22,6 +31,7 @@ __all__ = (
     "is_some",
     "is_null",
     "wrap_option",
+    "wrap_option_await",
     # convert
     "convert_optional",
     # result
