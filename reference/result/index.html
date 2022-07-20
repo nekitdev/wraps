@@ -8035,8 +8035,7 @@ wrapping the resulting <code>value</code> into <a class="autorefs autorefs-inter
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1232">1232</a></span>
-<span class="normal"><a href="#__codelineno-0-1233">1233</a></span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1233">1233</a></span>
 <span class="normal"><a href="#__codelineno-0-1234">1234</a></span>
 <span class="normal"><a href="#__codelineno-0-1235">1235</a></span>
 <span class="normal"><a href="#__codelineno-0-1236">1236</a></span>
@@ -8061,33 +8060,34 @@ wrapping the resulting <code>value</code> into <a class="autorefs autorefs-inter
 <span class="normal"><a href="#__codelineno-0-1255">1255</a></span>
 <span class="normal"><a href="#__codelineno-0-1256">1256</a></span>
 <span class="normal"><a href="#__codelineno-0-1257">1257</a></span>
-<span class="normal"><a href="#__codelineno-0-1258">1258</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1232" name="__codelineno-0-1232"></a><span class="k">def</span> <span class="nf">wrap_result</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">]]:</span>
-<a id="__codelineno-0-1233" name="__codelineno-0-1233"></a>    <span class="sd">&quot;&quot;&quot;Wraps a `function` returning `T` into a function returning</span>
-<a id="__codelineno-0-1234" name="__codelineno-0-1234"></a><span class="sd">    [`Result[T, ET]`][wraps.result.Result].</span>
-<a id="__codelineno-0-1235" name="__codelineno-0-1235"></a>
-<a id="__codelineno-0-1236" name="__codelineno-0-1236"></a><span class="sd">    By default `ET` is [`Exception`][Exception], so this function returns</span>
-<a id="__codelineno-0-1237" name="__codelineno-0-1237"></a><span class="sd">    [`Result[T, Exception]`][wraps.result.Result] unless specified otherwise.</span>
-<a id="__codelineno-0-1238" name="__codelineno-0-1238"></a>
-<a id="__codelineno-0-1239" name="__codelineno-0-1239"></a><span class="sd">    This handles exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,</span>
-<a id="__codelineno-0-1240" name="__codelineno-0-1240"></a><span class="sd">    wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].</span>
-<a id="__codelineno-0-1241" name="__codelineno-0-1241"></a>
-<a id="__codelineno-0-1242" name="__codelineno-0-1242"></a><span class="sd">    Example:</span>
-<a id="__codelineno-0-1243" name="__codelineno-0-1243"></a><span class="sd">        ```python</span>
-<a id="__codelineno-0-1244" name="__codelineno-0-1244"></a><span class="sd">        @wrap_result[ValueError]</span>
-<a id="__codelineno-0-1245" name="__codelineno-0-1245"></a><span class="sd">        def parse(string: str) -&gt; int:</span>
-<a id="__codelineno-0-1246" name="__codelineno-0-1246"></a><span class="sd">            return int(string)</span>
-<a id="__codelineno-0-1247" name="__codelineno-0-1247"></a>
-<a id="__codelineno-0-1248" name="__codelineno-0-1248"></a><span class="sd">        assert parse(&quot;512&quot;).is_ok()</span>
-<a id="__codelineno-0-1249" name="__codelineno-0-1249"></a><span class="sd">        assert parse(&quot;uwu&quot;).is_error()</span>
-<a id="__codelineno-0-1250" name="__codelineno-0-1250"></a><span class="sd">        ```</span>
-<a id="__codelineno-0-1251" name="__codelineno-0-1251"></a>
-<a id="__codelineno-0-1252" name="__codelineno-0-1252"></a><span class="sd">    Arguments:</span>
-<a id="__codelineno-0-1253" name="__codelineno-0-1253"></a><span class="sd">        function: The function to wrap.</span>
-<a id="__codelineno-0-1254" name="__codelineno-0-1254"></a>
-<a id="__codelineno-0-1255" name="__codelineno-0-1255"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-1256" name="__codelineno-0-1256"></a><span class="sd">        The wrapping function.</span>
-<a id="__codelineno-0-1257" name="__codelineno-0-1257"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-1258" name="__codelineno-0-1258"></a>    <span class="o">...</span>
+<span class="normal"><a href="#__codelineno-0-1258">1258</a></span>
+<span class="normal"><a href="#__codelineno-0-1259">1259</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1233" name="__codelineno-0-1233"></a><span class="k">def</span> <span class="nf">wrap_result</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">]]:</span>
+<a id="__codelineno-0-1234" name="__codelineno-0-1234"></a>    <span class="sd">&quot;&quot;&quot;Wraps a `function` returning `T` into a function returning</span>
+<a id="__codelineno-0-1235" name="__codelineno-0-1235"></a><span class="sd">    [`Result[T, ET]`][wraps.result.Result].</span>
+<a id="__codelineno-0-1236" name="__codelineno-0-1236"></a>
+<a id="__codelineno-0-1237" name="__codelineno-0-1237"></a><span class="sd">    By default `ET` is [`Exception`][Exception], so this function returns</span>
+<a id="__codelineno-0-1238" name="__codelineno-0-1238"></a><span class="sd">    [`Result[T, Exception]`][wraps.result.Result] unless specified otherwise.</span>
+<a id="__codelineno-0-1239" name="__codelineno-0-1239"></a>
+<a id="__codelineno-0-1240" name="__codelineno-0-1240"></a><span class="sd">    This handles exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,</span>
+<a id="__codelineno-0-1241" name="__codelineno-0-1241"></a><span class="sd">    wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].</span>
+<a id="__codelineno-0-1242" name="__codelineno-0-1242"></a>
+<a id="__codelineno-0-1243" name="__codelineno-0-1243"></a><span class="sd">    Example:</span>
+<a id="__codelineno-0-1244" name="__codelineno-0-1244"></a><span class="sd">        ```python</span>
+<a id="__codelineno-0-1245" name="__codelineno-0-1245"></a><span class="sd">        @wrap_result[ValueError]</span>
+<a id="__codelineno-0-1246" name="__codelineno-0-1246"></a><span class="sd">        def parse(string: str) -&gt; int:</span>
+<a id="__codelineno-0-1247" name="__codelineno-0-1247"></a><span class="sd">            return int(string)</span>
+<a id="__codelineno-0-1248" name="__codelineno-0-1248"></a>
+<a id="__codelineno-0-1249" name="__codelineno-0-1249"></a><span class="sd">        assert parse(&quot;512&quot;).is_ok()</span>
+<a id="__codelineno-0-1250" name="__codelineno-0-1250"></a><span class="sd">        assert parse(&quot;uwu&quot;).is_error()</span>
+<a id="__codelineno-0-1251" name="__codelineno-0-1251"></a><span class="sd">        ```</span>
+<a id="__codelineno-0-1252" name="__codelineno-0-1252"></a>
+<a id="__codelineno-0-1253" name="__codelineno-0-1253"></a><span class="sd">    Arguments:</span>
+<a id="__codelineno-0-1254" name="__codelineno-0-1254"></a><span class="sd">        function: The function to wrap.</span>
+<a id="__codelineno-0-1255" name="__codelineno-0-1255"></a>
+<a id="__codelineno-0-1256" name="__codelineno-0-1256"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-1257" name="__codelineno-0-1257"></a><span class="sd">        The wrapping function.</span>
+<a id="__codelineno-0-1258" name="__codelineno-0-1258"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-1259" name="__codelineno-0-1259"></a>    <span class="o">...</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
