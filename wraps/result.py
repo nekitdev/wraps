@@ -1229,6 +1229,7 @@ class WrapResult(Generic[ET]):
 
 
 if TYPE_CHECKING:
+
     def wrap_result(function: Callable[P, T]) -> Callable[P, Result[T, Exception]]:
         """Wraps a `function` returning `T` into a function returning
         [`Result[T, ET]`][wraps.result.Result].
