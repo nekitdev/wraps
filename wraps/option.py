@@ -148,6 +148,35 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         ...
 
     @abstractmethod
+    async def is_some_and_await(self, predicate: AsyncPredicate[T]) -> bool:
+        """Checks if the option is [`Some[T]`][wraps.option.Some] and the value
+        inside of it matches the asynchronous `predicate`.
+
+        Example:
+            ```python
+            async def is_negative(value: int) -> bool:
+                return value < 0
+
+            some = Some(-42)
+            assert await some.is_some_and_await(is_negative)
+
+            zero = Some(0)
+            assert not await zero.is_some_and_await(is_negative)
+
+            null = Null()
+            assert not await null.is_some_and_await(is_negative)
+            ```
+
+        Arguments:
+            predicate: The asynchronous predicate to check the contained value against.
+
+        Returns:
+            Whether the option is [`Some[T]`][wraps.option.Some] and
+            the asynchronous predicate is matched.
+        """
+        ...
+
+    @abstractmethod
     def is_null(self) -> bool:
         """Checks if the option is [`Null`][wraps.option.Null].
 
@@ -1191,6 +1220,9 @@ class Null(OptionProtocol[Never]):
     def is_some_and(self, predicate: Predicate[T]) -> Literal[False]:
         return False
 
+    async def is_some_and_await(self, predicate: AsyncPredicate[T]) -> Literal[False]:
+        return False
+
     def is_null(self) -> Literal[True]:
         return True
 
@@ -1330,6 +1362,9 @@ class Some(OptionProtocol[T]):
 
     def is_some_and(self, predicate: Predicate[T]) -> bool:
         return predicate(self.value)
+
+    async def is_some_and_await(self, predicate: AsyncPredicate[T]) -> bool:
+        return await predicate(self.value)
 
     def is_null(self) -> Literal[False]:
         return False
