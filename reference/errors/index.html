@@ -529,7 +529,8 @@
 
   
       <p>Represents the panic as an error.</p>
-<p>Panics should not be explicitly handled in general.</p>
+<p>Panics should not be explicitly handled in general, therefore <a class="autorefs autorefs-internal" href="#wraps.errors.Panic"><code>Panic</code></a>
+is derived from <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#BaseException"><code>BaseException</code></a> instead of <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#Exception"><code>Exception</code></a>.</p>
 
 
         <details class="quote">
@@ -538,11 +539,13 @@
 <span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
 <span class="normal"><a href="#__codelineno-0-10">10</a></span>
 <span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="k">class</span> <span class="nc">Panic</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="k">class</span> <span class="nc">Panic</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="sd">&quot;&quot;&quot;Represents the panic as an error.</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">    Panics should not be explicitly handled in general.</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">    Panics should not be explicitly handled in general, therefore [`Panic`][wraps.errors.Panic]</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">    is derived from [`BaseException`][BaseException] instead of [`Exception`][Exception].</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="sd">    &quot;&quot;&quot;</span>
 </code></pre></div></td></tr></table></div>
         </details>
 
