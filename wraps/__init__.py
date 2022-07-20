@@ -9,7 +9,14 @@ __license__ = "MIT"
 __version__ = "0.1.0"
 
 from wraps.errors import Panic, panic
-from wraps.future import Future, FutureResult, wrap_future, wrap_future_result
+from wraps.future import (
+    Future,
+    FutureOption,
+    FutureResult,
+    wrap_future,
+    wrap_future_option,
+    wrap_future_result,
+)
 from wraps.option import (
     Null,
     Option,
@@ -20,7 +27,7 @@ from wraps.option import (
     wrap_option,
     wrap_option_await,
 )
-from wraps.result import Error, Ok, Result, is_error, is_ok, wrap_result
+from wraps.result import Error, Ok, Result, is_error, is_ok, wrap_result, wrap_result_await
 from wraps.shortcuts import option_shortcut, result_shortcut
 
 __all__ = (
@@ -41,6 +48,7 @@ __all__ = (
     "is_ok",
     "is_error",
     "wrap_result",
+    "wrap_result_await",
     # panic
     "Panic",
     "panic",
@@ -50,6 +58,9 @@ __all__ = (
     # future
     "Future",
     "wrap_future",
+    # future option
+    "FutureOption",
+    "wrap_future_option",
     # future result
     "FutureResult",
     "wrap_future_result",

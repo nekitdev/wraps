@@ -1,16 +1,24 @@
 from __future__ import annotations
 
 from functools import wraps
-from typing import TYPE_CHECKING, AsyncIterator, Awaitable, Callable, Generator, Type, TypeVar
+from typing import TYPE_CHECKING, AsyncIterator, Awaitable, Callable, Generator, TypeVar
 
 from attrs import define, field, frozen
-from typing_extensions import ParamSpec
+from typing_extensions import Never, ParamSpec
 
 from wraps.option import Null, Option, Some, is_null
 from wraps.result import Error, Ok, Result, is_error, is_ok
-from wraps.typing import Inspect, Unary
+from wraps.typing import AsyncUnary, Inspect, Unary
 
-__all__ = ("Future", "FutureResult", "wrap_future", "wrap_future_result")
+__all__ = (
+    "ReAwaitable",
+    "Future",
+    "FutureOption",
+    "FutureResult",
+    "wrap_future",
+    "wrap_future_option",
+    "wrap_future_result",
+)
 
 P = ParamSpec("P")
 
@@ -33,6 +41,8 @@ def identity(value: V) -> V:
 
 @define()
 class ReAwaitable(Awaitable[T]):
+    """Wraps an awaitable to allow re-awaiting."""
+
     _awaitable: Awaitable[T] = field(repr=False)
     _option: Option[T] = field(factory=Null, repr=False, init=False)
 
@@ -63,25 +73,7 @@ class Future(Awaitable[T]):
     def create(cls, awaitable: Awaitable[U]) -> Future[U]:
         return cls(awaitable)  # type: ignore
 
-    def inspect(self, function: Inspect[T]) -> Future[T]:
-        """Inspects the result of a [`Future[T]`][wraps.future.Future].
-
-        Arguments:
-            function: The inspecting function.
-
-        Returns:
-            The inspected future.
-        """
-        return self.create(self.actual_inspect(function))
-
-    async def actual_inspect(self, function: Inspect[T]) -> T:
-        result = await self.awaitable
-
-        function(result)
-
-        return result
-
-    def map(self, function: Unary[T, U]) -> Future[U]:
+    def map_future(self, function: Unary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to [`Future[U]`][wraps.future.Future]
         by applying `function` to the result.
 
@@ -91,9 +83,9 @@ class Future(Awaitable[T]):
         Returns:
             The mapped future.
         """
-        return self.create(self.actual_map(function))
+        return self.create(self.actual_map_future(function))
 
-    def map_await(self, function: Unary[T, Awaitable[U]]) -> Future[U]:
+    def map_future_await(self, function: AsyncUnary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to [`Future[U]`][wraps.future.Future]
         by applying an asynchronous `function` to the result.
 
@@ -103,12 +95,12 @@ class Future(Awaitable[T]):
         Returns:
             The mapped future.
         """
-        return self.create(self.actual_map_await(function))
+        return self.create(self.actual_map_future_await(function))
 
-    async def actual_map(self, function: Unary[T, U]) -> U:
+    async def actual_map_future(self, function: Unary[T, U]) -> U:
         return function(await self.awaitable)
 
-    async def actual_map_await(self, function: Unary[T, Awaitable[U]]) -> U:
+    async def actual_map_future_await(self, function: AsyncUnary[T, U]) -> U:
         return await function(await self.awaitable)
 
     def then(self, function: Unary[T, Future[U]]) -> Future[U]:
@@ -126,7 +118,7 @@ class Future(Awaitable[T]):
     async def actual_then(self, function: Unary[T, Future[U]]) -> U:
         return await function(await self.awaitable).awaitable
 
-    def flatten(self: Future[Future[T]]) -> Future[T]:
+    def flatten_future(self: Future[Future[T]]) -> Future[T]:
         return self.then(identity)
 
     def __aiter__(self) -> AsyncIterator[T]:
@@ -145,7 +137,7 @@ class Future(Awaitable[T]):
     def do(cls, async_iterator: AsyncIterator[T]) -> Future[T]:
         """Returns the next value in the asynchronous iterator.
 
-        This allows to use a pattern called *do-notation*.
+        This allows for a pattern called *do-notation*.
 
         Example:
             ```python
@@ -199,6 +191,20 @@ class Future(Awaitable[T]):
 
 
 @frozen()
+class FutureOption(Future[Option[T]]):
+    if TYPE_CHECKING:
+        awaitable: Awaitable[Option[T]]  # should be `ReAwaitable[Option[T]]`
+
+    @classmethod
+    def from_some(cls, value: T) -> FutureOption[T]:  # type: ignore
+        return cls.from_value(Some(value))  # type: ignore
+
+    @classmethod
+    def from_null(cls) -> FutureOption[Never]:  # type: ignore
+        return cls.from_value(Null())  # type: ignore
+
+
+@frozen()
 class FutureResult(Future[Result[T, E]]):
     if TYPE_CHECKING:
         awaitable: Awaitable[Result[T, E]]  # should be `ReAwaitable[Result[T, E]]`
@@ -207,34 +213,45 @@ class FutureResult(Future[Result[T, E]]):
     def create(cls, awaitable: Awaitable[Result[U, F]]) -> FutureResult[U, F]:  # type: ignore
         return cls(awaitable)  # type: ignore
 
-    def inspect_ok(self, function: Inspect[T]) -> FutureResult[T, E]:
-        return self.create(self.actual_inspect_ok(function))
+    @classmethod
+    def from_ok(cls, value: T) -> FutureResult[T, Never]:  # type: ignore
+        return cls.from_value(Ok(value))  # type: ignore
 
-    async def actual_inspect_ok(self, function: Inspect[T]) -> Result[T, E]:
-        return (await self.awaitable).inspect(function)
+    @classmethod
+    def from_error(cls, value: E) -> FutureResult[Never, E]:  # type: ignore
+        return cls.from_value(Error(value))  # type: ignore
+
+    def inspect(self, function: Inspect[T]) -> FutureResult[T, E]:
+        return self.create(self.actual_inspect(function))
 
     def inspect_error(self, function: Inspect[E]) -> FutureResult[T, E]:
         return self.create(self.actual_inspect_error(function))
 
+    async def actual_inspect(self, function: Inspect[T]) -> Result[T, E]:
+        return (await self.awaitable).inspect(function)
+
     async def actual_inspect_error(self, function: Inspect[E]) -> Result[T, E]:
         return (await self.awaitable).inspect_error(function)
 
-    def map_ok(self, function: Unary[T, U]) -> FutureResult[U, E]:
-        return self.create(self.actual_map_ok(function))
+    def map(self, function: Unary[T, U]) -> FutureResult[U, E]:
+        return self.create(self.actual_map(function))
 
     def map_error(self, function: Unary[E, F]) -> FutureResult[T, F]:
         return self.create(self.actual_map_error(function))
 
-    async def actual_map_ok(self, function: Unary[T, U]) -> Result[U, E]:
+    async def actual_map(self, function: Unary[T, U]) -> Result[U, E]:
         return (await self.awaitable).map(function)
 
     async def actual_map_error(self, function: Unary[E, F]) -> Result[T, F]:
         return (await self.awaitable).map_error(function)
 
-    def map_ok_await(self, function: Unary[T, Awaitable[U]]) -> FutureResult[U, E]:
-        return self.create(self.actual_map_ok_await(function))
+    def map_await(self, function: Unary[T, Awaitable[U]]) -> FutureResult[U, E]:
+        return self.create(self.actual_map_await(function))
 
-    async def actual_map_ok_await(self, function: Unary[T, Awaitable[U]]) -> Result[U, E]:
+    def map_error_await(self, function: AsyncUnary[E, F]) -> FutureResult[T, F]:
+        return self.create(self.actual_map_error_await(function))
+
+    async def actual_map_await(self, function: Unary[T, Awaitable[U]]) -> Result[U, E]:
         result = await self.awaitable
 
         if is_ok(result):
@@ -278,14 +295,29 @@ class FutureResult(Future[Result[T, E]]):
     def try_flatten_error(self: FutureResult[T, FutureResult[T, E]]) -> FutureResult[T, E]:
         return self.or_else(identity)
 
-    def into_future(self, future_type: Type[Future[Result[T, E]]] = Future) -> Future[Result[T, E]]:
-        return future_type(self.awaitable)
+    def into_future(self) -> Future[Result[T, E]]:
+        return super().create(self.awaitable)
 
 
 def wrap_future(function: Callable[P, Awaitable[T]]) -> Callable[P, Future[T]]:
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> Future[T]:
         return Future(function(*args, **kwargs))
+
+    return wrap
+
+
+def wrap_future_option(function: Callable[P, Awaitable[T]]) -> Callable[P, FutureOption[T]]:
+    async def wrapping(*args: P.args, **kwargs: P.kwargs) -> Option[T]:
+        try:
+            return Some(await function(*args, **kwargs))
+
+        except Exception:
+            return Null()
+
+    @wraps(function)
+    def wrap(*args: P.args, **kwargs: P.kwargs) -> FutureOption[T]:
+        return FutureOption(wrapping(*args, **kwargs))  # type: ignore
 
     return wrap
 

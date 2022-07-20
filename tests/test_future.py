@@ -23,7 +23,7 @@ async def test_future_map() -> None:
     value = 13
     result = 13.0
 
-    assert await Future(async_identity(value)).map(float) == result
+    assert await Future(async_identity(value)).map_future(float) == result
 
 
 @pytest.mark.anyio

@@ -8,7 +8,8 @@ __all__ = ("Panic", "panic", "OptionShortcut", "ResultShortcut")
 class Panic(BaseException):
     """Represents the panic as an error.
 
-    Panics should not be explicitly handled in general.
+    Panics should not be explicitly handled in general, therefore [`Panic`][wraps.errors.Panic]
+    is derived from [`BaseException`][BaseException] instead of [`Exception`][Exception].
     """
 
 

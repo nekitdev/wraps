@@ -7,10 +7,10 @@ contains a value (of type `T`), or [`Null`][wraps.option.Null], and does not.
 [`Option[T]`][wraps.option.Option] types can be very common in python code,
 as they have a number of uses:
 
-- Initial values;
+- Initial values (see [`ReAwaitable[T]`][wraps.future.ReAwaitable]);
 - Return values for functions not defined over their entire input range (partial functions);
 - Return value for otherwise reporting simple errors, where [`Null`][wraps.option.Null]
-    is returned on error;
+  is returned on error;
 - Optional function arguments.
 
 [`Option[T]`][wraps.option.Option] is commonly paired with pattern matching to query
@@ -214,7 +214,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
             message: The message used in panicking.
 
         Raises:
-            Panic: Panics with `message` if the option is [`Null`][wraps.option.Null].
+            Panic: Panics with the `message` if the option is [`Null`][wraps.option.Null].
 
         Returns:
             The contained value.
@@ -356,7 +356,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     @abstractmethod
     def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> T:
         """Returns the contained [`Some[T]`][wraps.option.Some] value or
-        raises a computed exception.
+        raises an exception computed from the `function`.
 
         Example:
             ```python
@@ -388,7 +388,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     @abstractmethod
     async def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> T:
         """Returns the contained [`Some[T]`][wraps.option.Some] value or
-        raises a computed exception.
+        raises an exception computed from the asynchronous `function`.
 
         Example:
             ```python
@@ -407,7 +407,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
             ```
 
         Arguments:
-            function: The exception-generating asynchronous function to use.
+            function: The asynchronous exception-generating function to use.
 
         Raises:
             AnyException: The exception generated, if option is [`Null`][wraps.option.Null].
@@ -455,7 +455,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
             ```
 
         Arguments:
-            function: The inspecting asynchronous function.
+            function: The asynchronous inspecting function.
 
         Returns:
             The inspected option.
@@ -572,11 +572,11 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
             some = Some("nekit")
 
-            print(await some.map_await_or(42, len))  # 5
+            print(await some.map_await_or(42, async_len))  # 5
 
             null = Null()
 
-            print(await null.map_await_or(42, len))  # 42
+            print(await null.map_await_or(42, async_len))  # 42
             ```
 
         Arguments:
@@ -595,19 +595,16 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
         Example:
             ```python
-            def default() -> int:
-                return 42
-
             async def async_len(value: str) -> int:
                 return len(value)
 
             some = Some("Hello, world!")
 
-            print(await some.map_or_else(default, async_len))  # 13
+            print(await some.map_await_or_else(int, async_len))  # 13
 
             null = Null()
 
-            print(await null.map_or_else(default, async_len))  # 42
+            print(await null.map_await_or_else(int, async_len))  # 0
             ```
 
         Arguments:
@@ -628,7 +625,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
         Example:
             ```python
-            def default() -> int:
+            async def default() -> int:
                 return 42
 
             async def async_len(value: str) -> int:
@@ -636,15 +633,15 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
             some = Some("Hello, world!")
 
-            print(await some.map_or_else(default, async_len))  # 13
+            print(await some.map_await_or_else_await(default, async_len))  # 13
 
             null = Null()
 
-            print(await null.map_or_else(default, async_len))  # 42
+            print(await null.map_await_or_else_await(default, async_len))  # 42
             ```
 
         Arguments:
-            default: The default function to use.
+            default: The asynchronous default function to use.
             function: The asynchronous function to apply.
 
         Returns:
@@ -654,7 +651,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
     @abstractmethod
     def ok_or(self, error: E) -> Result[T, E]:
-        """Transforms the [`Option[T]`][wraps.option.Option]
+        """Transforms an [`Option[T]`][wraps.option.Option]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
         to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
         to [`Error(error)`][wraps.result.Error].
@@ -680,7 +677,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
     @abstractmethod
     def ok_or_else(self, error: Nullary[E]) -> Result[T, E]:
-        """Transforms the [`Option[T]`][wraps.option.Option]
+        """Transforms an [`Option[T]`][wraps.option.Option]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
         to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
         to [`Error(error())`][wraps.result.Error].
@@ -707,7 +704,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
     @abstractmethod
     async def ok_or_else_await(self, error: AsyncNullary[E]) -> Result[T, E]:
-        """Transforms the [`Option[T]`][wraps.option.Option]
+        """Transforms an [`Option[T]`][wraps.option.Option]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
         to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
         to [`Error(await error())`][wraps.result.Error].
@@ -785,7 +782,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """Returns [`Null`][wraps.option.Null] if the option is [`Null`][wraps.option.Null],
         otherwise calls the `function` with the wrapped value and returns the result.
 
-        This function is also known as *bind* in functional programming.
+        This function is also known as *bind*.
 
         Example:
             ```python
@@ -837,7 +834,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
             ```
 
         Arguments:
-            function: The function to apply.
+            function: The asynchronous function to apply.
 
         Returns:
             The resulting option.
@@ -909,7 +906,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     @abstractmethod
     def or_else(self, default: Nullary[Option[T]]) -> Option[T]:
         """Returns the option if it contains a value, otherwise calls
-        `default` and returns the result.
+        the `default` and returns the result.
 
         Example:
             ```python
@@ -934,7 +931,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     @abstractmethod
     async def or_else_await(self, default: AsyncNullary[Option[T]]) -> Option[T]:
         """Returns the option if it contains a value, otherwise calls
-        `default` and returns the result.
+        the asynchronous `default` and returns the result.
 
         Example:
             ```python
