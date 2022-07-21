@@ -905,6 +905,36 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -4714,8 +4744,8 @@ inside of it matches the <code>predicate</code>.</p>
 <code class="highlight language-python"><span class="n">is_ok_and_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -5083,8 +5113,8 @@ inside of it matches the <code>predicate</code>.</p>
 <code class="highlight language-python"><span class="n">is_error_and_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -5912,8 +5942,8 @@ assert not error.unwrap_or_else(int)</p>
 <code class="highlight language-python"><span class="n">unwrap_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -6358,8 +6388,8 @@ ValueError: error!
 <code class="highlight language-python"><span class="n">unwrap_or_raise_with_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -6904,8 +6934,8 @@ assert not ok.unwrap_error_or_else(int)</p>
 <code class="highlight language-python"><span class="n">unwrap_error_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -7325,8 +7355,8 @@ ValueError: error!
 <code class="highlight language-python"><span class="n">unwrap_error_or_raise_with_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -7921,8 +7951,8 @@ if any.</p>
 <code class="highlight language-python"><span class="n">inspect_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -8047,8 +8077,8 @@ if any.</p>
 <code class="highlight language-python"><span class="n">inspect_error_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -8976,8 +9006,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -9128,8 +9158,8 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><co
 <code class="highlight language-python"><span class="n">map_await_or</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -9269,8 +9299,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -9410,8 +9440,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -9564,8 +9594,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_error_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -9711,8 +9741,8 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>
 <code class="highlight language-python"><span class="n">map_error_await_or</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -9852,8 +9882,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_error_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -9993,8 +10023,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_error_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -10690,8 +10720,8 @@ with the wrapped value and returns the result.</p>
 <code class="highlight language-python"><span class="n">and_then_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -10977,8 +11007,8 @@ with the wrapped error value and returns the result.</p>
 <code class="highlight language-python"><span class="n">or_else_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
