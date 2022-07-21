@@ -19,15 +19,15 @@ async def test_future_identity() -> None:
 
 
 @pytest.mark.anyio
-async def test_future_map() -> None:
-    value = 13
-    result = 13.0
-
-    assert await Future(async_identity(value)).map(float) == result
-
-
-@pytest.mark.anyio
 async def test_future_from_value() -> None:
     value = 42
 
     assert await Future.from_value(value) is value
+
+
+@pytest.mark.anyio
+async def test_future_map() -> None:
+    value = 13
+    result = 13.0
+
+    assert await Future.from_value(value).map_future(float) == result

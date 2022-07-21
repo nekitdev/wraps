@@ -861,7 +861,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     @abstractmethod
     def map_error(self, function: Unary[E, F]) -> Result[T, F]:
         """Maps [`Result[T, E]`][wraps.result.Result] to [`Result[T, F]`][wraps.result.Result]
-        by applying `function` to the contained [`Error[E]`][wraps.result.Error] value,
+        by applying the `function` to the contained [`Error[E]`][wraps.result.Error] value,
         leaving any [`Ok[T]`][wraps.result.Ok] untouched.
 
         Example:
@@ -888,7 +888,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def map_error_or(self, default: F, function: Unary[E, F]) -> F:
-        """Returns the default value (if succeeded), or applies `function`
+        """Returns the default value (if succeeded), or applies the `function`
         to the contained error value (if errored).
 
         Example:
@@ -911,20 +911,66 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @abstractmethod
     def map_error_or_else(self, default: Nullary[F], function: Unary[E, F]) -> F:
+        """Computes the default value (if succeeded), or applies the `function`
+        to the contained value (if errored).
+
+        Example:
+            ```python
+            error = Error("error...")
+            print(error.map_error_or_else(int, len))  # 8
+
+            ok = Ok("ok!")
+            print(ok.map_error_or_else(int, len))  # 0
+            ```
+
+        Arguments:
+            default: The default function to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default computed value.
+        """
+        ...
+
+    @abstractmethod
+    async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
+        """Computes the default value (if errored), or applies the `function`
+        to the contained value (if succeeded).
+
+        Example:
+            ```python
+            ok = Ok("Hello, world!")
+            print(await ok.map_or_else_await(int, len))  # 13
+
+            error = Error("error!")
+            print(await error.map_or_else_await(int, len))  # 0
+            ```
+
+        Arguments:
+            default: The asynchronous default function to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default computed value.
+        """
+        ...
+
+    @abstractmethod
+    async def map_error_or_else_await(self, default: AsyncNullary[F], function: Unary[E, F]) -> F:
         """Computes the default value (if succeeded), or applies `function`
         to the contained value (if errored).
 
         Example:
             ```python
             error = Error("error...")
-            print(ok.map_error_or_else(int, len))  # 8
+            print(await error.map_error_or_else(int, len))  # 8
 
             ok = Ok("ok!")
-            print(error.map_error_or_else(int, len))  # 0
+            print(await ok.map_error_or_else(int, len))  # 0
             ```
 
         Arguments:
-            default: The default function to use.
+            default: The asynchronous default function to use.
             function: The function to apply.
 
         Returns:
@@ -1663,6 +1709,12 @@ class Ok(ResultProtocol[T, Never]):
     def map_error_or_else(self, default: Nullary[F], function: Unary[E, F]) -> F:
         return default()
 
+    async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
+        return function(self.value)
+
+    async def map_error_or_else_await(self, default: AsyncNullary[F], function: Unary[E, F]) -> F:
+        return await default()
+
     async def map_await(self, function: AsyncUnary[T, U]) -> Ok[U]:
         return self.create(await function(self.value))
 
@@ -1872,6 +1924,12 @@ class Error(ResultProtocol[Never, E]):
         return function(self.value)
 
     def map_error_or_else(self, default: Nullary[F], function: Unary[E, F]) -> F:
+        return function(self.value)
+
+    async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
+        return await default()
+
+    async def map_error_or_else_await(self, default: AsyncNullary[F], function: Unary[E, F]) -> F:
         return function(self.value)
 
     async def map_await(self, function: AsyncUnary[T, U]) -> Error[E]:

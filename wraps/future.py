@@ -8,7 +8,7 @@ from typing_extensions import Never, ParamSpec
 
 from wraps.option import Null, Option, Some, is_null
 from wraps.result import Error, Ok, Result, is_error, is_ok
-from wraps.typing import AsyncUnary, Inspect, Unary
+from wraps.typing import AnyException, AsyncInspect, AsyncNullary, AsyncUnary, Inspect, Nullary, Unary
 
 __all__ = (
     "ReAwaitable",
@@ -73,7 +73,7 @@ class Future(Awaitable[T]):
     def create(cls, awaitable: Awaitable[U]) -> Future[U]:
         return cls(awaitable)  # type: ignore
 
-    def map(self, function: Unary[T, U]) -> Future[U]:
+    def map_future(self, function: Unary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to [`Future[U]`][wraps.future.Future]
         by applying `function` to the result.
 
@@ -83,9 +83,9 @@ class Future(Awaitable[T]):
         Returns:
             The mapped future.
         """
-        return self.create(self.actual_map(function))
+        return self.create(self.actual_map_future(function))
 
-    def map_await(self, function: AsyncUnary[T, U]) -> Future[U]:
+    def map_future_await(self, function: AsyncUnary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to [`Future[U]`][wraps.future.Future]
         by applying an asynchronous `function` to the result.
 
@@ -95,12 +95,12 @@ class Future(Awaitable[T]):
         Returns:
             The mapped future.
         """
-        return self.create(self.actual_map_await(function))
+        return self.create(self.actual_map_future_await(function))
 
-    async def actual_map(self, function: Unary[T, U]) -> U:
+    async def actual_map_future(self, function: Unary[T, U]) -> U:
         return function(await self.awaitable)
 
-    async def actual_map_await(self, function: AsyncUnary[T, U]) -> U:
+    async def actual_map_future_await(self, function: AsyncUnary[T, U]) -> U:
         return await function(await self.awaitable)
 
     def then(self, function: Unary[T, Future[U]]) -> Future[U]:
@@ -207,17 +207,113 @@ class FutureOption(Future[Option[T]]):
     def from_null(cls) -> FutureOption[Never]:  # type: ignore
         return cls.from_value(Null())  # type: ignore
 
-    def map_some(self, function: Unary[T, U]) -> FutureOption[U]:
-        return self.create(self.actual_map_some(function))
+    def expect(self, message: str) -> Future[T]:
+        return super().create(self.actual_expect(message))
 
-    def map_some_await(self, function: AsyncUnary[T, U]) -> FutureOption[U]:
-        return self.create(self.actual_map_some_await(function))
+    async def actual_expect(self, message: str) -> T:
+        return (await self.awaitable).expect(message)
 
-    async def actual_map_some(self, function: Unary[T, U]) -> Option[U]:
+    def unwrap(self) -> Future[T]:
+        return super().create(self.actual_unwrap())
+
+    def unwrap_or(self, default: T) -> Future[T]:  # type: ignore
+        return super().create(self.actual_unwrap_or(default))
+
+    def unwrap_or_else(self, default: Nullary[T]) -> Future[T]:
+        return super().create(self.actual_unwrap_or_else(default))
+
+    def unwrap_or_else_await(self, default: AsyncNullary[T]) -> Future[T]:
+        return super().create(self.actual_unwrap_or_else_await(default))
+
+    async def actual_unwrap(self) -> T:
+        return (await self.awaitable).unwrap()
+
+    async def actual_unwrap_or(self, default: T) -> T:  # type: ignore
+        return (await self.awaitable).unwrap_or(default)
+
+    async def actual_unwrap_or_else(self, default: Nullary[T]) -> T:
+        return (await self.awaitable).unwrap_or_else(default)
+
+    async def actual_unwrap_or_else_await(self, default: AsyncNullary[T]) -> T:
+        return await (await self.awaitable).unwrap_or_else_await(default)
+
+    def unwrap_or_raise(self, exception: AnyException) -> Future[T]:
+        return super().create(self.actual_unwrap_or_raise(exception))
+
+    def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> Future[T]:
+        return super().create(self.actual_unwrap_or_raise_with(function))
+
+    def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> Future[T]:
+        return super().create(self.actual_unwrap_or_raise_with_await(function))
+
+    async def actual_unwrap_or_raise(self, exception: AnyException) -> T:
+        return (await self.awaitable).unwrap_or_raise(exception)
+
+    async def actual_unwrap_or_raise_with(self, function: Nullary[AnyException]) -> T:
+        return (await self.awaitable).unwrap_or_raise_with(function)
+
+    async def actual_unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> T:
+        return await (await self.awaitable).unwrap_or_raise_with_await(function)
+
+    def inspect(self, function: Inspect[T]) -> FutureOption[T]:
+        return self.create(self.actual_inspect(function))
+
+    def inspect_await(self, function: AsyncInspect[T]) -> FutureOption[T]:
+        return self.create(self.actual_inspect_await(function))
+
+    async def actual_inspect(self, function: Inspect[T]) -> Option[T]:
+        return (await self.awaitable).inspect(function)
+
+    async def actual_inspect_await(self, function: AsyncInspect[T]) -> Option[T]:
+        return await (await self.awaitable).inspect_await(function)  # type: ignore
+
+    def map(self, function: Unary[T, U]) -> FutureOption[U]:
+        return self.create(self.actual_map(function))
+
+    def map_or(self, default: U, function: Unary[T, U]) -> Future[U]:
+        return super().create(self.actual_map_or(default, function))
+
+    def map_or_else(self, default: Nullary[U], function: Unary[T, U]) -> Future[U]:
+        return super().create(self.actual_map_or_else(default, function))
+
+    def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> Future[U]:
+        return super().create(self.actual_map_or_else_await(default, function))
+
+    def map_await(self, function: AsyncUnary[T, U]) -> FutureOption[U]:
+        return self.create(self.actual_map_await(function))
+
+    def map_await_or(self, default: U, function: AsyncUnary[T, U]) -> Future[U]:
+        return super().create(self.actual_map_await_or(default, function))
+
+    def map_await_or_else(self, default: Nullary[U], function: AsyncUnary[T, U]) -> Future[U]:
+        return super().create(self.actual_map_await_or_else(default, function))
+
+    def map_await_or_else_await(self, default: AsyncNullary[U], function: AsyncUnary[T, U]) -> Future[U]:
+        return super().create(self.actual_map_await_or_else_await(default, function))
+
+    async def actual_map(self, function: Unary[T, U]) -> Option[U]:
         return (await self.awaitable).map(function)
 
-    async def actual_map_some_await(self, function: AsyncUnary[T, U]) -> Option[U]:
+    async def actual_map_or(self, default: U, function: Unary[T, U]) -> U:
+        return (await self.awaitable).map_or(default, function)
+
+    async def actual_map_or_else(self, default: Nullary[U], function: Unary[T, U]) -> U:
+        return (await self.awaitable).map_or_else(default, function)
+
+    async def actual_map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
+        return await (await self.awaitable).map_or_else_await(default, function)
+
+    async def actual_map_await(self, function: AsyncUnary[T, U]) -> Option[U]:
         return await (await self.awaitable).map_await(function)  # type: ignore
+
+    async def actual_map_await_or(self, default: U, function: AsyncUnary[T, U]) -> U:
+        return await (await self.awaitable).map_await_or(default, function)
+
+    async def actual_map_await_or_else(self, default: Nullary[U], function: AsyncUnary[T, U]) -> U:
+        return await (await self.awaitable).map_await_or_else(default, function)
+
+    async def actual_map_await_or_else_await(self, default: AsyncNullary[U], function: AsyncUnary[T, U]) -> U:
+        return await (await self.awaitable).map_await_or_else_await(default, function)
 
 
 @frozen()

@@ -536,6 +536,34 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         ...
 
     @abstractmethod
+    async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
+        """Computes the default value (if none), or applies the `function`
+        to the contained value (if any).
+
+        Example:
+            ```python
+            async def default() -> int:
+                return 42
+
+            some = Some("Hello, world!")
+
+            print(await some.map_or_else_await(default, len))  # 13
+
+            null = Null()
+
+            print(await null.map_or_else_await(default, len))  # 42
+            ```
+
+        Arguments:
+            default: The asynchronous default function to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default computed value.
+        """
+        ...
+
+    @abstractmethod
     async def map_await(self, function: AsyncUnary[T, U]) -> Option[U]:
         """Maps an [`Option[T]`][wraps.option.Option] to [`Option[U]`][wraps.option.Option]
         by applying the asynchronous `function` to the contained value.
@@ -1262,6 +1290,9 @@ class Null(OptionProtocol[Never]):
     def map_or_else(self, default: Nullary[U], function: Unary[T, U]) -> U:
         return default()
 
+    async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
+        return await default()
+
     async def map_await(self, function: AsyncUnary[T, U]) -> Null:
         return self
 
@@ -1407,6 +1438,9 @@ class Some(OptionProtocol[T]):
         return function(self.value)
 
     def map_or_else(self, default: Nullary[U], function: Unary[T, U]) -> U:
+        return function(self.value)
+
+    async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
         return function(self.value)
 
     async def map_await(self, function: AsyncUnary[T, U]) -> Some[U]:
