@@ -73,7 +73,7 @@ class Future(Awaitable[T]):
     def create(cls, awaitable: Awaitable[U]) -> Future[U]:
         return cls(awaitable)  # type: ignore
 
-    def map_future(self, function: Unary[T, U]) -> Future[U]:
+    def map(self, function: Unary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to [`Future[U]`][wraps.future.Future]
         by applying `function` to the result.
 
@@ -83,9 +83,9 @@ class Future(Awaitable[T]):
         Returns:
             The mapped future.
         """
-        return self.create(self.actual_map_future(function))
+        return self.create(self.actual_map(function))
 
-    def map_future_await(self, function: AsyncUnary[T, U]) -> Future[U]:
+    def map_await(self, function: AsyncUnary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to [`Future[U]`][wraps.future.Future]
         by applying an asynchronous `function` to the result.
 
@@ -95,12 +95,12 @@ class Future(Awaitable[T]):
         Returns:
             The mapped future.
         """
-        return self.create(self.actual_map_future_await(function))
+        return self.create(self.actual_map_await(function))
 
-    async def actual_map_future(self, function: Unary[T, U]) -> U:
+    async def actual_map(self, function: Unary[T, U]) -> U:
         return function(await self.awaitable)
 
-    async def actual_map_future_await(self, function: AsyncUnary[T, U]) -> U:
+    async def actual_map_await(self, function: AsyncUnary[T, U]) -> U:
         return await function(await self.awaitable)
 
     def then(self, function: Unary[T, Future[U]]) -> Future[U]:
@@ -118,7 +118,7 @@ class Future(Awaitable[T]):
     async def actual_then(self, function: Unary[T, Future[U]]) -> U:
         return await function(await self.awaitable).awaitable
 
-    def flatten_future(self: Future[Future[T]]) -> Future[T]:
+    def flatten(self: Future[Future[T]]) -> Future[T]:
         return self.then(identity)
 
     def __aiter__(self) -> AsyncIterator[T]:
@@ -196,12 +196,28 @@ class FutureOption(Future[Option[T]]):
         awaitable: Awaitable[Option[T]]  # should be `ReAwaitable[Option[T]]`
 
     @classmethod
+    def create(cls, awaitable: Awaitable[Option[U]]) -> FutureOption[U]:  # type: ignore
+        return cls(awaitable)  # type: ignore
+
+    @classmethod
     def from_some(cls, value: T) -> FutureOption[T]:  # type: ignore
         return cls.from_value(Some(value))  # type: ignore
 
     @classmethod
     def from_null(cls) -> FutureOption[Never]:  # type: ignore
         return cls.from_value(Null())  # type: ignore
+
+    def map_some(self, function: Unary[T, U]) -> FutureOption[U]:
+        return self.create(self.actual_map_some(function))
+
+    def map_some_await(self, function: AsyncUnary[T, U]) -> FutureOption[U]:
+        return self.create(self.actual_map_some_await(function))
+
+    async def actual_map_some(self, function: Unary[T, U]) -> Option[U]:
+        return (await self.awaitable).map(function)
+
+    async def actual_map_some_await(self, function: AsyncUnary[T, U]) -> Option[U]:
+        return await (await self.awaitable).map_await(function)  # type: ignore
 
 
 @frozen()
@@ -233,25 +249,25 @@ class FutureResult(Future[Result[T, E]]):
     async def actual_inspect_error(self, function: Inspect[E]) -> Result[T, E]:
         return (await self.awaitable).inspect_error(function)
 
-    def map(self, function: Unary[T, U]) -> FutureResult[U, E]:
-        return self.create(self.actual_map(function))
+    def map_ok(self, function: Unary[T, U]) -> FutureResult[U, E]:
+        return self.create(self.actual_map_ok(function))
 
     def map_error(self, function: Unary[E, F]) -> FutureResult[T, F]:
         return self.create(self.actual_map_error(function))
 
-    async def actual_map(self, function: Unary[T, U]) -> Result[U, E]:
+    async def actual_map_ok(self, function: Unary[T, U]) -> Result[U, E]:
         return (await self.awaitable).map(function)
 
     async def actual_map_error(self, function: Unary[E, F]) -> Result[T, F]:
         return (await self.awaitable).map_error(function)
 
-    def map_await(self, function: Unary[T, Awaitable[U]]) -> FutureResult[U, E]:
-        return self.create(self.actual_map_await(function))
+    def map_ok_await(self, function: Unary[T, Awaitable[U]]) -> FutureResult[U, E]:
+        return self.create(self.actual_map_ok_await(function))
 
     def map_error_await(self, function: AsyncUnary[E, F]) -> FutureResult[T, F]:
         return self.create(self.actual_map_error_await(function))
 
-    async def actual_map_await(self, function: Unary[T, Awaitable[U]]) -> Result[U, E]:
+    async def actual_map_ok_await(self, function: Unary[T, Awaitable[U]]) -> Result[U, E]:
         result = await self.awaitable
 
         if is_ok(result):

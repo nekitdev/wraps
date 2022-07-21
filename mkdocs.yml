@@ -18,6 +18,8 @@ nav:
     - Errors: "reference/errors.md"
   - Changelog: "changelog.md"
   - Security: "security.md"
+  - Code of Conduct: "code_of_conduct.md"
+  - Contributing: "contributing.md"
 
 watch:
   - docs
