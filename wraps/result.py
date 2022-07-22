@@ -9,6 +9,7 @@ from typing import (
     Callable,
     Generic,
     Iterator,
+    Optional,
     Type,
     TypeVar,
     Union,
@@ -859,6 +860,29 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         ...
 
     @abstractmethod
+    async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
+        """Computes the default value (if errored), or applies the `function`
+        to the contained value (if succeeded).
+
+        Example:
+            ```python
+            ok = Ok("Hello, world!")
+            print(await ok.map_or_else_await(int, len))  # 13
+
+            error = Error("error!")
+            print(await error.map_or_else_await(int, len))  # 0
+            ```
+
+        Arguments:
+            default: The asynchronous default function to use.
+            function: The function to apply.
+
+        Returns:
+            The resulting or the default computed value.
+        """
+        ...
+
+    @abstractmethod
     def map_error(self, function: Unary[E, F]) -> Result[T, F]:
         """Maps [`Result[T, E]`][wraps.result.Result] to [`Result[T, F]`][wraps.result.Result]
         by applying the `function` to the contained [`Error[E]`][wraps.result.Error] value,
@@ -925,29 +949,6 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
         Arguments:
             default: The default function to use.
-            function: The function to apply.
-
-        Returns:
-            The resulting or the default computed value.
-        """
-        ...
-
-    @abstractmethod
-    async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
-        """Computes the default value (if errored), or applies the `function`
-        to the contained value (if succeeded).
-
-        Example:
-            ```python
-            ok = Ok("Hello, world!")
-            print(await ok.map_or_else_await(int, len))  # 13
-
-            error = Error("error!")
-            print(await error.map_or_else_await(int, len))  # 0
-            ```
-
-        Arguments:
-            default: The asynchronous default function to use.
             function: The function to apply.
 
         Returns:
@@ -1544,7 +1545,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         ...
 
     @abstractmethod
-    def swap(self) -> Result[E, T]:
+    def flip(self) -> Result[E, T]:
         """Converts [`Result[T, E]`][wraps.result.Result] to [`Result[E, T]`][wraps.result.Result].
 
         [`Ok(value)`][wraps.result.Ok] and [`Error(error)`][wraps.result.Error] get swapped to
@@ -1555,13 +1556,13 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
             value = 42
 
             result = Ok(value)
-            swapped = Error(value)
+            flipped = Error(value)
 
-            assert result.swap() == swapped
+            assert result.flip() == flipped
             ```
 
         Returns:
-            The swapped result.
+            The flipped result.
         """
         ...
 
@@ -1795,8 +1796,11 @@ class Ok(ResultProtocol[T, Never]):
     def contains_error(self, error: F) -> Literal[False]:
         return False
 
-    def swap(self) -> Error[T]:
-        return Error(self.value)
+    def flip(self, error_type: Optional[Type[Error[T]]] = None) -> Error[T]:
+        if error_type is None:
+            error_type = Error[T]
+
+        return error_type(self.value)
 
     def into_ok_or_error(self: Ok[V]) -> V:
         return self.value
@@ -1995,8 +1999,11 @@ class Error(ResultProtocol[Never, E]):
     def contains_error(self, error: F) -> bool:
         return self.value == error
 
-    def swap(self) -> Ok[E]:
-        return Ok(self.value)
+    def flip(self, ok_type: Optional[Type[Ok[E]]] = None) -> Ok[E]:
+        if ok_type is None:
+            ok_type = Ok[E]
+
+        return ok_type(self.value)
 
     def into_ok_or_error(self: Error[V]) -> V:
         return self.value

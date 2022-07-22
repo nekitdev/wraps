@@ -1239,6 +1239,10 @@ class Null(OptionProtocol[Never]):
     def __bool__(self) -> Literal[False]:
         return False
 
+    @classmethod
+    def create(cls) -> Null:
+        return cls()
+
     def is_some(self) -> Literal[False]:
         return False
 
