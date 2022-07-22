@@ -554,7 +554,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
             ```
 
         Arguments:
-            function: The asynchronous default function to use.
+            default: The asynchronous default function to use.
 
         Returns:
             The contained error value or `await default()` one."""

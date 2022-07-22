@@ -9,14 +9,9 @@ __license__ = "MIT"
 __version__ = "0.1.0"
 
 from wraps.errors import Panic, panic
-from wraps.future import (
-    Future,
-    FutureOption,
-    FutureResult,
-    wrap_future,
-    wrap_future_option,
-    wrap_future_result,
-)
+from wraps.future import Future, wrap_future
+from wraps.future_option import FutureOption, wrap_future_option
+from wraps.future_result import FutureResult, wrap_future_result
 from wraps.option import (
     Null,
     Option,
