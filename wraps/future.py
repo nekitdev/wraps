@@ -192,6 +192,8 @@ class Future(Awaitable[T]):
 
 @frozen()
 class FutureOption(Future[Option[T]]):
+    """[`Future[Option[T]]`][wraps.future.Future], adapted to leverage future functionality."""
+
     if TYPE_CHECKING:
         awaitable: Awaitable[Option[T]]  # should be `ReAwaitable[Option[T]]`
 
@@ -404,6 +406,8 @@ class FutureOption(Future[Option[T]]):
 
 @frozen()
 class FutureResult(Future[Result[T, E]]):
+    """[`Future[Result[T, E]]`][wraps.future.Future], adapted to leverage future functionality."""
+
     if TYPE_CHECKING:
         awaitable: Awaitable[Result[T, E]]  # should be `ReAwaitable[Result[T, E]]`
 
