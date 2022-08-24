@@ -1069,7 +1069,7 @@
 
 
 <h3 id="wraps.future.Future.map_future" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_future</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">map_future</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]</span></code>
 
 </h3>
 
@@ -1155,7 +1155,7 @@ by applying <code>function</code> to the result.</p>
 
 
 <h3 id="wraps.future.Future.map_future_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_future_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">map_future_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]</span></code>
 
 </h3>
 
@@ -1241,7 +1241,7 @@ by applying an asynchronous <code>function</code> to the result.</p>
 
 
 <h3 id="wraps.future.Future.then_future" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">then_future</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">then_future</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]</span></code>
 
 </h3>
 
@@ -1327,7 +1327,7 @@ by applying an asynchronous <code>function</code> to the result.</p>
 
 
 <h3 id="wraps.future.Future.async_iter" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">async_iter</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">async_iter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -1387,7 +1387,7 @@ by applying an asynchronous <code>function</code> to the result.</p>
 
 
 <h3 id="wraps.future.Future.do" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">do</span><span class="p">(</span><span class="n">async_iterator</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">do</span><span class="p">(</span><span class="n">async_iterator</span><span class="p">:</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
@@ -1490,7 +1490,7 @@ by applying an asynchronous <code>function</code> to the result.</p>
 
 
 <h3 id="wraps.future.Future.from_value" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">from_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">from_value</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
@@ -1639,7 +1639,7 @@ by applying an asynchronous <code>function</code> to the result.</p>
 
 
 <h2 id="wraps.future.wrap_future" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">wrap_future</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">wrap_future</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">T</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Future</span><span class="p">[</span><span class="n">T</span><span class="p">]]</span></code>
 
 </h2>
 

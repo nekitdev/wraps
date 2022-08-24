@@ -3630,7 +3630,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 
 <h3 id="wraps.option.OptionProtocol.is_some" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">is_some</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">is_some</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -3716,7 +3716,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 
 <h3 id="wraps.option.OptionProtocol.is_some_and" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">is_some_and</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">is_some_and</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">Predicate</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -3853,11 +3853,11 @@ inside of it matches the <code>predicate</code>.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.is_some_and_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">is_some_and_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">is_some_and_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">AsyncPredicate</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -3999,7 +3999,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.is_null" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">is_null</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">is_null</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -4085,7 +4085,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.expect" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">expect</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">expect</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -4234,7 +4234,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.unwrap" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unwrap</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">unwrap</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -4372,7 +4372,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.option.OptionProtocol.unwr
 
 
 <h3 id="wraps.option.OptionProtocol.unwrap_or" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unwrap_or</span><span class="p">(</span><span class="n">default</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">unwrap_or</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -4494,7 +4494,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.option.OptionProtocol.unwr
 
 
 <h3 id="wraps.option.OptionProtocol.unwrap_or_else" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unwrap_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">unwrap_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -4613,11 +4613,11 @@ computes it from the function.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.unwrap_or_else_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unwrap_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">unwrap_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -4742,7 +4742,7 @@ or computes it from the asynchronous function.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.unwrap_or_raise" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unwrap_or_raise</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">unwrap_or_raise</span><span class="p">(</span><span class="n">exception</span><span class="p">:</span> <span class="n">AnyException</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -4903,7 +4903,7 @@ raises an exception.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.unwrap_or_raise_with" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unwrap_or_raise_with</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">unwrap_or_raise_with</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">AnyException</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -5067,11 +5067,11 @@ raises an exception computed from the <code>function</code>.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.unwrap_or_raise_with_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unwrap_or_raise_with_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">unwrap_or_raise_with_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">AnyException</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -5232,7 +5232,7 @@ raises an exception computed from the asynchronous <code>function</code>.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.inspect" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">inspect</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">inspect</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Inspect</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -5348,11 +5348,11 @@ raises an exception computed from the asynchronous <code>function</code>.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.inspect_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">inspect_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">inspect_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncInspect</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -5474,7 +5474,7 @@ raises an exception computed from the asynchronous <code>function</code>.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.map" class="doc doc-heading">
-<code class="highlight language-python"><span class="nb">map</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="nb">map</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -5587,7 +5587,7 @@ by applying the <code>function</code> to the contained value.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.map_or" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_or</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">map_or</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">U</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -5724,7 +5724,7 @@ to the contained value (if any).</p>
 
 
 <h3 id="wraps.option.OptionProtocol.map_or_else" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">map_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -5870,11 +5870,11 @@ to the contained value (if any).</p>
 
 
 <h3 id="wraps.option.OptionProtocol.map_or_else_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">map_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -6017,11 +6017,11 @@ to the contained value (if any).</p>
 
 
 <h3 id="wraps.option.OptionProtocol.map_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">map_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -6146,11 +6146,11 @@ by applying the asynchronous <code>function</code> to the contained value.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.map_await_or" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_await_or</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">map_await_or</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">U</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -6293,11 +6293,11 @@ to the contained value (if any).</p>
 
 
 <h3 id="wraps.option.OptionProtocol.map_await_or_else" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">map_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -6440,11 +6440,11 @@ to the contained value (if any).</p>
 
 
 <h3 id="wraps.option.OptionProtocol.map_await_or_else_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">map_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -6600,7 +6600,7 @@ to the contained value (if any).</p>
 
 
 <h3 id="wraps.option.OptionProtocol.ok_or" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ok_or</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ok_or</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -6731,7 +6731,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 
 
 <h3 id="wraps.option.OptionProtocol.ok_or_else" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ok_or_else</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ok_or_else</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -6865,11 +6865,11 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 
 
 <h3 id="wraps.option.OptionProtocol.ok_or_else_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ok_or_else_await</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ok_or_else_await</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -7012,7 +7012,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 
 
 <h3 id="wraps.option.OptionProtocol.iter" class="doc doc-heading">
-<code class="highlight language-python"><span class="nb">iter</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="nb">iter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -7110,7 +7110,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 
 
 <h3 id="wraps.option.OptionProtocol.async_iter" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">async_iter</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">async_iter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -7208,7 +7208,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 
 
 <h3 id="wraps.option.OptionProtocol.and_then" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">and_then</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">and_then</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -7350,11 +7350,11 @@ otherwise calls the <code>function</code> with the wrapped value and returns the
 
 
 <h3 id="wraps.option.OptionProtocol.and_then_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">and_then_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">and_then_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -7506,7 +7506,7 @@ otherwise calls the asynchronous <code>function</code> with the wrapped value an
 
 
 <h3 id="wraps.option.OptionProtocol.filter" class="doc doc-heading">
-<code class="highlight language-python"><span class="nb">filter</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="nb">filter</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">Predicate</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -7653,11 +7653,11 @@ otherwise calls the <code>predicate</code> with the wrapped value and returns:</
 
 
 <h3 id="wraps.option.OptionProtocol.filter_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">filter_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">filter_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">AsyncPredicate</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -7801,7 +7801,7 @@ otherwise calls the asynchronous <code>predicate</code> with the wrapped value a
 
 
 <h3 id="wraps.option.OptionProtocol.or_else" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">or_else</span><span class="p">(</span><span class="n">default</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">or_else</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -7929,11 +7929,11 @@ the <code>default</code> and returns the result.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.or_else_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -8058,7 +8058,7 @@ the asynchronous <code>default</code> and returns the result.</p>
 
 
 <h3 id="wraps.option.OptionProtocol.xor" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">xor</span><span class="p">(</span><span class="n">option</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">xor</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -8189,7 +8189,7 @@ is <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Some[
 
 
 <h3 id="wraps.option.OptionProtocol.zip" class="doc doc-heading">
-<code class="highlight language-python"><span class="nb">zip</span><span class="p">(</span><span class="n">option</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="nb">zip</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">]]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -8340,7 +8340,7 @@ this method returns <a class="autorefs autorefs-internal" href="#wraps.option.So
 
 
 <h3 id="wraps.option.OptionProtocol.zip_with" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">zip_with</span><span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">zip_with</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Binary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">V</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -8518,11 +8518,11 @@ this method returns <a class="autorefs autorefs-internal" href="#wraps.option.So
 
 
 <h3 id="wraps.option.OptionProtocol.zip_with_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">zip_with_await</span><span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">zip_with_await</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncBinary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">V</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 </h3>
@@ -8706,7 +8706,7 @@ this method returns <a class="autorefs autorefs-internal" href="#wraps.option.So
 
 
 <h3 id="wraps.option.OptionProtocol.unzip" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unzip</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">unzip</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">Option</span><span class="p">[</span><span class="n">V</span><span class="p">]]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -8812,7 +8812,7 @@ other = 42</p>
 
 
 <h3 id="wraps.option.OptionProtocol.transpose" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">transpose</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">transpose</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -8917,7 +8917,7 @@ This function maps <a class="autorefs autorefs-internal" href="#wraps.option.Opt
 
 
 <h3 id="wraps.option.OptionProtocol.flatten" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">flatten</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">flatten</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">U</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -9018,7 +9018,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
 
 
 <h3 id="wraps.option.OptionProtocol.contains" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">contains</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">contains</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">U</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -9146,7 +9146,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
 
 
 <h3 id="wraps.option.OptionProtocol.Q" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Q</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">Q</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -10028,7 +10028,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
 
 
 <h2 id="wraps.option.is_some" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">is_some</span><span class="p">(</span><span class="n">option</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">is_some</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Some</span><span class="p">[</span><span class="n">T</span><span class="p">]]</span></code>
 
 </h2>
 
@@ -10060,7 +10060,7 @@ except it works as a <em>type guard</em>.</p>
 
 
 <h2 id="wraps.option.is_null" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">is_null</span><span class="p">(</span><span class="n">option</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">is_null</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Null</span><span class="p">]</span></code>
 
 </h2>
 
@@ -10092,7 +10092,7 @@ except it works as a <em>type guard</em>.</p>
 
 
 <h2 id="wraps.option.wrap_option" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">wrap_option</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">wrap_option</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]]</span></code>
 
 </h2>
 
@@ -10232,7 +10232,7 @@ wrapping the resulting <code>value</code> into <a class="autorefs autorefs-inter
 
 
 <h2 id="wraps.option.wrap_option_await" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">wrap_option_await</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">wrap_option_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">T</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]]]</span></code>
 
 </h2>
 
