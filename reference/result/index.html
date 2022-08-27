@@ -4892,8 +4892,8 @@ inside of it matches the <code>predicate</code>.</p>
 <code class="highlight language-python"><span class="n">is_ok_and_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">AsyncPredicate</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -5261,8 +5261,8 @@ inside of it matches the <code>predicate</code>.</p>
 <code class="highlight language-python"><span class="n">is_error_and_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">AsyncPredicate</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -6090,8 +6090,8 @@ assert not error.unwrap_or_else(int)</p>
 <code class="highlight language-python"><span class="n">unwrap_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -6536,8 +6536,8 @@ ValueError: error!
 <code class="highlight language-python"><span class="n">unwrap_or_raise_with_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">AnyException</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -7082,8 +7082,8 @@ assert not ok.unwrap_error_or_else(int)</p>
 <code class="highlight language-python"><span class="n">unwrap_error_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">E</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -7504,8 +7504,8 @@ ValueError: error!
 <code class="highlight language-python"><span class="n">unwrap_error_or_raise_with_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">AnyException</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">E</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -8100,8 +8100,8 @@ if any.</p>
 <code class="highlight language-python"><span class="n">inspect_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncInspect</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -8226,8 +8226,8 @@ if any.</p>
 <code class="highlight language-python"><span class="n">inspect_error_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncInspect</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -8756,8 +8756,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -9287,8 +9287,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_error_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -9419,8 +9419,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -9571,8 +9571,8 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><co
 <code class="highlight language-python"><span class="n">map_await_or</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">U</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -9712,8 +9712,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -9853,8 +9853,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -10007,8 +10007,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_error_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -10154,8 +10154,8 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>
 <code class="highlight language-python"><span class="n">map_error_await_or</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">F</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -10295,8 +10295,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_error_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -10436,8 +10436,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_error_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -11133,8 +11133,8 @@ with the wrapped value and returns the result.</p>
 <code class="highlight language-python"><span class="n">and_then_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -11420,8 +11420,8 @@ with the wrapped error value and returns the result.</p>
 <code class="highlight language-python"><span class="n">or_else_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
