@@ -267,7 +267,13 @@ def wrap_future_option(function: Callable[P, Awaitable[T]]) -> Callable[P, Futur
 
     Example:
         ```python
-        # TODO
+        @wrap_future_option
+        async def identity(value: T) -> T:
+            return value
+
+        value = 42
+
+        assert await identity(value).unwrap() == value
         ```
 
     Arguments:

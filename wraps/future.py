@@ -187,7 +187,15 @@ def wrap_future(function: Callable[P, Awaitable[T]]) -> Callable[P, Future[T]]:
 
     Example:
         ```python
-        # TODO
+        @wrap_future
+        async def function() -> int:
+            return 42
+
+        string = "42"
+
+        result = await function().map_future(str)
+
+        assert result == string
         ```
 
     Arguments:

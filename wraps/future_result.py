@@ -382,7 +382,13 @@ def wrap_future_result(
 
     Example:
         ```python
-        # TODO
+        @wrap_future_result
+        async def identity(value: T) -> T:
+            return value
+
+        value = 13
+
+        assert await identity(value).unwrap() == value
         ```
 
     Arguments:
