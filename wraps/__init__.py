@@ -16,11 +16,11 @@ from wraps.option import (
     Null,
     Option,
     Some,
-    convert_optional,
     is_null,
     is_some,
     wrap_option,
     wrap_option_await,
+    wrap_optional,
 )
 from wraps.result import Error, Ok, Result, is_error, is_ok, wrap_result, wrap_result_await
 from wraps.shortcuts import option_shortcut, result_shortcut
@@ -34,8 +34,8 @@ __all__ = (
     "is_null",
     "wrap_option",
     "wrap_option_await",
-    # convert
-    "convert_optional",
+    # optional
+    "wrap_optional",
     # result
     "Result",
     "Ok",
