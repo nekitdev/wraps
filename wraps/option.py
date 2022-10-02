@@ -80,7 +80,7 @@ __all__ = (
     "is_null",
     "wrap_option",
     "wrap_option_await",
-    "convert_optional",
+    "wrap_optional",
 )
 
 P = ParamSpec("P")
@@ -218,6 +218,26 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
         Returns:
             The contained value.
+        """
+        ...
+
+    @abstractmethod
+    def extract(self) -> Optional[T]:
+        """Returns the contained [`Some[T]`][wraps.option.Some] value or [`None`][None].
+
+        Example:
+            ```python
+            >>> some = Some(42)
+            >>> some.extract()
+            42
+
+            >>> null = Null()
+            >>> null.extract()
+            >>>
+            ```
+
+        Returns:
+            The contained value or [`None`][None].
         """
         ...
 
@@ -1258,6 +1278,9 @@ class Null(OptionProtocol[Never]):
     def expect(self, message: str) -> Never:
         panic(message)
 
+    def extract(self) -> None:
+        return None
+
     def unwrap(self) -> Never:
         panic(UNWRAP_ON_NULL)
 
@@ -1402,6 +1425,9 @@ class Some(OptionProtocol[T]):
         return False
 
     def expect(self, message: str) -> T:
+        return self.value
+
+    def extract(self) -> T:
         return self.value
 
     def unwrap(self) -> T:
@@ -1693,7 +1719,7 @@ def wrap_option_await(function: Callable[P, Awaitable[T]]) -> Callable[P, Awaita
     return wrap
 
 
-def convert_optional(optional: Optional[T]) -> Option[T]:
+def wrap_optional(optional: Optional[T]) -> Option[T]:
     if optional is None:
         return Null()
 
