@@ -6,7 +6,7 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 from wraps.errors import Panic, panic
 from wraps.future import Future, wrap_future
