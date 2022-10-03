@@ -6,7 +6,7 @@
 
 ### Features
 
-- Rename `convert_optional -> wrap_optional`, add `extract` method.
+- Renamed `convert_optional -> wrap_optional`, added `extract` method.
   This allows users to defer back to `Optional[T]`, along with wrapping
   `Optional[T]` into `Option[T]` in a clear and concise way.
   ([#1](https://github.com/nekitdev/wraps/pull/1))
