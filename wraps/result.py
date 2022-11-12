@@ -404,6 +404,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         raises an exception computed from `function`.
 
         Example:
+            ```python
             >>> def function() -> ValueError:
             ...     return ValueError("error!")
 
@@ -435,6 +436,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         raises an exception computed from asynchronous `function`.
 
         Example:
+            ```python
             >>> async def function() -> ValueError:
             ...     return ValueError("error...")
 
@@ -592,6 +594,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         raises an exception computed from `function`.
 
         Example:
+            ```python
             >>> def function() -> ValueError:
             ...     return ValueError("error!")
 
@@ -623,6 +626,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         raises an exception computed from asynchronous `function`.
 
         Example:
+            ```python
             >>> async def function() -> ValueError:
             ...     return ValueError("ok...")
 
@@ -642,6 +646,33 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
         Raises:
             AnyException: The computed exception, if result is [`Ok[T]`][wraps.result.Ok].
+
+        Returns:
+            The contained value.
+        """
+        ...
+
+    @abstractmethod
+    def raising(self: ResultProtocol[T, AnyException]) -> T:
+        """Returns the contained [`Ok[T]`][wraps.result.Ok] value or raises the
+        contained [`Error[Exception]`][wraps.result.Error] value.
+
+        Example:
+            ```python
+            >>> ok = Ok(13)
+            >>> ok.raising()
+            13
+
+            >>> error = Error(ValueError("error..."))
+            >>> error.raising()
+            Traceback (most recent call last):
+              ...
+            ValueError: error...
+            ```
+
+        Raises:
+            AnyException: The contained exception, if the result
+                is [`Error[AnyException]`][wraps.result.Error].
 
         Returns:
             The contained value.
@@ -1670,6 +1701,9 @@ class Ok(ResultProtocol[T, Never]):
     async def unwrap_error_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> Never:
         raise await function()
 
+    def raising(self) -> T:
+        return self.value
+
     def ok(self) -> Some[T]:
         return Some(self.value)
 
@@ -1895,6 +1929,9 @@ class Error(ResultProtocol[Never, E]):
 
     async def unwrap_error_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> E:
         return self.value
+
+    def raising(self: Error[AnyException]) -> Never:
+        raise self.value
 
     def inspect(self, function: Inspect[T]) -> Error[E]:
         return self
