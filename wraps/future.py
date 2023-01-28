@@ -4,10 +4,12 @@ from functools import wraps
 from typing import AsyncIterator, Awaitable, Callable, Generator, TypeVar
 
 from attrs import define, field, frozen
+from iters import AsyncIter, async_iter, async_next_unchecked
 from typing_extensions import ParamSpec
 
 from wraps.option import Null, Option, Some, is_null
 from wraps.typing import AsyncUnary, Unary
+from wraps.utils import async_identity, identity
 
 __all__ = ("ReAwaitable", "Future", "wrap_future")
 
@@ -15,19 +17,6 @@ P = ParamSpec("P")
 
 T = TypeVar("T", covariant=True)
 U = TypeVar("U")
-
-E = TypeVar("E", covariant=True)
-F = TypeVar("F")
-
-V = TypeVar("V")
-
-
-async def async_identity(value: V) -> V:
-    return value
-
-
-def identity(value: V) -> V:
-    return value
 
 
 @define()
@@ -52,10 +41,7 @@ class ReAwaitable(Awaitable[T]):
 
 @frozen()
 class Future(Awaitable[T]):
-    awaitable: Awaitable[T] = field(repr=False)  # should be `ReAwaitable[T]`
-
-    def __init__(self, awaitable: Awaitable[T]) -> None:
-        self.__attrs_init__(ReAwaitable(awaitable))  # type: ignore
+    awaitable: ReAwaitable[T] = field(repr=False, converter=ReAwaitable)
 
     def __await__(self) -> Generator[None, None, T]:
         return self.awaitable.__await__()
@@ -113,19 +99,22 @@ class Future(Awaitable[T]):
         return self.then_future(identity)
 
     def __aiter__(self) -> AsyncIterator[T]:
-        return self.async_iter()
+        return self.async_iter().unwrap()
 
-    async def async_iter(self) -> AsyncIterator[T]:
+    def async_iter(self) -> AsyncIter[T]:
         """Returns an asynchronous iterator over the result of this
         [`Future[T]`][wraps.future.Future].
 
         Returns:
             An asynchronous iterator over the result of the future.
         """
+        return async_iter(self.actual_async_iter())
+
+    async def actual_async_iter(self) -> AsyncIterator[T]:
         yield await self.awaitable
 
     @classmethod
-    def do(cls, async_iterator: AsyncIterator[T]) -> Future[T]:
+    def do(cls, async_iterator: AsyncIterator[U]) -> Future[U]:
         """Returns the next value in the asynchronous iterator.
 
         This allows for a pattern called *do-notation*.
@@ -143,16 +132,19 @@ class Future(Awaitable[T]):
 
         Arguments:
             async_iterator: The async iterator to advance.
+
+        Returns:
+            The next value in the async iterator, wrapped in the future.
         """
-        return cls(cls.actual_do(async_iterator))
+        return cls.create(cls.actual_do(async_iterator))
 
     @classmethod
-    async def actual_do(cls, async_iterator: AsyncIterator[T]) -> T:
-        return await async_iterator.__anext__()
+    async def actual_do(cls, async_iterator: AsyncIterator[U]) -> U:
+        return await async_next_unchecked(async_iterator)
 
     @classmethod
-    def from_value(cls, value: T) -> Future[T]:  # type: ignore
-        """Wraps `value` of type `T` into [`Future[T]`][wraps.future.Future].
+    def from_value(cls, value: U) -> Future[U]:
+        """Wraps `value` of type `U` into [`Future[U]`][wraps.future.Future].
 
         This is functionally the same as:
 
@@ -178,7 +170,7 @@ class Future(Awaitable[T]):
         Returns:
             The future wrapping the given value.
         """
-        return cls(async_identity(value))
+        return cls.create(async_identity(value))
 
 
 def wrap_future(function: Callable[P, Awaitable[T]]) -> Callable[P, Future[T]]:
@@ -207,6 +199,6 @@ def wrap_future(function: Callable[P, Awaitable[T]]) -> Callable[P, Future[T]]:
 
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> Future[T]:
-        return Future(function(*args, **kwargs))
+        return Future.create(function(*args, **kwargs))
 
     return wrap

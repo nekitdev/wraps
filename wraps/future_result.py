@@ -1,23 +1,16 @@
 from __future__ import annotations
 
 from functools import wraps
-from typing import TYPE_CHECKING, Awaitable, Callable, Optional, Type, TypeVar
+from typing import Awaitable, Callable, TypeVar
 
-from attrs import frozen
+from attrs import field, frozen
 from typing_extensions import Never, ParamSpec
 
-from wraps.future import Future
+from wraps.future import Future, ReAwaitable
 from wraps.option import Option
 from wraps.result import Error, Ok, Result, is_error, is_ok
-from wraps.typing import (
-    AnyException,
-    AsyncInspect,
-    AsyncNullary,
-    AsyncUnary,
-    Inspect,
-    Nullary,
-    Unary,
-)
+from wraps.typing import AsyncInspect, AsyncNullary, AsyncUnary, Inspect, Nullary, Unary
+from wraps.utils import identity
 
 T = TypeVar("T", covariant=True)
 U = TypeVar("U")
@@ -29,27 +22,22 @@ F = TypeVar("F")
 V = TypeVar("V")
 
 
-def identity(value: V) -> V:
-    return value
-
-
 @frozen()
 class FutureResult(Future[Result[T, E]]):
     """[`Future[Result[T, E]]`][wraps.future.Future], adapted to leverage future functionality."""
 
-    if TYPE_CHECKING:
-        awaitable: Awaitable[Result[T, E]]  # should be `ReAwaitable[Result[T, E]]`
+    awaitable: ReAwaitable[Result[T, E]] = field(repr=False, converter=ReAwaitable)
 
     @classmethod
     def create(cls, awaitable: Awaitable[Result[U, F]]) -> FutureResult[U, F]:  # type: ignore
         return cls(awaitable)  # type: ignore
 
     @classmethod
-    def from_ok(cls, value: T) -> FutureResult[T, Never]:  # type: ignore
+    def from_ok(cls, value: U) -> FutureResult[U, Never]:
         return cls.from_value(Ok(value))  # type: ignore
 
     @classmethod
-    def from_error(cls, value: E) -> FutureResult[Never, E]:  # type: ignore
+    def from_error(cls, value: F) -> FutureResult[Never, F]:
         return cls.from_value(Error(value))  # type: ignore
 
     def expect(self, message: str) -> Future[T]:
@@ -76,15 +64,6 @@ class FutureResult(Future[Result[T, E]]):
     def unwrap_or_else_await(self, default: AsyncNullary[T]) -> Future[T]:
         return super().create(self.actual_unwrap_or_else_await(default))
 
-    def unwrap_or_raise(self, exception: AnyException) -> Future[T]:
-        return super().create(self.actual_unwrap_or_raise(exception))
-
-    def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> Future[T]:
-        return super().create(self.actual_unwrap_or_raise_with(function))
-
-    def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> Future[T]:
-        return super().create(self.actual_unwrap_or_raise_with_await(function))
-
     async def actual_unwrap(self) -> T:
         return (await self.awaitable).unwrap()
 
@@ -96,15 +75,6 @@ class FutureResult(Future[Result[T, E]]):
 
     async def actual_unwrap_or_else_await(self, default: AsyncNullary[T]) -> T:
         return await (await self.awaitable).unwrap_or_else_await(default)
-
-    async def actual_unwrap_or_raise(self, exception: AnyException) -> T:
-        return (await self.awaitable).unwrap_or_raise(exception)
-
-    async def actual_unwrap_or_raise_with(self, function: Nullary[AnyException]) -> T:
-        return (await self.awaitable).unwrap_or_raise_with(function)
-
-    async def actual_unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> T:
-        return await (await self.awaitable).unwrap_or_raise_with_await(function)
 
     def unwrap_error(self) -> Future[E]:
         return super().create(self.actual_unwrap_error())
@@ -118,15 +88,6 @@ class FutureResult(Future[Result[T, E]]):
     def unwrap_error_or_else_await(self, default: AsyncNullary[E]) -> Future[E]:
         return super().create(self.actual_unwrap_error_or_else_await(default))
 
-    def unwrap_error_or_raise(self, exception: AnyException) -> Future[E]:
-        return super().create(self.actual_unwrap_error_or_raise(exception))
-
-    def unwrap_error_or_raise_with(self, function: Nullary[AnyException]) -> Future[E]:
-        return super().create(self.actual_unwrap_error_or_raise_with(function))
-
-    def unwrap_error_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> Future[E]:
-        return super().create(self.actual_unwrap_error_or_raise_with_await(function))
-
     async def actual_unwrap_error(self) -> E:
         return (await self.awaitable).unwrap_error()
 
@@ -139,28 +100,11 @@ class FutureResult(Future[Result[T, E]]):
     async def actual_unwrap_error_or_else_await(self, default: AsyncNullary[E]) -> E:
         return await (await self.awaitable).unwrap_error_or_else_await(default)
 
-    async def actual_unwrap_error_or_raise(self, exception: AnyException) -> E:
-        return (await self.awaitable).unwrap_error_or_raise(exception)
+    def ok(self) -> FutureOption[T]:
+        return FutureOption.create(self.actual_ok())
 
-    async def actual_unwrap_error_or_raise_with(self, function: Nullary[AnyException]) -> E:
-        return (await self.awaitable).unwrap_error_or_raise_with(function)
-
-    async def actual_unwrap_error_or_raise_with_await(
-        self, function: AsyncNullary[AnyException]
-    ) -> E:
-        return await (await self.awaitable).unwrap_error_or_raise_with_await(function)
-
-    def ok(self, future_option_type: Optional[Type[FutureOption[T]]] = None) -> FutureOption[T]:
-        if future_option_type is None:
-            future_option_type = FutureOption[T]
-
-        return future_option_type(self.actual_ok())
-
-    def error(self, future_option_type: Optional[Type[FutureOption[E]]] = None) -> FutureOption[E]:
-        if future_option_type is None:
-            future_option_type = FutureOption[E]
-
-        return future_option_type(self.actual_error())
+    def error(self) -> FutureOption[E]:
+        return FutureOption.create(self.actual_error())
 
     async def actual_ok(self) -> Option[T]:
         return (await self.awaitable).ok()
@@ -334,7 +278,7 @@ class FutureResult(Future[Result[T, E]]):
         result = await self.awaitable
 
         if is_ok(result):
-            return await function(result.unwrap()).awaitable  # type: ignore
+            return await function(result.unwrap())
 
         return result  # type: ignore  # guaranteed `Error[E]`
 
@@ -342,7 +286,7 @@ class FutureResult(Future[Result[T, E]]):
         result = await self.awaitable
 
         if is_error(result):
-            return await function(result.unwrap_error()).awaitable  # type: ignore
+            return await function(result.unwrap_error())
 
         return result  # type: ignore  # guaranteed `Ok[T]`
 

@@ -13,7 +13,7 @@ async def test_future_from_value() -> None:
 
 
 @pytest.mark.anyio
-async def test_future_map() -> None:
+async def test_future_map_future() -> None:
     value = 13
     result = 13.0
 

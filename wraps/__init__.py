@@ -6,8 +6,10 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
+from wraps.early import early_option, early_result
+from wraps.either import Either, Left, Right, is_left, is_right
 from wraps.errors import Panic, panic
 from wraps.future import Future, wrap_future
 from wraps.future_option import FutureOption, wrap_future_option
@@ -23,7 +25,6 @@ from wraps.option import (
     wrap_optional,
 )
 from wraps.result import Error, Ok, Result, is_error, is_ok, wrap_result, wrap_result_await
-from wraps.shortcuts import option_shortcut, result_shortcut
 
 __all__ = (
     # option
@@ -44,12 +45,18 @@ __all__ = (
     "is_error",
     "wrap_result",
     "wrap_result_await",
+    # either
+    "Either",
+    "Left",
+    "Right",
+    "is_left",
+    "is_right",
     # panic
     "Panic",
     "panic",
-    # shortcuts
-    "option_shortcut",
-    "result_shortcut",
+    # early
+    "early_option",
+    "early_result",
     # future
     "Future",
     "wrap_future",

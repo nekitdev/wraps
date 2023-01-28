@@ -1,16 +1,15 @@
 from __future__ import annotations
 
 from functools import wraps
-from typing import TYPE_CHECKING, Awaitable, Callable, Optional, Type, TypeVar
+from typing import Awaitable, Callable, TypeVar
 
-from attrs import frozen
+from attrs import field, frozen
 from typing_extensions import Never, ParamSpec
 
-from wraps.future import Future, identity
+from wraps.future import Future, ReAwaitable, identity
 from wraps.option import Null, Option, Some, is_null, is_some
 from wraps.result import Result
 from wraps.typing import (
-    AnyException,
     AsyncInspect,
     AsyncNullary,
     AsyncPredicate,
@@ -27,25 +26,25 @@ T = TypeVar("T", covariant=True)
 U = TypeVar("U")
 
 E = TypeVar("E", covariant=True)
+F = TypeVar("F")
 
 
 @frozen()
 class FutureOption(Future[Option[T]]):
     """[`Future[Option[T]]`][wraps.future.Future], adapted to leverage future functionality."""
 
-    if TYPE_CHECKING:
-        awaitable: Awaitable[Option[T]]  # should be `ReAwaitable[Option[T]]`
+    awaitable: ReAwaitable[Option[T]] = field(repr=False, converter=ReAwaitable)
 
     @classmethod
     def create(cls, awaitable: Awaitable[Option[U]]) -> FutureOption[U]:  # type: ignore
         return cls(awaitable)  # type: ignore
 
     @classmethod
-    def from_some(cls, value: T) -> FutureOption[T]:  # type: ignore
+    def from_some(cls, value: U) -> FutureOption[U]:
         return cls.from_value(Some(value))  # type: ignore
 
     @classmethod
-    def from_null(cls) -> FutureOption[Never]:  # type: ignore
+    def from_null(cls) -> FutureOption[Never]:
         return cls.from_value(Null())  # type: ignore
 
     def expect(self, message: str) -> Future[T]:
@@ -66,15 +65,6 @@ class FutureOption(Future[Option[T]]):
     def unwrap_or_else_await(self, default: AsyncNullary[T]) -> Future[T]:
         return super().create(self.actual_unwrap_or_else_await(default))
 
-    def unwrap_or_raise(self, exception: AnyException) -> Future[T]:
-        return super().create(self.actual_unwrap_or_raise(exception))
-
-    def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> Future[T]:
-        return super().create(self.actual_unwrap_or_raise_with(function))
-
-    def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> Future[T]:
-        return super().create(self.actual_unwrap_or_raise_with_await(function))
-
     async def actual_unwrap(self) -> T:
         return (await self.awaitable).unwrap()
 
@@ -86,15 +76,6 @@ class FutureOption(Future[Option[T]]):
 
     async def actual_unwrap_or_else_await(self, default: AsyncNullary[T]) -> T:
         return await (await self.awaitable).unwrap_or_else_await(default)
-
-    async def actual_unwrap_or_raise(self, exception: AnyException) -> T:
-        return (await self.awaitable).unwrap_or_raise(exception)
-
-    async def actual_unwrap_or_raise_with(self, function: Nullary[AnyException]) -> T:
-        return (await self.awaitable).unwrap_or_raise_with(function)
-
-    async def actual_unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> T:
-        return await (await self.awaitable).unwrap_or_raise_with_await(function)
 
     def inspect(self, function: Inspect[T]) -> FutureOption[T]:
         return self.create(self.actual_inspect(function))
@@ -160,29 +141,14 @@ class FutureOption(Future[Option[T]]):
     ) -> U:
         return await (await self.awaitable).map_await_or_else_await(default, function)
 
-    def ok_or(
-        self, error: E, future_result_type: Optional[Type[FutureResult[T, E]]] = None  # type: ignore
-    ) -> FutureResult[T, E]:
-        if future_result_type is None:
-            future_result_type = FutureResult[T, E]
+    def ok_or(self, error: F) -> FutureResult[T, F]:
+        return FutureResult.create(self.actual_ok_or(error))
 
-        return future_result_type(self.actual_ok_or(error))
+    def ok_or_else(self, error: Nullary[E]) -> FutureResult[T, E]:
+        return FutureResult.create(self.actual_ok_or_else(error))
 
-    def ok_or_else(
-        self, error: Nullary[E], future_result_type: Optional[Type[FutureResult[T, E]]] = None
-    ) -> FutureResult[T, E]:
-        if future_result_type is None:
-            future_result_type = FutureResult[T, E]
-
-        return future_result_type(self.actual_ok_or_else(error))
-
-    def ok_or_else_await(
-        self, error: AsyncNullary[E], future_result_type: Optional[Type[FutureResult[T, E]]] = None
-    ) -> FutureResult[T, E]:
-        if future_result_type is None:
-            future_result_type = FutureResult[T, E]
-
-        return future_result_type(self.actual_ok_or_else_await(error))
+    def ok_or_else_await(self, error: AsyncNullary[E]) -> FutureResult[T, E]:
+        return FutureResult.create(self.actual_ok_or_else_await(error))
 
     async def actual_ok_or(self, error: E) -> Result[T, E]:  # type: ignore
         return (await self.awaitable).ok_or(error)
@@ -209,7 +175,7 @@ class FutureOption(Future[Option[T]]):
         return (await self.awaitable).and_then(function)
 
     async def actual_and_then_await(self, function: AsyncUnary[T, Option[U]]) -> Option[U]:
-        return await (await self.awaitable).and_then_await(function)  # type: ignore
+        return await (await self.awaitable).and_then_await(function)
 
     async def actual_or_else(self, function: Nullary[Option[T]]) -> Option[T]:
         return (await self.awaitable).or_else(function)
@@ -239,7 +205,7 @@ class FutureOption(Future[Option[T]]):
         option = await self.awaitable
 
         if is_some(option):
-            return await function(option.unwrap()).awaitable
+            return await function(option.unwrap())
 
         return option  # type: ignore  # guaranteed `Null`
 
@@ -247,9 +213,9 @@ class FutureOption(Future[Option[T]]):
         option = await self.awaitable
 
         if is_null(option):
-            return await function().awaitable
+            return await function()
 
-        return option  # type: ignore  # guaranteed `Some[T]`
+        return option
 
     def flatten(self: FutureOption[FutureOption[U]]) -> FutureOption[U]:
         return self.and_then_future(identity)

@@ -44,7 +44,7 @@ Or by directly specifying it in the configuration like so:
 
 ```toml
 [tool.poetry.dependencies]
-wraps = "^0.2.0"
+wraps = "^0.3.0"
 ```
 
 Alternatively, you can add it directly from the source:
@@ -132,13 +132,13 @@ def parse(string: str) -> int:
 
 ### Early Return
 
-Early return functionality (`?` operator in Rust) is implemented via `Q` property
+Early return functionality (`?` operator in Rust) is implemented via `early` function
 (for both [`Option`][wraps.option.Option] and [`Result`][wraps.result.Result] types)
-combined with the [`@option_shortcut`][wraps.shortcuts.option_shortcut] or
-[`@result_shortcut`][wraps.shortcuts.result_shortcut] decorator respectively.
+combined with the [`@early_option`][wraps.early.early_option] or
+[`@early_result`][wraps.early.early_result] decorator respectively.
 
 ```python
-from wraps import Option, Some, option_shortcut, wrap_option
+from wraps import Option, Some, early_option, wrap_option
 
 
 @wrap_option
@@ -146,10 +146,10 @@ def parse(string: str) -> int:
     return int(string)
 
 
-@option_shortcut
+@early_option
 def try_add(x: str, y: str) -> Option[int]:
-    m = parse(x).Q
-    n = parse(y).Q
+    m = parse(x).early()
+    n = parse(y).early()
 
     return Some(m + n)
 ```
@@ -219,8 +219,8 @@ If you are interested in contributing to `wraps`, make sure to take a look at th
 
 [wraps.result.WrapResult]: https://nekitdev.github.io/wraps/reference/result#wraps.result.WrapResult
 
-[wraps.shortcuts.option_shortcut]: https://nekitdev.github.io/wraps/reference/shortcuts#wraps.shortcuts.option_shortcut
-[wraps.shortcuts.result_shortcut]: https://nekitdev.github.io/wraps/reference/shortcuts#wraps.shortcuts.result_shortcut
+[wraps.early.early_option]: https://nekitdev.github.io/wraps/reference/early#wraps.early.early_option
+[wraps.early.early_result]: https://nekitdev.github.io/wraps/reference/early#wraps.early.early_result
 
 [Exception]: https://docs.python.org/3/library/exceptions#Exception
 [ValueError]: https://docs.python.org/3/library/exceptions#ValueError

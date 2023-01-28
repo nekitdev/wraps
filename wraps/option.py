@@ -18,14 +18,18 @@ the presence of [`Some[T]`][wraps.option.Some] value (`T`) and take action,
 always accounting for the [`Null`][wraps.option.Null] case:
 
 ```python
-def divide(numerator: float, denominator: float) -> Option[float]:
-    if not denominator:
-        return Null()
+from wraps import wrap_option
 
-    return Some(numerator / denominator)
+@wrap_option
+def divide(numerator: float, denominator: float) -> float:
+    return numerator / denominator
 ```
 
 ```python
+from wraps import Null, Some
+
+CAN_NOT_DIVIDE_BY_ZERO = "can not divide by zero"
+
 option = divide(1.0, 2.0)
 
 match option:
@@ -33,13 +37,13 @@ match option:
         print(result)
 
     case Null():
-        print("can not divide by 0")
+        print(CAN_NOT_DIVIDE_BY_ZERO)
 ```
 """
 
 from __future__ import annotations
 
-from abc import abstractmethod
+from abc import abstractmethod as required
 from typing import (
     AsyncIterator,
     Awaitable,
@@ -47,7 +51,6 @@ from typing import (
     Iterator,
     Optional,
     Tuple,
-    Type,
     TypeVar,
     Union,
     final,
@@ -57,9 +60,8 @@ from typing import (
 from attrs import frozen
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
-from wraps.errors import OptionShortcut, panic
+from wraps.errors import EarlyOption, panic
 from wraps.typing import (
-    AnyException,
     AsyncBinary,
     AsyncInspect,
     AsyncNullary,
@@ -71,6 +73,7 @@ from wraps.typing import (
     Predicate,
     Unary,
 )
+from wraps.utils import identity
 
 __all__ = (
     "Option",
@@ -91,17 +94,15 @@ V = TypeVar("V")
 
 E = TypeVar("E")
 
-UNWRAP_ON_NULL = "called `unwrap` on null"
-
 
 class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     def __iter__(self) -> Iterator[T]:
-        return self.iter()
+        return self.iter().unwrap()
 
     def __aiter__(self) -> AsyncIterator[T]:
-        return self.async_iter()
+        return self.async_iter().unwrap()
 
-    @abstractmethod
+    @required
     def is_some(self) -> bool:
         """Checks if the option is [`Some[T]`][wraps.option.Some].
 
@@ -119,7 +120,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def is_some_and(self, predicate: Predicate[T]) -> bool:
         """Checks if the option is [`Some[T]`][wraps.option.Some] and the value
         inside of it matches the `predicate`.
@@ -147,7 +148,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def is_some_and_await(self, predicate: AsyncPredicate[T]) -> bool:
         """Checks if the option is [`Some[T]`][wraps.option.Some] and the value
         inside of it matches the asynchronous `predicate`.
@@ -176,7 +177,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def is_null(self) -> bool:
         """Checks if the option is [`Null`][wraps.option.Null].
 
@@ -194,7 +195,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def expect(self, message: str) -> T:
         """Returns the contained [`Some[T]`][wraps.option.Some] value.
 
@@ -221,7 +222,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def extract(self) -> Optional[T]:
         """Returns the contained [`Some[T]`][wraps.option.Some] value or [`None`][None].
 
@@ -241,7 +242,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def unwrap(self) -> T:
         """Returns the contained [`Some[T]`][wraps.option.Some] value.
 
@@ -272,7 +273,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def unwrap_or(self, default: T) -> T:  # type: ignore
         """Returns the contained [`Some[T]`][wraps.option.Some] value or a provided default.
 
@@ -291,12 +292,12 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
             default: The default value to use.
 
         Returns:
-            The contained value or `default` one.
+            The contained value or the `default` one.
         """
         ...
 
-    @abstractmethod
-    def unwrap_or_else(self, default: Nullary[T]) -> T:  # type: ignore
+    @required
+    def unwrap_or_else(self, default: Nullary[T]) -> T:
         """Returns the contained [`Some[T]`][wraps.option.Some] value or
         computes it from the function.
 
@@ -313,11 +314,11 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
             default: The default function to use.
 
         Returns:
-            The contained value or `default()` one.
+            The contained value or the `default()` one.
         """
         ...
 
-    @abstractmethod
+    @required
     async def unwrap_or_else_await(self, default: AsyncNullary[T]) -> T:
         """Returns the contained [`Some[T]`][wraps.option.Some] value
         or computes it from the asynchronous function.
@@ -338,106 +339,11 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
             default: The asynchronous default function to use.
 
         Returns:
-            The contained value or `await default()` default.
+            The contained value or the `await default()` one.
         """
         ...
 
-    @abstractmethod
-    def unwrap_or_raise(self, exception: AnyException) -> T:
-        """Returns the contained [`Some[T]`][wraps.option.Some] value or
-        raises an exception.
-
-        Example:
-            ```python
-            >>> error = ValueError("error!")
-
-            >>> some = Some(42)
-            >>> some.unwrap_or_raise(error)
-            42
-
-            >>> null = Null()
-            >>> null.unwrap_or_raise(error)
-            Traceback (most recent call last):
-              ...
-            ValueError: error!
-            ```
-
-        Arguments:
-            exception: The exception to raise.
-
-        Raises:
-            AnyException: The exception given, if option is [`Null`][wraps.option.Null].
-
-        Returns:
-            The contained value.
-        """
-        ...
-
-    @abstractmethod
-    def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> T:
-        """Returns the contained [`Some[T]`][wraps.option.Some] value or
-        raises an exception computed from the `function`.
-
-        Example:
-            ```python
-            >>> def error() -> ValueError:
-            ...     return ValueError("error...")
-
-            >>> some = Some(13)
-            >>> some.unwrap_or_raise_with(error)
-            13
-
-            >>> null = Null()
-            >>> null.unwrap_or_raise_with(error)
-            Traceback (most recent call last):
-              ...
-            ValueError: error...
-            ```
-
-        Arguments:
-            function: The exception-generating function to use.
-
-        Raises:
-            AnyException: The exception generated, if option is [`Null`][wraps.option.Null].
-
-        Returns:
-            The contained value.
-        """
-        ...
-
-    @abstractmethod
-    async def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> T:
-        """Returns the contained [`Some[T]`][wraps.option.Some] value or
-        raises an exception computed from the asynchronous `function`.
-
-        Example:
-            ```python
-            >>> def error() -> ValueError:
-            ...     return ValueError("error...")
-
-            >>> some = Some(13)
-            >>> some.unwrap_or_raise_with(error)
-            13
-
-            >>> null = Null()
-            >>> null.unwrap_or_raise_with(error)
-            Traceback (most recent call last):
-              ...
-            ValueError: error...
-            ```
-
-        Arguments:
-            function: The asynchronous exception-generating function to use.
-
-        Raises:
-            AnyException: The exception generated, if option is [`Null`][wraps.option.Null].
-
-        Returns:
-            The contained value.
-        """
-        ...
-
-    @abstractmethod
+    @required
     def inspect(self, function: Inspect[T]) -> Option[T]:
         """Inspects a possibly contained [`Option[T]`][wraps.option.Option] value.
 
@@ -458,7 +364,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def inspect_await(self, function: AsyncInspect[T]) -> Option[T]:
         """Inspects a possibly contained [`Option[T]`][wraps.option.Option] value.
 
@@ -482,7 +388,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def map(self, function: Unary[T, U]) -> Option[U]:
         """Maps an [`Option[T]`][wraps.option.Option] to [`Option[U]`][wraps.option.Option]
         by applying the `function` to the contained value.
@@ -502,7 +408,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def map_or(self, default: U, function: Unary[T, U]) -> U:
         """Returns the default value (if none), or applies the `function`
         to the contained value (if any).
@@ -527,7 +433,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def map_or_else(self, default: Nullary[U], function: Unary[T, U]) -> U:
         """Computes the default value (if none), or applies the `function`
         to the contained value (if any).
@@ -555,7 +461,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
         """Computes the default value (if none), or applies the `function`
         to the contained value (if any).
@@ -583,7 +489,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_await(self, function: AsyncUnary[T, U]) -> Option[U]:
         """Maps an [`Option[T]`][wraps.option.Option] to [`Option[U]`][wraps.option.Option]
         by applying the asynchronous `function` to the contained value.
@@ -608,7 +514,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_await_or(self, default: U, function: AsyncUnary[T, U]) -> U:
         """Returns the default value (if none), or applies the asynchronous `function`
         to the contained value (if any).
@@ -636,7 +542,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_await_or_else(self, default: Nullary[U], function: AsyncUnary[T, U]) -> U:
         """Computes the default value (if none), or applies the asynchronous `function`
         to the contained value (if any).
@@ -664,7 +570,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_await_or_else_await(
         self, default: AsyncNullary[U], function: AsyncUnary[T, U]
     ) -> U:
@@ -697,7 +603,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def ok_or(self, error: E) -> Result[T, E]:
         """Transforms an [`Option[T]`][wraps.option.Option]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
@@ -723,7 +629,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def ok_or_else(self, error: Nullary[E]) -> Result[T, E]:
         """Transforms an [`Option[T]`][wraps.option.Option]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
@@ -750,7 +656,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def ok_or_else_await(self, error: AsyncNullary[E]) -> Result[T, E]:
         """Transforms an [`Option[T]`][wraps.option.Option]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
@@ -781,8 +687,8 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
-    def iter(self) -> Iterator[T]:
+    @required
+    def iter(self) -> Iter[T]:
         """Returns an iterator over the possibly contained value.
 
         Example:
@@ -803,8 +709,8 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
-    def async_iter(self) -> AsyncIterator[T]:
+    @required
+    def async_iter(self) -> AsyncIter[T]:
         """Returns an asynchronous iterator over the possibly contained value.
 
         Example:
@@ -825,7 +731,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def and_then(self, function: Unary[T, Option[U]]) -> Option[U]:
         """Returns [`Null`][wraps.option.Null] if the option is [`Null`][wraps.option.Null],
         otherwise calls the `function` with the wrapped value and returns the result.
@@ -855,7 +761,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def and_then_await(self, function: AsyncUnary[T, Option[U]]) -> Option[U]:
         """Returns [`Null`][wraps.option.Null] if the option is [`Null`][wraps.option.Null],
         otherwise calls the asynchronous `function` with the wrapped value and returns the result.
@@ -889,7 +795,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def filter(self, predicate: Predicate[T]) -> Option[T]:
         """Returns [`Null`][wraps.option.Null] if the option is [`Null`][wraps.option.Null],
         otherwise calls the `predicate` with the wrapped value and returns:
@@ -920,7 +826,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def filter_await(self, predicate: AsyncPredicate[T]) -> Option[T]:
         """Returns [`Null`][wraps.option.Null] if the option is [`Null`][wraps.option.Null],
         otherwise calls the asynchronous `predicate` with the wrapped value and returns:
@@ -951,7 +857,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def or_else(self, default: Nullary[Option[T]]) -> Option[T]:
         """Returns the option if it contains a value, otherwise calls
         the `default` and returns the result.
@@ -976,7 +882,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def or_else_await(self, default: AsyncNullary[Option[T]]) -> Option[T]:
         """Returns the option if it contains a value, otherwise calls
         the asynchronous `default` and returns the result.
@@ -1001,7 +907,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def xor(self, option: Option[T]) -> Option[T]:
         """Returns [`Some[T]`][wraps.option.Some] if exactly one of `self` and `option`
         is [`Some[T]`][wraps.option.Option], otherwise returns [`Null`][wraps.option.Null].
@@ -1027,7 +933,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def zip(self, option: Option[U]) -> Option[Tuple[T, U]]:
         """Zips `self` with an `option`.
 
@@ -1060,7 +966,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def zip_with(self, option: Option[U], function: Binary[T, U, V]) -> Option[V]:
         """Zips `self` with an `option` using `function`.
 
@@ -1099,7 +1005,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def zip_with_await(self, option: Option[U], function: AsyncBinary[T, U, V]) -> Option[V]:
         """Zips `self` with an `option` using asynchronous `function`.
 
@@ -1141,7 +1047,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def unzip(self: OptionProtocol[Tuple[U, V]]) -> Tuple[Option[U], Option[V]]:
         """Unzips an option into two options.
 
@@ -1167,31 +1073,31 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
-    def transpose(self: OptionProtocol[ResultProtocol[T, E]]) -> Result[Option[T], E]:
-        """Transposes an option of a result into result of an option.
-        This function maps [`Option[Result[T, E]]`][wraps.option.Option] into
-        [`Result[Option[T], E]]`][wraps.result.Result] in the following way:
+    # @required
+    # def transpose(self: OptionProtocol[ResultProtocol[T, E]]) -> Result[Option[T], E]:
+    #     """Transposes an option of a result into result of an option.
+    #     This function maps [`Option[Result[T, E]]`][wraps.option.Option] into
+    #     [`Result[Option[T], E]]`][wraps.result.Result] in the following way:
 
-        - [`Null()`][wraps.option.Null] is mapped to [`Ok(Null())`][wraps.result.Ok];
-        - [`Some(Ok(value))`][wraps.option.Some] is mapped to [`Ok(Some(value))`][wraps.result.Ok];
-        - [`Some(Error(error))`][wraps.option.Some] is mapped to
-          [`Error(Some(error))`][wraps.result.Error].
+    #     - [`Null()`][wraps.option.Null] is mapped to [`Ok(Null())`][wraps.result.Ok];
+    #     - [`Some(Ok(value))`][wraps.option.Some] is mapped to
+    #       [`Ok(Some(value))`][wraps.result.Ok];
+    #     - [`Some(Error(error))`][wraps.option.Some] is mapped to
+    #       [`Error(Some(error))`][wraps.result.Error].
 
-        Example:
-            ```python
-            option = Some(Ok(7))
-            result = Ok(Some(7))
+    #     Example:
+    #         ```python
+    #         option = Some(Ok(7))
+    #         result = Ok(Some(7))
 
-            assert option.transpose() == result
-            ```
+    #         assert option.transpose() == result
+    #         ```
 
-        Returns:
-            The transposed result.
-        """
-        ...
+    #     Returns:
+    #         The transposed result.
+    #     """
+    #     ...
 
-    @abstractmethod
     def flatten(self: OptionProtocol[OptionProtocol[U]]) -> Option[U]:
         """Flattens an [`Option[Option[T]]`][wraps.option.Option]
         to [`Option[T]`][wraps.option.Option].
@@ -1212,9 +1118,9 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         Returns:
             The flattened option.
         """
-        ...
+        return self.and_then(identity)  # type: ignore
 
-    @abstractmethod
+    @required
     def contains(self, value: U) -> bool:
         """Checks if the contained value (if any) is equal to `value`.
 
@@ -1239,22 +1145,22 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    @property
-    @abstractmethod
-    def Q(self) -> T:
+    @required
+    def early(self) -> T:
         """Functionally similar to `?` operator in Rust.
 
-        See [shortcuts][shortcuts] for more information.
-
-        [shortcuts]: /shortcuts
+        See [early](/reference/early) for more information.
         """
         ...
+
+
+UNWRAP_ON_NULL = "called `unwrap` on null"
 
 
 @final
 @frozen()
 class Null(OptionProtocol[Never]):
-    """[`Null`][wraps.option.Null] variant of [`Option[T]`][wraps.option.Option]."""
+    """The [`Null`][wraps.option.Null] variant of [`Option[T]`][wraps.option.Option]."""
 
     def __bool__(self) -> Literal[False]:
         return False
@@ -1292,15 +1198,6 @@ class Null(OptionProtocol[Never]):
 
     async def unwrap_or_else_await(self, default: AsyncNullary[U]) -> U:
         return await default()
-
-    def unwrap_or_raise(self, exception: AnyException) -> Never:
-        raise exception
-
-    def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> Never:
-        raise function()
-
-    async def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> Never:
-        raise await function()
 
     def inspect(self, function: Inspect[T]) -> Null:
         return self
@@ -1343,11 +1240,17 @@ class Null(OptionProtocol[Never]):
     async def ok_or_else_await(self, error: AsyncNullary[E]) -> Error[E]:
         return Error(await error())
 
-    def iter(self) -> Iterator[Never]:
+    def iter(self) -> Iter[Never]:
+        return iter(self.actual_iter())
+
+    def async_iter(self) -> AsyncIter[Never]:
+        return async_iter(self.actual_async_iter())
+
+    def actual_iter(self) -> Iterator[Never]:
         return
         yield  # type: ignore
 
-    async def async_iter(self) -> AsyncIterator[Never]:
+    async def actual_async_iter(self) -> AsyncIterator[Never]:
         return
         yield  # type: ignore
 
@@ -1384,18 +1287,11 @@ class Null(OptionProtocol[Never]):
     def unzip(self) -> Tuple[Null, Null]:
         return self, self
 
-    def transpose(self: OptionProtocol[Result[T, E]]) -> Result[Null, E]:
-        return Ok(self)  # type: ignore
-
-    def flatten(self: OptionProtocol[OptionProtocol[U]]) -> Null:
-        return self  # type: ignore
-
     def contains(self, value: U) -> Literal[False]:
         return False
 
-    @property
-    def Q(self) -> Never:
-        raise OptionShortcut()
+    def early(self) -> Never:
+        raise EarlyOption()
 
 
 @final
@@ -1440,15 +1336,6 @@ class Some(OptionProtocol[T]):
         return self.value
 
     async def unwrap_or_else_await(self, default: AsyncNullary[T]) -> T:
-        return self.value
-
-    def unwrap_or_raise(self, exception: AnyException) -> T:
-        return self.value
-
-    def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> T:
-        return self.value
-
-    async def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> T:
         return self.value
 
     def inspect(self, function: Inspect[T]) -> Some[T]:
@@ -1496,10 +1383,16 @@ class Some(OptionProtocol[T]):
     async def ok_or_else_await(self, error: AsyncNullary[E]) -> Ok[T]:
         return Ok(self.value)
 
-    def iter(self) -> Iterator[T]:
+    def iter(self) -> Iter[T]:
+        return iter(self.actual_iter())
+
+    def async_iter(self) -> AsyncIter[T]:
+        return async_iter(self.actual_async_iter())
+
+    def actual_iter(self) -> Iterator[T]:
         yield self.value
 
-    async def async_iter(self) -> AsyncIterator[T]:
+    async def actual_async_iter(self) -> AsyncIterator[T]:
         yield self.value
 
     def and_then(self, function: Unary[T, Option[U]]) -> Option[U]:
@@ -1508,13 +1401,11 @@ class Some(OptionProtocol[T]):
     async def and_then_await(self, function: AsyncUnary[T, Option[U]]) -> Option[U]:
         return await function(self.value)
 
-    def filter(self, predicate: Predicate[T], null_type: Type[Null] = Null) -> Option[T]:
-        return self if predicate(self.value) else null_type()
+    def filter(self, predicate: Predicate[T]) -> Option[T]:
+        return self if predicate(self.value) else Null()
 
-    async def filter_await(
-        self, predicate: AsyncPredicate[T], null_type: Type[Null] = Null
-    ) -> Option[T]:
-        return self if await predicate(self.value) else null_type()
+    async def filter_await(self, predicate: AsyncPredicate[T]) -> Option[T]:
+        return self if await predicate(self.value) else Null()
 
     def or_else(self, default: Nullary[Option[T]]) -> Some[T]:
         return self
@@ -1522,8 +1413,8 @@ class Some(OptionProtocol[T]):
     async def or_else_await(self, default: AsyncNullary[Option[T]]) -> Some[T]:
         return self
 
-    def xor(self, option: Option[T], null_type: Type[Null] = Null) -> Option[T]:
-        return self if is_null(option) else null_type()
+    def xor(self, option: Option[T]) -> Option[T]:
+        return self if is_null(option) else Null()
 
     @overload
     def zip(self, option: Null) -> Null:
@@ -1544,90 +1435,50 @@ class Some(OptionProtocol[T]):
         return option  # type: ignore
 
     @overload
-    def zip_with(
-        self, option: Null, function: Binary[T, U, V], null_type: Type[Null] = ...
-    ) -> Null:
+    def zip_with(self, option: Null, function: Binary[T, U, V]) -> Null:
         ...
 
     @overload
-    def zip_with(
-        self, option: Some[U], function: Binary[T, U, V], null_type: Type[Null] = ...
-    ) -> Some[V]:
+    def zip_with(self, option: Some[U], function: Binary[T, U, V]) -> Some[V]:
         ...
 
     @overload
-    def zip_with(
-        self, option: Option[U], function: Binary[T, U, V], null_type: Type[Null] = ...
-    ) -> Option[V]:
+    def zip_with(self, option: Option[U], function: Binary[T, U, V]) -> Option[V]:
         ...
 
-    def zip_with(
-        self, option: Option[U], function: Binary[T, U, V], null_type: Type[Null] = Null
-    ) -> Option[V]:
+    def zip_with(self, option: Option[U], function: Binary[T, U, V]) -> Option[V]:
         if is_some(option):
             return self.create(function(self.value, option.value))
 
-        return null_type()
+        return Null()
 
     @overload
-    async def zip_with_await(
-        self, option: Null, function: AsyncBinary[T, U, V], null_type: Type[Null] = ...
-    ) -> Null:
+    async def zip_with_await(self, option: Null, function: AsyncBinary[T, U, V]) -> Null:
         ...
 
     @overload
-    async def zip_with_await(
-        self, option: Some[U], function: AsyncBinary[T, U, V], null_type: Type[Null] = ...
-    ) -> Some[V]:
+    async def zip_with_await(self, option: Some[U], function: AsyncBinary[T, U, V]) -> Some[V]:
         ...
 
     @overload
-    async def zip_with_await(
-        self, option: Option[U], function: AsyncBinary[T, U, V], null_type: Type[Null] = ...
-    ) -> Option[V]:
+    async def zip_with_await(self, option: Option[U], function: AsyncBinary[T, U, V]) -> Option[V]:
         ...
 
-    async def zip_with_await(
-        self, option: Option[U], function: AsyncBinary[T, U, V], null_type: Type[Null] = Null
-    ) -> Option[V]:
+    async def zip_with_await(self, option: Option[U], function: AsyncBinary[T, U, V]) -> Option[V]:
         if is_some(option):
             return self.create(await function(self.value, option.value))
 
-        return null_type()
+        return Null()
 
     def unzip(self: Some[Tuple[U, V]]) -> Tuple[Some[U], Some[V]]:
         u, v = self.value
 
         return self.create(u), self.create(v)
 
-    def flatten(self: Some[Option[U]]) -> Option[U]:
-        return self.value
-
-    @overload
-    def transpose(self: Some[Ok[T]]) -> Ok[Some[T]]:
-        ...
-
-    @overload
-    def transpose(self: Some[Error[E]]) -> Error[E]:
-        ...
-
-    @overload
-    def transpose(self: Some[Result[T, E]]) -> Result[Option[T], E]:
-        ...
-
-    def transpose(self: Some[Result[T, E]]) -> Result[Option[T], E]:
-        result = self.value
-
-        if is_ok(result):
-            return result.create(self.create(result.value))  # type: ignore
-
-        return result  # type: ignore
-
     def contains(self, value: U) -> bool:
         return self.value == value
 
-    @property
-    def Q(self) -> T:
+    def early(self) -> T:
         return self.value
 
 
@@ -1727,4 +1578,7 @@ def wrap_optional(optional: Optional[T]) -> Option[T]:
 
 
 # import cycle solution
-from wraps.result import Error, Ok, Result, ResultProtocol, is_ok
+from iters.async_iters import AsyncIter, async_iter
+from iters.iters import Iter, iter
+
+from wraps.result import Error, Ok, Result

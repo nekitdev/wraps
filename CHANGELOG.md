@@ -2,6 +2,12 @@
 
 <!-- changelogging: start -->
 
+## 0.3.0 (2023-01-28)
+
+### Features
+
+- Implement `Either[L, R]` type.
+
 ## 0.2.0 (2022-10-03)
 
 ### Features

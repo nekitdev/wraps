@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from abc import abstractmethod
+from abc import abstractmethod as required
 from functools import wraps
 from typing import (
     TYPE_CHECKING,
@@ -14,14 +14,14 @@ from typing import (
     TypeVar,
     Union,
     final,
-    overload,
 )
 
 from attrs import frozen
+from iters import AsyncIter, Iter, async_iter, iter, wrap_async_iter, wrap_iter
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
-from wraps.errors import ResultShortcut, panic
-from wraps.option import Null, Option, OptionProtocol, Some, is_some
+from wraps.errors import EarlyResult, panic
+from wraps.option import Null, Option, Some
 from wraps.typing import (
     AnyException,
     AsyncInspect,
@@ -47,14 +47,6 @@ F = TypeVar("F")
 V = TypeVar("V")
 
 
-def identity(value: V) -> V:
-    return value
-
-
-UNWRAP_ON_ERROR = "called `unwrap` on error"
-UNWRAP_ERROR_ON_OK = "called `unwrap_error` on ok"
-
-
 class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     def __iter__(self) -> Iterator[T]:
         return self.iter()
@@ -62,7 +54,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     def __aiter__(self) -> AsyncIterator[T]:
         return self.async_iter()
 
-    @abstractmethod
+    @required
     def is_ok(self) -> bool:
         """Checks if the result is [`Ok[T]`][wraps.result.Ok].
 
@@ -80,7 +72,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def is_ok_and(self, predicate: Predicate[T]) -> bool:
         """Checks if the result is [`Ok[T]`][wraps.result.Ok] and the value
         inside of it matches the `predicate`.
@@ -108,7 +100,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def is_ok_and_await(self, predicate: AsyncPredicate[T]) -> bool:
         """Checks if the result is [`Ok[T]`][wraps.result.Ok] and the value
         inside of it matches the asynchronous `predicate`.
@@ -137,7 +129,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def is_error(self) -> bool:
         """Checks if the result is [`Error[E]`][wraps.result.Error].
 
@@ -155,7 +147,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def is_error_and(self, predicate: Predicate[E]) -> bool:
         """Checks if the result is [`Error[E]`][wraps.result.Error] and the value
         inside of it matches the `predicate`.
@@ -183,7 +175,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def is_error_and_await(self, predicate: AsyncPredicate[E]) -> bool:
         """Checks if the result is [`Error[E]`][wraps.result.Error] and the value
         inside of it matches the asynchronous `predicate`.
@@ -212,7 +204,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def expect(self, message: str) -> T:
         """Returns the contained [`Ok[T]`][wraps.result.Ok] value.
 
@@ -240,7 +232,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def expect_error(self, message: str) -> E:
         """Returns the contained [`Error[E]`][wraps.result.Error] value.
 
@@ -268,7 +260,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def unwrap(self) -> T:
         """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`).
 
@@ -299,7 +291,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def unwrap_or(self, default: T) -> T:  # type: ignore
         """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`)
         or a provided default.
@@ -323,7 +315,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def unwrap_or_else(self, default: Nullary[T]) -> T:
         """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`) or
         computes it from the function.
@@ -344,7 +336,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def unwrap_or_else_await(self, default: AsyncNullary[T]) -> T:
         """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`) or
         computes it from the asynchronous function.
@@ -368,101 +360,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
-    def unwrap_or_raise(self, exception: AnyException) -> T:
-        """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`) or
-        raises an exception.
-
-        Example:
-            ```python
-            >>> exception = ValueError("error!")
-
-            >>> ok = Ok(42)
-            >>> ok.unwrap_or_raise(exception)
-            42
-
-            >>> error = Error(1)
-            >>> error.unwrap_or_raise(exception)
-            Traceback (most recent call last):
-              ...
-            ValueError: error!
-            ```
-
-        Arguments:
-            exception: The exception to raise.
-
-        Raises:
-            AnyException: The exception given, if result is [`Error[E]`][wraps.result.Error].
-
-        Returns:
-            The contained value.
-        """
-        ...
-
-    def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> T:
-        """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`) or
-        raises an exception computed from `function`.
-
-        Example:
-            ```python
-            >>> def function() -> ValueError:
-            ...     return ValueError("error!")
-
-            >>> ok = Ok(13)
-            >>> ok.unwrap_or_raise_with(function)
-            13
-
-            >>> error = Error(0)
-            >>> error.unwrap_or_raise_with(function)
-            Traceback (most recent call last):
-              ...
-            ValueError: error!
-            ```
-
-        Arguments:
-            function: The exception-generating function to use.
-
-        Raises:
-            AnyException: The computed exception, if result is [`Error[E]`][wraps.result.Error].
-
-        Returns:
-            The contained value.
-        """
-        ...
-
-    @abstractmethod
-    async def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> T:
-        """Returns the contained [`Ok[T]`][wraps.result.Ok] value (of type `T`) or
-        raises an exception computed from asynchronous `function`.
-
-        Example:
-            ```python
-            >>> async def function() -> ValueError:
-            ...     return ValueError("error...")
-
-            >>> ok = Ok(42)
-            >>> await ok.unwrap_or_raise_with_await(function)
-            42
-
-            >>> error = Error(5)
-            >>> await error.unwrap_or_raise_with_await(function)
-            Traceback (most recent call last):
-              ...
-            ValueError: error...
-            ```
-
-        Arguments:
-            function: The asynchronous exception-generating function to use.
-
-        Raises:
-            AnyException: The computed exception, if result is [`Error[E]`][wraps.result.Error].
-
-        Returns:
-            The contained value.
-        """
-        ...
-
-    @abstractmethod
+    @required
     def unwrap_error(self) -> E:
         """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`).
 
@@ -493,7 +391,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def unwrap_error_or(self, default: E) -> E:  # type: ignore
         """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`)
         or a provided default.
@@ -517,7 +415,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def unwrap_error_or_else(self, default: Nullary[E]) -> E:
         """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`) or
         computes it from the function.
@@ -538,7 +436,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def unwrap_error_or_else_await(self, default: AsyncNullary[E]) -> E:
         """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`) or
         computes it from the asynchronous function.
@@ -559,103 +457,14 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
             default: The asynchronous default function to use.
 
         Returns:
-            The contained error value or `await default()` one."""
-
-    @abstractmethod
-    def unwrap_error_or_raise(self, exception: AnyException) -> E:
-        """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`) or
-        raises an exception.
-
-        Example:
-            ```python
-            >>> exception = ValueError("ok!")
-
-            >>> error = Error(0)
-            >>> error.unwrap_error_or_raise(exception)
-            0
-
-            >>> ok = Ok(42)
-            >>> ok.unwrap_error_or_raise(exception)
-            Traceback (most recent call last):
-              ...
-            ValueError: ok!
-            ```
-
-        Arguments:
-            exception: The exception to raise.
-
-        Returns:
-            The contained value.
+            The contained error value or `await default()` one.
         """
         ...
 
-    def unwrap_error_or_raise_with(self, function: Nullary[AnyException]) -> E:
-        """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`) or
-        raises an exception computed from `function`.
-
-        Example:
-            ```python
-            >>> def function() -> ValueError:
-            ...     return ValueError("error!")
-
-            >>> error = Error(0)
-            >>> error.unwrap_error_or_raise_with(function)
-            0
-
-            >>> ok = Ok(42)
-            >>> ok.unwrap_error_or_raise_with(function)
-            Traceback (most recent call last):
-              ...
-            ValueError: error!
-            ```
-
-        Arguments:
-            function: The exception-generating function to use.
-
-        Raises:
-            AnyException: The computed exception, if result is [`Ok[T]`][wraps.result.Ok].
-
-        Returns:
-            The contained value.
-        """
-        ...
-
-    @abstractmethod
-    async def unwrap_error_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> E:
-        """Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`) or
-        raises an exception computed from asynchronous `function`.
-
-        Example:
-            ```python
-            >>> async def function() -> ValueError:
-            ...     return ValueError("ok...")
-
-            >>> error = Error(5)
-            >>> await error.unwrap_error_or_raise_with_await(function)
-            5
-
-            >>> ok = Ok(13)
-            >>> await ok.unwrap_error_or_raise_with_await(function)
-            Traceback (most recent call last):
-              ...
-            ValueError: ok...
-            ```
-
-        Arguments:
-            function: The asynchronous exception-generating function to use.
-
-        Raises:
-            AnyException: The computed exception, if result is [`Ok[T]`][wraps.result.Ok].
-
-        Returns:
-            The contained value.
-        """
-        ...
-
-    @abstractmethod
+    @required
     def raising(self: ResultProtocol[T, AnyException]) -> T:
         """Returns the contained [`Ok[T]`][wraps.result.Ok] value or raises the
-        contained [`Error[Exception]`][wraps.result.Error] value.
+        contained [`Error[AnyException]`][wraps.result.Error] value.
 
         Example:
             ```python
@@ -679,7 +488,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def ok(self) -> Option[T]:
         """Converts [`Result[T, E]`][wraps.result.Result] to [`Option[T]`][wraps.option.Option].
 
@@ -701,7 +510,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def error(self) -> Option[E]:
         """Converts [`Result[T, E]`][wraps.result.Result] to [`Option[E]`][wraps.option.Option].
 
@@ -724,7 +533,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def inspect(self, function: Inspect[T]) -> Result[T, E]:
         """Inspects a possibly contained [`Ok[T]`][wraps.result.Ok] value.
 
@@ -745,7 +554,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def inspect_error(self, function: Inspect[E]) -> Result[T, E]:
         """Inspects a possibly contained [`Error[E]`][wraps.result.Error] value.
 
@@ -766,7 +575,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def inspect_await(self, function: AsyncInspect[T]) -> Result[T, E]:
         """Inspects a possibly contained [`Ok[T]`][wraps.result.Ok] value.
 
@@ -790,7 +599,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def inspect_error_await(self, function: AsyncInspect[E]) -> Result[T, E]:
         """Inspects a possibly contained [`Error[E]`][wraps.result.Error] value.
 
@@ -814,7 +623,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def map(self, function: Unary[T, U]) -> Result[U, E]:
         """Maps [`Result[T, E]`][wraps.result.Result] to [`Result[U, E]`][wraps.result.Result]
         by applying `function` to the contained [`Ok[T]`][wraps.result.Ok] value,
@@ -844,7 +653,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def map_or(self, default: U, function: Unary[T, U]) -> U:
         """Returns the default value (if errored), or applies `function`
         to the contained value (if succeeded).
@@ -867,7 +676,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def map_or_else(self, default: Nullary[U], function: Unary[T, U]) -> U:
         """Computes the default value (if errored), or applies `function`
         to the contained value (if succeeded).
@@ -890,7 +699,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
         """Computes the default value (if errored), or applies the `function`
         to the contained value (if succeeded).
@@ -913,7 +722,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def map_error(self, function: Unary[E, F]) -> Result[T, F]:
         """Maps [`Result[T, E]`][wraps.result.Result] to [`Result[T, F]`][wraps.result.Result]
         by applying the `function` to the contained [`Error[E]`][wraps.result.Error] value,
@@ -941,7 +750,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def map_error_or(self, default: F, function: Unary[E, F]) -> F:
         """Returns the default value (if succeeded), or applies the `function`
         to the contained error value (if errored).
@@ -964,7 +773,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def map_error_or_else(self, default: Nullary[F], function: Unary[E, F]) -> F:
         """Computes the default value (if succeeded), or applies the `function`
         to the contained value (if errored).
@@ -987,7 +796,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_error_or_else_await(self, default: AsyncNullary[F], function: Unary[E, F]) -> F:
         """Computes the default value (if succeeded), or applies `function`
         to the contained value (if errored).
@@ -1010,7 +819,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_await(self, function: AsyncUnary[T, U]) -> Result[U, E]:
         """Maps [`Result[T, E]`][wraps.result.Result] to [`Result[U, E]`][wraps.result.Result]
         by applying the asynchronous `function` to the contained [`Ok[T]`][wraps.result.Ok] value,
@@ -1043,7 +852,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_await_or(self, default: U, function: AsyncUnary[T, U]) -> U:
         """Returns the default value (if errored), or applies the asynchronous `function`
         to the contained value (if succeeded).
@@ -1069,7 +878,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_await_or_else(self, default: Nullary[U], function: AsyncUnary[T, U]) -> U:
         """Computes the default value (if errored), or applies the asynchronous `function`
         to the contained value (if succeeded).
@@ -1095,7 +904,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_await_or_else_await(
         self, default: AsyncNullary[U], function: AsyncUnary[T, U]
     ) -> U:
@@ -1126,11 +935,11 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_error_await(self, function: AsyncUnary[E, F]) -> Result[T, F]:
         """Maps [`Result[T, E]`][wraps.result.Result] to [`Result[T, F]`][wraps.result.Result]
-        by applying the asynchronous `function` to the contained [`Error[E]`][wraps.result.Error] value,
-        leaving any [`Ok[T]`][wraps.result.Ok] untouched.
+        by applying the asynchronous `function` to the contained [`Error[E]`][wraps.result.Error]
+        value, leaving any [`Ok[T]`][wraps.result.Ok] untouched.
 
         Example:
             ```python
@@ -1157,7 +966,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_error_await_or(self, default: F, function: AsyncUnary[E, F]) -> F:
         """Returns the default value (if succeeded), or applies the asynchronous `function`
         to the contained value (if errored).
@@ -1183,7 +992,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_error_await_or_else(self, default: Nullary[F], function: AsyncUnary[E, F]) -> F:
         """Computes the default value (if succeeded), or applies the asynchronous `function`
         to the contained value (if errored).
@@ -1209,7 +1018,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def map_error_await_or_else_await(
         self, default: AsyncNullary[F], function: AsyncUnary[E, F]
     ) -> F:
@@ -1240,18 +1049,18 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
-    def iter(self) -> Iterator[T]:
+    @required
+    def iter(self) -> Iter[T]:
         """Returns an iterator over the possibly contained value.
 
         Example:
             ```python
             >>> ok = Ok(42)
-            >>> next(ok.iter())
+            >>> ok.iter().next()
             42
 
             >>> error = Error(0)
-            >>> next(error.iter())
+            >>> error.iter().next()
             Traceback (most recent call last):
               ...
             StopIteration
@@ -1262,18 +1071,18 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
-    def iter_error(self) -> Iterator[E]:
+    @required
+    def iter_error(self) -> Iter[E]:
         """Returns an iterator over the possibly contained error value.
 
         Example:
             ```python
             >>> error = Error(13)
-            >>> next(error.iter_error())
+            >>> error.iter_error().next()
             13
 
             >>> ok = Ok(1)
-            >>> next(ok.iter_error())
+            >>> ok.iter_error().next()
             Traceback (most recent call last):
               ...
             StopIteration
@@ -1284,19 +1093,19 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
-    def async_iter(self) -> AsyncIterator[T]:
+    @required
+    def async_iter(self) -> AsyncIter[T]:
         """Returns an asynchronous iterator over the possibly contained
         [`Ok[T]`][wraps.result.Ok] value.
 
         Example:
             ```python
             >>> ok = Ok(42)
-            >>> await anext(ok.async_iter())
+            >>> await ok.async_iter().next()
             42
 
             >>> error = Error(13)
-            >>> await anext(error.async_iter())
+            >>> await error.async_iter().next()
             Traceback (most recent call last):
               ...
             StopAsyncIteration
@@ -1307,19 +1116,19 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
-    def async_iter_error(self) -> AsyncIterator[E]:
+    @required
+    def async_iter_error(self) -> AsyncIter[E]:
         """Returns an asynchronous iterator over the possibly contained
         [`Error[E]`][wraps.result.Error] value.
 
         Example:
             ```python
             >>> error = Error(0)
-            >>> await anext(error.async_iter_error())
+            >>> await error.async_iter_error().next()
             0
 
             >>> ok = Ok(13)
-            >>> await anext(ok.async_iter_error())
+            >>> await ok.async_iter_error().next()
             Traceback (most recent call last):
               ...
             StopAsyncIteration
@@ -1330,7 +1139,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def and_then(self, function: Unary[T, Result[U, E]]) -> Result[U, E]:
         """Returns [`Error[E]`][wraps.result.Error] if the result
         is [`Error[E]`][wraps.result.Error], otherwise calls the `function`
@@ -1361,7 +1170,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def and_then_await(self, function: AsyncUnary[T, Result[U, E]]) -> Result[U, E]:
         """Returns [`Error[E]`][wraps.result.Error] if the result
         is [`Error[E]`][wraps.result.Error], otherwise calls the asynchronous `function`
@@ -1391,7 +1200,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def or_else(self, function: Unary[E, Result[T, F]]) -> Result[T, F]:
         """Returns [`Ok[T]`][wraps.result.Ok] if the result
         is [`Ok[T]`][wraps.result.Ok], otherwise calls the `function`
@@ -1421,7 +1230,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     async def or_else_await(self, function: AsyncUnary[E, Result[T, F]]) -> Result[T, F]:
         """Returns [`Ok[T]`][wraps.result.Ok] if the result
         is [`Ok[T]`][wraps.result.Ok], otherwise calls the asynchronous `function`
@@ -1501,31 +1310,32 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         return self.or_else(identity)  # type: ignore
 
-    @abstractmethod
-    def transpose(self: ResultProtocol[OptionProtocol[T], E]) -> Option[Result[T, E]]:
-        """Transposes a result of an option into option of a result.
-        This function maps [`Result[Option[T], E]`][wraps.result.Result] into
-        [`Option[Result[T, E]]`][wraps.option.Option] in the following way:
+    # @required
+    # def transpose(self: ResultProtocol[OptionProtocol[T], E]) -> Option[Result[T, E]]:
+    #     """Transposes a result of an option into option of a result.
+    #     This function maps [`Result[Option[T], E]`][wraps.result.Result] into
+    #     [`Option[Result[T, E]]`][wraps.option.Option] in the following way:
 
-        - [`Ok(Null())`][wraps.result.Ok] is mapped to [`Null()`][wraps.option.Null];
-        - [`Ok(Some(value))`][wraps.result.Ok] is mapped to [`Some(Ok(value))`][wraps.option.Some];
-        - [`Error(error)`][wraps.result.Error] is mapped to
-          [`Some(Error(error))`][wraps.option.Some].
+    #     - [`Ok(Null())`][wraps.result.Ok] is mapped to [`Null()`][wraps.option.Null];
+    #     - [`Ok(Some(value))`][wraps.result.Ok] is mapped to
+    #       [`Some(Ok(value))`][wraps.option.Some];
+    #     - [`Error(error)`][wraps.result.Error] is mapped to
+    #       [`Some(Error(error))`][wraps.option.Some].
 
-        Example:
-            ```python
-            result = Ok(Some(64))
-            option = Some(Ok(64))
+    #     Example:
+    #         ```python
+    #         result = Ok(Some(64))
+    #         option = Some(Ok(64))
 
-            assert result.transpose() == option
-            ```
+    #         assert result.transpose() == option
+    #         ```
 
-        Returns:
-            The transposed option.
-        """
-        ...
+    #     Returns:
+    #         The transposed option.
+    #     """
+    #     ...
 
-    @abstractmethod
+    @required
     def contains(self, value: U) -> bool:
         """Checks if the contained value is equal to `value`.
 
@@ -1550,7 +1360,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def contains_error(self, error: F) -> bool:
         """Checks if the contained error value is equal to `error`.
 
@@ -1575,7 +1385,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def flip(self) -> Result[E, T]:
         """Converts [`Result[T, E]`][wraps.result.Result] to [`Result[E, T]`][wraps.result.Result].
 
@@ -1597,10 +1407,10 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @abstractmethod
+    @required
     def into_ok_or_error(self: ResultProtocol[V, V]) -> V:
-        """Returns the [`Ok[V]`][wraps.result.Ok] value if `self` is [`Ok[V]`][wraps.result.Ok],
-        and the [`Error[V]`][wraps.result.Error] value if `self` is [`Error[V]`][wraps.result.Error].
+        """Returns the [`Ok[V]`][wraps.result.Ok] value if `self` is [`Ok[V]`][wraps.result.Ok], and
+        the [`Error[V]`][wraps.result.Error] value if `self` is [`Error[V]`][wraps.result.Error].
 
         In other words, this function returns the value (of type `V`) of
         a [`Result[V, V]`][wraps.result.Result], regardless of whether or not that result
@@ -1618,10 +1428,21 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         ...
 
-    @property
-    @abstractmethod
-    def Q(self) -> T:
+    @required
+    def into_either(self) -> Either[T, E]:
         ...
+
+    @required
+    def early(self) -> T:
+        """Functionally similar to `?` operator in Rust.
+
+        See [early](/reference/early) for more information.
+        """
+        ...
+
+
+UNWRAP_ON_ERROR = "called `unwrap` on error"
+UNWRAP_ERROR_ON_OK = "called `unwrap_error` on ok"
 
 
 @final
@@ -1671,15 +1492,6 @@ class Ok(ResultProtocol[T, Never]):
     async def unwrap_or_else_await(self, default: AsyncNullary[U]) -> T:
         return self.value
 
-    def unwrap_or_raise(self, exception: AnyException) -> T:
-        return self.value
-
-    def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> T:
-        return self.value
-
-    async def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> T:
-        return self.value
-
     def unwrap_error(self) -> Never:
         panic(UNWRAP_ERROR_ON_OK)
 
@@ -1691,15 +1503,6 @@ class Ok(ResultProtocol[T, Never]):
 
     async def unwrap_error_or_else_await(self, default: AsyncNullary[F]) -> F:
         return await default()
-
-    def unwrap_error_or_raise(self, exception: AnyException) -> Never:
-        raise exception
-
-    def unwrap_error_or_raise_with(self, function: Nullary[AnyException]) -> Never:
-        raise function()
-
-    async def unwrap_error_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> Never:
-        raise await function()
 
     def raising(self) -> T:
         return self.value
@@ -1778,19 +1581,21 @@ class Ok(ResultProtocol[T, Never]):
     ) -> F:
         return await default()
 
+    @wrap_iter
     def iter(self) -> Iterator[T]:
         yield self.value
 
+    @wrap_iter
     def iter_error(self) -> Iterator[Never]:
-        return
-        yield  # type: ignore
+        return iter.empty().unwrap()
 
+    @wrap_async_iter
     async def async_iter(self) -> AsyncIterator[T]:
         yield self.value
 
-    async def async_iter_error(self) -> AsyncIterator[Never]:
-        return
-        yield  # type: ignore
+    @wrap_async_iter
+    def async_iter_error(self) -> AsyncIterator[Never]:
+        return async_iter.empty().unwrap()
 
     def and_then(self, function: Unary[T, Result[U, E]]) -> Result[U, E]:
         return function(self.value)
@@ -1803,26 +1608,6 @@ class Ok(ResultProtocol[T, Never]):
 
     async def or_else_await(self, function: AsyncUnary[E, Result[T, F]]) -> Ok[T]:
         return self
-
-    @overload
-    def transpose(self: Ok[Some[T]]) -> Some[Ok[T]]:
-        ...
-
-    @overload
-    def transpose(self: Ok[Null]) -> Null:
-        ...
-
-    @overload
-    def transpose(self: Ok[Option[T]]) -> Option[Ok[T]]:
-        ...
-
-    def transpose(self: Ok[Option[T]]) -> Option[Ok[T]]:
-        option = self.value
-
-        if is_some(option):
-            return option.create(self.create(option.value))  # type: ignore
-
-        return option  # type: ignore
 
     def contains(self, value: U) -> bool:
         return self.value == value
@@ -1839,8 +1624,10 @@ class Ok(ResultProtocol[T, Never]):
     def into_ok_or_error(self: Ok[V]) -> V:
         return self.value
 
-    @property
-    def Q(self) -> T:
+    def into_either(self) -> Left[T]:
+        return Left(self.value)
+
+    def early(self) -> T:
         return self.value
 
 
@@ -1903,15 +1690,6 @@ class Error(ResultProtocol[Never, E]):
     async def unwrap_or_else_await(self, default: AsyncNullary[U]) -> U:
         return await default()
 
-    def unwrap_or_raise(self, exception: AnyException) -> Never:
-        raise exception
-
-    def unwrap_or_raise_with(self, function: Nullary[AnyException]) -> Never:
-        raise function()
-
-    async def unwrap_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> Never:
-        raise await function()
-
     def unwrap_error_or(self, default: F) -> E:
         return self.value
 
@@ -1919,15 +1697,6 @@ class Error(ResultProtocol[Never, E]):
         return self.value
 
     async def unwrap_error_or_else_await(self, default: AsyncNullary[F]) -> E:
-        return self.value
-
-    def unwrap_error_or_raise(self, exception: AnyException) -> E:
-        return self.value
-
-    def unwrap_error_or_raise_with(self, function: Nullary[AnyException]) -> E:
-        return self.value
-
-    async def unwrap_error_or_raise_with_await(self, function: AsyncNullary[AnyException]) -> E:
         return self.value
 
     def raising(self: Error[AnyException]) -> Never:
@@ -2001,19 +1770,17 @@ class Error(ResultProtocol[Never, E]):
     ) -> F:
         return await function(self.value)
 
-    def iter(self) -> Iterator[Never]:
-        return
-        yield  # type: ignore
+    def iter(self) -> Iter[Never]:
+        return iter.empty()
 
-    def iter_error(self) -> Iterator[E]:
-        yield self.value
+    def iter_error(self) -> Iter[E]:
+        return iter.once(self.value)
 
-    async def async_iter(self) -> AsyncIterator[Never]:
-        return
-        yield  # type: ignore
+    def async_iter(self) -> AsyncIter[Never]:
+        return async_iter.empty()
 
-    async def async_iter_error(self) -> AsyncIterator[E]:
-        yield self.value
+    def async_iter_error(self) -> AsyncIter[E]:
+        return async_iter.once(self.value)
 
     def and_then(self, function: Unary[T, Result[U, E]]) -> Error[E]:
         return self
@@ -2027,27 +1794,23 @@ class Error(ResultProtocol[Never, E]):
     async def or_else_await(self, function: AsyncUnary[E, Result[T, F]]) -> Result[T, F]:
         return await function(self.value)
 
-    def transpose(self: Error[E], some_type: Type[Some[Error[E]]] = Some) -> Some[Error[E]]:
-        return some_type(self)
-
     def contains(self, value: U) -> Literal[False]:
         return False
 
     def contains_error(self, error: F) -> bool:
         return self.value == error
 
-    def flip(self, ok_type: Optional[Type[Ok[E]]] = None) -> Ok[E]:
-        if ok_type is None:
-            ok_type = Ok[E]
-
-        return ok_type(self.value)
+    def flip(self) -> Ok[E]:
+        return Ok(self.value)
 
     def into_ok_or_error(self: Error[V]) -> V:
         return self.value
 
-    @property
-    def Q(self) -> Never:
-        raise ResultShortcut(self.value)
+    def into_either(self) -> Right[E]:
+        return Right(self.value)
+
+    def early(self) -> Never:
+        raise EarlyResult(self.value)
 
 
 Result = Union[Ok[T], Error[E]]
@@ -2230,3 +1993,7 @@ if TYPE_CHECKING:
 
 else:
     wrap_result_await = WrapResultAwait(Exception)
+
+
+# import cycle solution
+from wraps.either import Either, Left, Right

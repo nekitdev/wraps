@@ -3,11 +3,11 @@ from typing import Callable, TypeVar
 
 from typing_extensions import ParamSpec
 
-from wraps.errors import OptionShortcut, ResultShortcut
+from wraps.errors import EarlyOption, EarlyResult
 from wraps.option import Null, Option
 from wraps.result import Error, Result
 
-__all__ = ("option_shortcut", "result_shortcut")
+__all__ = ("early_option", "early_result")
 
 P = ParamSpec("P")
 
@@ -16,9 +16,9 @@ T = TypeVar("T")
 E = TypeVar("E")
 
 
-def option_shortcut(function: Callable[P, Option[T]]) -> Callable[P, Option[T]]:
+def early_option(function: Callable[P, Option[T]]) -> Callable[P, Option[T]]:
     """Decorates the `function` returning [`Option[T]`][wraps.result.Option]
-    to handle *early returns* via `Q` (`?` in Rust) operator.
+    to handle *early returns* via `early` (`?` in Rust) operator.
 
     Arguments:
         function: The function to wrap.
@@ -32,15 +32,15 @@ def option_shortcut(function: Callable[P, Option[T]]) -> Callable[P, Option[T]]:
         try:
             return function(*args, **kwargs)
 
-        except OptionShortcut:
+        except EarlyOption:
             return Null()
 
     return wrap
 
 
-def result_shortcut(function: Callable[P, Result[T, E]]) -> Callable[P, Result[T, E]]:
+def early_result(function: Callable[P, Result[T, E]]) -> Callable[P, Result[T, E]]:
     """Decorates the `function` returning [`Result[T, E]`][wraps.result.Result]
-    to handle *early returns* via `Q` (`?` in Rust) operator.
+    to handle *early returns* via `early` (`?` in Rust) operator.
 
     Arguments:
         function: The function to wrap.
@@ -54,7 +54,7 @@ def result_shortcut(function: Callable[P, Result[T, E]]) -> Callable[P, Result[T
         try:
             return function(*args, **kwargs)
 
-        except ResultShortcut[E] as shortcut:
-            return Error(shortcut.error)
+        except EarlyResult[E] as early:
+            return Error(early.error)
 
     return wrap
