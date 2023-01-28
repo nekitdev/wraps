@@ -33,6 +33,7 @@ include = "wraps"
 python = ">= 3.7"
 
 attrs = ">= 22.2.0"
+iters = ">= 0.10.0"
 
 typing-extensions = ">= 4.3.0"
 
