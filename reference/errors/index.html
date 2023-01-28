@@ -323,8 +323,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../shortcuts/" class="md-nav__link">
-        Shortcuts
+      <a href="../either/" class="md-nav__link">
+        Either
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../early/" class="md-nav__link">
+        Early
       </a>
     </li>
   
@@ -367,6 +381,20 @@
     <li class="md-nav__item">
       <a href="../future_result/" class="md-nav__link">
         Future Result
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../future_either.md" class="md-nav__link">
+        Future Either
       </a>
     </li>
   
@@ -426,6 +454,20 @@
   
 </nav>
       
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../typing/" class="md-nav__link">
+        Typing
+      </a>
     </li>
   
 
@@ -587,27 +629,27 @@
 
   <div class="doc doc-contents ">
       <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#BaseException">BaseException</a></code></p>
+        Bases: <code><a class="autorefs autorefs-internal" title="wraps.typing.AnyException" href="../typing/#wraps.typing.AnyException">AnyException</a></code></p>
 
   
       <p>Represents the panic as an error.</p>
 <p>Panics should not be explicitly handled in general, therefore <a class="autorefs autorefs-internal" href="#wraps.errors.Panic"><code>Panic</code></a>
-is derived from <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#BaseException"><code>BaseException</code></a> instead of <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#Exception"><code>Exception</code></a>.</p>
+is derived from <a class="autorefs autorefs-internal" href="../typing/#wraps.typing.AnyException"><code>AnyException</code></a> instead of <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#Exception"><code>Exception</code></a>.</p>
 
 
         <details class="quote">
           <summary>Source code in <code>wraps/errors.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-10">10</a></span>
 <span class="normal"><a href="#__codelineno-0-11">11</a></span>
 <span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="k">class</span> <span class="nc">Panic</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="sd">&quot;&quot;&quot;Represents the panic as an error.</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">    Panics should not be explicitly handled in general, therefore [`Panic`][wraps.errors.Panic]</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">    is derived from [`BaseException`][BaseException] instead of [`Exception`][Exception].</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="sd">    &quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="k">class</span> <span class="nc">Panic</span><span class="p">(</span><span class="n">AnyException</span><span class="p">):</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents the panic as an error.</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="sd">    Panics should not be explicitly handled in general, therefore [`Panic`][wraps.errors.Panic]</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="sd">    is derived from [`AnyException`][wraps.typing.AnyException] instead of [`Exception`][Exception].</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="sd">    &quot;&quot;&quot;</span>
 </code></pre></div></td></tr></table></div>
         </details>
 
@@ -659,13 +701,13 @@ is derived from <a class="autorefs autorefs-external" href="https://docs.python.
       
       
         
-        <a href="../../changelog/" class="md-footer__link md-footer__link--next" aria-label="Next: Changelog" rel="next">
+        <a href="../typing/" class="md-footer__link md-footer__link--next" aria-label="Next: Typing" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Changelog
+              Typing
             </div>
           </div>
           <div class="md-footer__button md-icon">
