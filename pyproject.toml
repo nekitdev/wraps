@@ -50,7 +50,7 @@ version = "5.11.4"
 optional = true
 
 [tool.poetry.group.check.dependencies]
-mypy = "0.991"
+mypy = "1.2.0"
 
 [tool.poetry.group.test]
 optional = true
