@@ -4,7 +4,7 @@ from functools import wraps
 from typing import AsyncIterator, Awaitable, Callable, Generator, TypeVar
 
 from attrs import define, field, frozen
-from iters import AsyncIter, async_iter, async_next_unchecked
+from iters.async_iters import AsyncIter, async_iter, async_next_unchecked
 from typing_extensions import ParamSpec
 
 from wraps.option import Null, Option, Some, is_null

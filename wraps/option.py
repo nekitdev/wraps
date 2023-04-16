@@ -58,6 +58,8 @@ from typing import (
 )
 
 from attrs import frozen
+from iters.async_iters import AsyncIter, async_iter
+from iters.iters import Iter, iter
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
 from wraps.errors import EarlyOption, panic
@@ -1578,7 +1580,5 @@ def wrap_optional(optional: Optional[T]) -> Option[T]:
 
 
 # import cycle solution
-from iters.async_iters import AsyncIter, async_iter
-from iters.iters import Iter, iter
 
 from wraps.result import Error, Ok, Result

@@ -3,13 +3,11 @@ from __future__ import annotations
 from abc import abstractmethod as required
 from functools import wraps
 from typing import (
-    TYPE_CHECKING,
     AsyncIterator,
     Awaitable,
     Callable,
     Generic,
     Iterator,
-    Optional,
     Type,
     TypeVar,
     Union,
@@ -17,7 +15,8 @@ from typing import (
 )
 
 from attrs import frozen
-from iters import AsyncIter, Iter, async_iter, iter, wrap_async_iter, wrap_iter
+from iters.async_iters import AsyncIter, async_iter
+from iters.iters import Iter, iter
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
 from wraps.errors import EarlyResult, panic
@@ -1581,21 +1580,17 @@ class Ok(ResultProtocol[T, Never]):
     ) -> F:
         return await default()
 
-    @wrap_iter
-    def iter(self) -> Iterator[T]:
-        yield self.value
+    def iter(self) -> Iter[T]:
+        return iter.once(self.value)
 
-    @wrap_iter
-    def iter_error(self) -> Iterator[Never]:
-        return iter.empty().unwrap()
+    def iter_error(self) -> Iter[Never]:
+        return iter.empty()
 
-    @wrap_async_iter
-    async def async_iter(self) -> AsyncIterator[T]:
-        yield self.value
+    async def async_iter(self) -> AsyncIter[T]:
+        return async_iter.once(self.value)
 
-    @wrap_async_iter
-    def async_iter_error(self) -> AsyncIterator[Never]:
-        return async_iter.empty().unwrap()
+    def async_iter_error(self) -> AsyncIter[Never]:
+        return async_iter.empty()
 
     def and_then(self, function: Unary[T, Result[U, E]]) -> Result[U, E]:
         return function(self.value)
@@ -1615,11 +1610,8 @@ class Ok(ResultProtocol[T, Never]):
     def contains_error(self, error: F) -> Literal[False]:
         return False
 
-    def flip(self, error_type: Optional[Type[Error[T]]] = None) -> Error[T]:
-        if error_type is None:
-            error_type = Error[T]
-
-        return error_type(self.value)
+    def flip(self) -> Error[T]:
+        return Error(self.value)
 
     def into_ok_or_error(self: Ok[V]) -> V:
         return self.value
@@ -1880,38 +1872,7 @@ class WrapResult(Generic[ET]):
         return self.create(error_type)
 
 
-if TYPE_CHECKING:
-
-    def wrap_result(function: Callable[P, T]) -> Callable[P, Result[T, Exception]]:
-        """Wraps a `function` returning `T` into a function returning
-        [`Result[T, ET]`][wraps.result.Result].
-
-        By default `ET` is [`Exception`][Exception], so this function returns
-        [`Result[T, Exception]`][wraps.result.Result] unless specified otherwise.
-
-        This handles exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,
-        wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].
-
-        Example:
-            ```python
-            @wrap_result[ValueError]
-            def parse(string: str) -> int:
-                return int(string)
-
-            assert parse("512").is_ok()
-            assert parse("uwu").is_error()
-            ```
-
-        Arguments:
-            function: The function to wrap.
-
-        Returns:
-            The wrapping function.
-        """
-        ...
-
-else:
-    wrap_result = WrapResult(Exception)
+wrap_result = WrapResult(Exception)
 
 
 @final
@@ -1959,40 +1920,7 @@ class WrapResultAwait(Generic[ET]):
         return self.create(error_type)
 
 
-if TYPE_CHECKING:
-
-    def wrap_result_await(
-        function: Callable[P, Awaitable[T]]
-    ) -> Callable[P, Awaitable[Result[T, Exception]]]:
-        """Wraps an asynchronous `function` returning `T` into an asynchronous function returning
-        [`Result[T, ET]`][wraps.result.Result].
-
-        By default `ET` is [`Exception`][Exception], so this function returns
-        [`Result[T, Exception]`][wraps.result.Result] unless specified otherwise.
-
-        This handles exceptions via returning [`Error(error)`][wraps.result.Error] on `error`,
-        wrapping the resulting `value` into [`Ok(value)`][wraps.result.Ok].
-
-        Example:
-            ```python
-            @wrap_result_await[ValueError]
-            async def parse(string: str) -> int:
-                return int(string)
-
-            assert (await parse("512")).is_ok()
-            assert (await parse("uwu")).is_error()
-            ```
-
-        Arguments:
-            function: The asynchronous function to wrap.
-
-        Returns:
-            The asynchronous wrapping function.
-        """
-        ...
-
-else:
-    wrap_result_await = WrapResultAwait(Exception)
+wrap_result_await = WrapResultAwait(Exception)
 
 
 # import cycle solution

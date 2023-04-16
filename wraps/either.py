@@ -4,7 +4,8 @@ from abc import abstractmethod as required
 from typing import TypeVar, Union
 
 from attrs import frozen
-from iters import AsyncIter, Iter, async_iter, iter
+from iters.async_iters import AsyncIter, async_iter
+from iters.iters import Iter, iter
 from typing_extensions import Literal, Never, Protocol, TypeGuard, final
 
 from wraps.errors import panic
