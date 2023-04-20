@@ -4,11 +4,11 @@ from functools import wraps
 from typing import AsyncIterator, Awaitable, Callable, Generator, TypeVar
 
 from attrs import define, field, frozen
-from iters.async_iters import AsyncIter, async_iter, async_next_unchecked
+from async_extensions.standard import async_next
+from funcs.typing import AsyncUnary, Unary
 from typing_extensions import ParamSpec
 
 from wraps.option import Null, Option, Some, is_null
-from wraps.typing import AsyncUnary, Unary
 from wraps.utils import async_identity, identity
 
 __all__ = ("ReAwaitable", "Future", "wrap_future")
@@ -48,11 +48,19 @@ class Future(Awaitable[T]):
 
     @classmethod
     def create(cls, awaitable: Awaitable[U]) -> Future[U]:
+        """Creates [`Future[U]`][wraps.future.Future] from [`Awaitable[U]`][typing.Awaitable].
+
+        Arguments:
+            awaitable: The awaitable to wrap.
+
+        Returns:
+            The future wrapping the given awaitable.
+        """
         return cls(awaitable)  # type: ignore
 
     def map_future(self, function: Unary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to [`Future[U]`][wraps.future.Future]
-        by applying `function` to the result.
+        by applying the `function` to the result.
 
         Arguments:
             function: The function to apply.
@@ -64,7 +72,7 @@ class Future(Awaitable[T]):
 
     def map_future_await(self, function: AsyncUnary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to [`Future[U]`][wraps.future.Future]
-        by applying an asynchronous `function` to the result.
+        by applying the asynchronous `function` to the result.
 
         Arguments:
             function: The asynchronous function to apply.
@@ -99,18 +107,15 @@ class Future(Awaitable[T]):
         return self.then_future(identity)
 
     def __aiter__(self) -> AsyncIterator[T]:
-        return self.async_iter().unwrap()
+        return self.async_iter()
 
-    def async_iter(self) -> AsyncIter[T]:
+    async def async_iter(self) -> AsyncIterator[T]:
         """Returns an asynchronous iterator over the result of this
         [`Future[T]`][wraps.future.Future].
 
         Returns:
             An asynchronous iterator over the result of the future.
         """
-        return async_iter(self.actual_async_iter())
-
-    async def actual_async_iter(self) -> AsyncIterator[T]:
         yield await self.awaitable
 
     @classmethod
@@ -140,7 +145,7 @@ class Future(Awaitable[T]):
 
     @classmethod
     async def actual_do(cls, async_iterator: AsyncIterator[U]) -> U:
-        return await async_next_unchecked(async_iterator)
+        return await async_next(async_iterator)
 
     @classmethod
     def from_value(cls, value: U) -> Future[U]:
@@ -199,6 +204,6 @@ def wrap_future(function: Callable[P, Awaitable[T]]) -> Callable[P, Future[T]]:
 
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> Future[T]:
-        return Future.create(function(*args, **kwargs))
+        return Future(function(*args, **kwargs))  # type: ignore
 
     return wrap

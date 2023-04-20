@@ -15,14 +15,8 @@ from typing import (
 )
 
 from attrs import frozen
-from iters.async_iters import AsyncIter, async_iter
-from iters.iters import Iter, iter
-from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
-
-from wraps.errors import EarlyResult, panic
-from wraps.option import Null, Option, Some
-from wraps.typing import (
-    AnyException,
+from funcs.typing import (
+    AnyError,
     AsyncInspect,
     AsyncNullary,
     AsyncPredicate,
@@ -32,6 +26,11 @@ from wraps.typing import (
     Predicate,
     Unary,
 )
+from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
+
+from wraps.errors import EarlyResult, panic
+from wraps.option import Null, Option, Some
+from wraps.utils import async_empty, async_once, empty, once
 
 __all__ = ("Result", "Ok", "Error", "is_ok", "is_error", "wrap_result")
 
@@ -461,9 +460,9 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         ...
 
     @required
-    def raising(self: ResultProtocol[T, AnyException]) -> T:
+    def raising(self: ResultProtocol[T, AnyError]) -> T:
         """Returns the contained [`Ok[T]`][wraps.result.Ok] value or raises the
-        contained [`Error[AnyException]`][wraps.result.Error] value.
+        contained [`Error[AnyError]`][wraps.result.Error] value.
 
         Example:
             ```python
@@ -479,8 +478,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
             ```
 
         Raises:
-            AnyException: The contained exception, if the result
-                is [`Error[AnyException]`][wraps.result.Error].
+            AnyError: The contained error, if the result is [`Error[AnyError]`][wraps.result.Error].
 
         Returns:
             The contained value.
@@ -1049,7 +1047,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         ...
 
     @required
-    def iter(self) -> Iter[T]:
+    def iter(self) -> Iterator[T]:
         """Returns an iterator over the possibly contained value.
 
         Example:
@@ -1071,7 +1069,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         ...
 
     @required
-    def iter_error(self) -> Iter[E]:
+    def iter_error(self) -> Iterator[E]:
         """Returns an iterator over the possibly contained error value.
 
         Example:
@@ -1093,7 +1091,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         ...
 
     @required
-    def async_iter(self) -> AsyncIter[T]:
+    def async_iter(self) -> AsyncIterator[T]:
         """Returns an asynchronous iterator over the possibly contained
         [`Ok[T]`][wraps.result.Ok] value.
 
@@ -1116,7 +1114,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         ...
 
     @required
-    def async_iter_error(self) -> AsyncIter[E]:
+    def async_iter_error(self) -> AsyncIterator[E]:
         """Returns an asynchronous iterator over the possibly contained
         [`Error[E]`][wraps.result.Error] value.
 
@@ -1580,17 +1578,17 @@ class Ok(ResultProtocol[T, Never]):
     ) -> F:
         return await default()
 
-    def iter(self) -> Iter[T]:
-        return iter.once(self.value)
+    def iter(self) -> Iterator[T]:
+        return once(self.value)
 
-    def iter_error(self) -> Iter[Never]:
-        return iter.empty()
+    def iter_error(self) -> Iterator[Never]:
+        return empty()
 
-    async def async_iter(self) -> AsyncIter[T]:
-        return async_iter.once(self.value)
+    def async_iter(self) -> AsyncIterator[T]:
+        return async_once(self.value)
 
-    def async_iter_error(self) -> AsyncIter[Never]:
-        return async_iter.empty()
+    def async_iter_error(self) -> AsyncIterator[Never]:
+        return async_empty()
 
     def and_then(self, function: Unary[T, Result[U, E]]) -> Result[U, E]:
         return function(self.value)
@@ -1691,7 +1689,7 @@ class Error(ResultProtocol[Never, E]):
     async def unwrap_error_or_else_await(self, default: AsyncNullary[F]) -> E:
         return self.value
 
-    def raising(self: Error[AnyException]) -> Never:
+    def raising(self: Error[AnyError]) -> Never:
         raise self.value
 
     def inspect(self, function: Inspect[T]) -> Error[E]:
@@ -1762,17 +1760,17 @@ class Error(ResultProtocol[Never, E]):
     ) -> F:
         return await function(self.value)
 
-    def iter(self) -> Iter[Never]:
-        return iter.empty()
+    def iter(self) -> Iterator[Never]:
+        return empty()
 
-    def iter_error(self) -> Iter[E]:
-        return iter.once(self.value)
+    def iter_error(self) -> Iterator[E]:
+        return once(self.value)
 
-    def async_iter(self) -> AsyncIter[Never]:
-        return async_iter.empty()
+    def async_iter(self) -> AsyncIterator[Never]:
+        return async_empty()
 
-    def async_iter_error(self) -> AsyncIter[E]:
-        return async_iter.once(self.value)
+    def async_iter_error(self) -> AsyncIterator[E]:
+        return async_once(self.value)
 
     def and_then(self, function: Unary[T, Result[U, E]]) -> Error[E]:
         return self
@@ -1825,8 +1823,8 @@ def is_error(result: Result[T, E]) -> TypeGuard[Error[E]]:
     return result.is_error()
 
 
-ET = TypeVar("ET", bound=AnyException)
-FT = TypeVar("FT", bound=AnyException)
+ET = TypeVar("ET", bound=AnyError)
+FT = TypeVar("FT", bound=AnyError)
 
 
 @final

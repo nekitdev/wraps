@@ -4,12 +4,7 @@ from functools import wraps
 from typing import Awaitable, Callable, TypeVar
 
 from attrs import field, frozen
-from typing_extensions import Never, ParamSpec
-
-from wraps.future import Future, ReAwaitable, identity
-from wraps.option import Null, Option, Some, is_null, is_some
-from wraps.result import Result
-from wraps.typing import (
+from funcs.typing import (
     AsyncInspect,
     AsyncNullary,
     AsyncPredicate,
@@ -19,6 +14,11 @@ from wraps.typing import (
     Predicate,
     Unary,
 )
+from typing_extensions import Never, ParamSpec
+
+from wraps.future import Future, ReAwaitable, identity
+from wraps.option import Null, Option, Some, is_null, is_some
+from wraps.result import Result
 
 __all__ = ("FutureOption", "wrap_future_option")
 

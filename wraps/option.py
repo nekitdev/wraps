@@ -48,9 +48,11 @@ from typing import (
     AsyncIterator,
     Awaitable,
     Callable,
+    Generic,
     Iterator,
     Optional,
     Tuple,
+    Type,
     TypeVar,
     Union,
     final,
@@ -58,12 +60,9 @@ from typing import (
 )
 
 from attrs import frozen
-from iters.async_iters import AsyncIter, async_iter
-from iters.iters import Iter, iter
-from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
-
-from wraps.errors import EarlyOption, panic
-from wraps.typing import (
+from funcs.decorators import wraps
+from funcs.typing import (
+    AnyError,
     AsyncBinary,
     AsyncInspect,
     AsyncNullary,
@@ -75,7 +74,10 @@ from wraps.typing import (
     Predicate,
     Unary,
 )
-from wraps.utils import identity
+from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
+
+from wraps.errors import EarlyOption, panic
+from wraps.utils import async_empty, async_once, empty, identity, once
 
 __all__ = (
     "Option",
@@ -99,10 +101,10 @@ E = TypeVar("E")
 
 class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     def __iter__(self) -> Iterator[T]:
-        return self.iter().unwrap()
+        return self.iter()
 
     def __aiter__(self) -> AsyncIterator[T]:
-        return self.async_iter().unwrap()
+        return self.async_iter()
 
     @required
     def is_some(self) -> bool:
@@ -690,7 +692,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         ...
 
     @required
-    def iter(self) -> Iter[T]:
+    def iter(self) -> Iterator[T]:
         """Returns an iterator over the possibly contained value.
 
         Example:
@@ -712,7 +714,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         ...
 
     @required
-    def async_iter(self) -> AsyncIter[T]:
+    def async_iter(self) -> AsyncIterator[T]:
         """Returns an asynchronous iterator over the possibly contained value.
 
         Example:
@@ -1242,19 +1244,11 @@ class Null(OptionProtocol[Never]):
     async def ok_or_else_await(self, error: AsyncNullary[E]) -> Error[E]:
         return Error(await error())
 
-    def iter(self) -> Iter[Never]:
-        return iter(self.actual_iter())
+    def iter(self) -> Iterator[Never]:
+        return empty()
 
-    def async_iter(self) -> AsyncIter[Never]:
-        return async_iter(self.actual_async_iter())
-
-    def actual_iter(self) -> Iterator[Never]:
-        return
-        yield  # type: ignore
-
-    async def actual_async_iter(self) -> AsyncIterator[Never]:
-        return
-        yield  # type: ignore
+    def async_iter(self) -> AsyncIterator[Never]:
+        return async_empty()
 
     def and_then(self, function: Unary[T, Option[U]]) -> Null:
         return self
@@ -1385,17 +1379,11 @@ class Some(OptionProtocol[T]):
     async def ok_or_else_await(self, error: AsyncNullary[E]) -> Ok[T]:
         return Ok(self.value)
 
-    def iter(self) -> Iter[T]:
-        return iter(self.actual_iter())
+    def iter(self) -> Iterator[T]:
+        return once(self.value)
 
-    def async_iter(self) -> AsyncIter[T]:
-        return async_iter(self.actual_async_iter())
-
-    def actual_iter(self) -> Iterator[T]:
-        yield self.value
-
-    async def actual_async_iter(self) -> AsyncIterator[T]:
-        yield self.value
+    def async_iter(self) -> AsyncIterator[T]:
+        return async_once(self.value)
 
     def and_then(self, function: Unary[T, Option[U]]) -> Option[U]:
         return function(self.value)
@@ -1504,79 +1492,68 @@ def is_null(option: Option[T]) -> TypeGuard[Null]:
     return option.is_null()
 
 
-def wrap_option(function: Callable[P, T]) -> Callable[P, Option[T]]:
-    """Wraps a `function` returning `T` into a function returning
-    [`Option[T]`][wraps.option.Option].
-
-    This handles all exceptions via returning [`Null`][wraps.option.Null] on errors,
-    wrapping the resulting `value` into [`Some(value)`][wraps.option.Some].
-
-    Example:
-        ```python
-        @wrap_option
-        def parse(string: str) -> int:
-            return int(string)
-
-        assert parse("128").is_some()
-        assert parse("uwu").is_null()
-        ```
-
-    Arguments:
-        function: The function to wrap.
-
-    Returns:
-        The wrapping function.
-    """
-
-    def wrap(*args: P.args, **kwargs: P.kwargs) -> Option[T]:
-        try:
-            return Some(function(*args, **kwargs))
-
-        except Exception:
-            return Null()
-
-    return wrap
+ET = TypeVar("ET", bound=AnyError)
+FT = TypeVar("FT", bound=AnyError)
 
 
-def wrap_option_await(function: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[Option[T]]]:
-    """Wraps an asynchronous `function` returning `T` into an asynchronous function returning
-    [`Option[T]`][wraps.option.Option].
+@final
+@frozen()
+class WrapOption(Generic[ET]):
+    error_type: Type[ET]
 
-    This handles all exceptions via returning [`Null`][wraps.option.Null] on errors,
-    wrapping the resulting `value` into [`Some(value)`][wraps.option.Some].
+    @classmethod
+    def create(cls, error_type: Type[FT]) -> WrapOption[FT]:
+        return cls(error_type)  # type: ignore
 
-    Example:
-        ```python
-        @wrap_option_await
-        async def parse(string: str) -> int:
-            return int(string)
+    def __call__(self, function: Callable[P, T]) -> Callable[P, Result[T, ET]]:
+        @wraps(function)
+        def wrap(*args: P.args, **kwargs: P.kwargs) -> Result[T, ET]:
+            try:
+                return Ok(function(*args, **kwargs))
 
-        assert (await parse("256")).is_some()
-        assert (await parse("uwu")).is_null()
-        ```
+            except self.error_type as error:
+                return Error(error)
 
-    Arguments:
-        function: The asynchronous function to wrap.
+        return wrap
 
-    Returns:
-        The asynchronous wrapping function.
-    """
+    def __getitem__(self, error_type: Type[FT]) -> WrapOption[FT]:
+        return self.create(error_type)
 
-    async def wrap(*args: P.args, **kwargs: P.kwargs) -> Option[T]:
-        try:
-            return Some(await function(*args, **kwargs))
 
-        except Exception:
-            return Null()
+wrap_option = WrapOption(Exception)
 
-    return wrap
+
+@final
+@frozen()
+class WrapOptionAwait(Generic[ET]):
+    error_type: Type[ET]
+
+    @classmethod
+    def create(cls, error_type: Type[FT]) -> WrapOptionAwait[FT]:
+        return cls(error_type)  # type: ignore
+
+    def __call__(
+        self, function: Callable[P, Awaitable[T]]
+    ) -> Callable[P, Awaitable[Result[T, ET]]]:
+        @wraps(function)
+        async def wrap(*args: P.args, **kwargs: P.kwargs) -> Result[T, ET]:
+            try:
+                return Ok(await function(*args, **kwargs))
+
+            except self.error_type as error:
+                return Error(error)
+
+        return wrap
+
+    def __getitem__(self, error_type: Type[FT]) -> WrapOptionAwait[FT]:
+        return self.create(error_type)
+
+
+wrap_option_await = WrapOptionAwait(Exception)
 
 
 def wrap_optional(optional: Optional[T]) -> Option[T]:
-    if optional is None:
-        return Null()
-
-    return Some(optional)
+    return Null() if optional is None else Some(optional)
 
 
 # import cycle solution

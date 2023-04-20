@@ -2,7 +2,7 @@
 name = "wraps"
 version = "0.3.0"
 description = "Meaningful and safe wrapping types."
-authors = ["nekitdev <nekitdevofficial@gmail.com>"]
+authors = ["nekitdev"]
 license = "MIT"
 
 readme = "README.md"
@@ -33,9 +33,10 @@ include = "wraps"
 python = ">= 3.7"
 
 attrs = ">= 22.2.0"
-iters = ">= 0.10.0"
 
-typing-extensions = ">= 4.3.0"
+funcs = ">= 0.2.4"
+async-extensions = ">= 1.2.2"
+typing-extensions = ">= 4.5.0"
 
 [tool.poetry.group.format]
 optional = true

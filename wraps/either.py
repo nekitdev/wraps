@@ -1,16 +1,10 @@
 from __future__ import annotations
 
 from abc import abstractmethod as required
-from typing import TypeVar, Union
+from typing import AsyncIterator, Iterator, TypeVar, Union
 
 from attrs import frozen
-from iters.async_iters import AsyncIter, async_iter
-from iters.iters import Iter, iter
-from typing_extensions import Literal, Never, Protocol, TypeGuard, final
-
-from wraps.errors import panic
-from wraps.option import Null, Option, Some
-from wraps.typing import (
+from funcs.typing import (
     AsyncInspect,
     AsyncNullary,
     AsyncPredicate,
@@ -20,7 +14,11 @@ from wraps.typing import (
     Predicate,
     Unary,
 )
-from wraps.utils import identity
+from typing_extensions import Literal, Never, Protocol, TypeGuard, final
+
+from wraps.errors import panic
+from wraps.option import Null, Option, Some
+from wraps.utils import async_empty, async_once, empty, identity, once
 
 __all__ = ("Either", "Left", "Right", "is_left", "is_right")
 
@@ -181,27 +179,27 @@ class EitherProtocol(Protocol[L, R]):  # type: ignore[misc]
         ...
 
     @required
-    def iter_left(self) -> Iter[L]:
+    def iter_left(self) -> Iterator[L]:
         ...
 
     @required
-    def iter_right(self) -> Iter[R]:
+    def iter_right(self) -> Iterator[R]:
         ...
 
     @required
-    def iter_either(self: EitherProtocol[T, T]) -> Iter[T]:
+    def iter_either(self: EitherProtocol[T, T]) -> Iterator[T]:
         ...
 
     @required
-    def async_iter_left(self) -> AsyncIter[L]:
+    def async_iter_left(self) -> AsyncIterator[L]:
         ...
 
     @required
-    def async_iter_right(self) -> AsyncIter[R]:
+    def async_iter_right(self) -> AsyncIterator[R]:
         ...
 
     @required
-    def async_iter_either(self: EitherProtocol[T, T]) -> AsyncIter[T]:
+    def async_iter_either(self: EitherProtocol[T, T]) -> AsyncIterator[T]:
         ...
 
     def flatten_left(self: EitherProtocol[EitherProtocol[L, R], R]) -> Either[L, R]:
@@ -366,23 +364,23 @@ class Left(EitherProtocol[L, Never]):
     async def right_and_then_await(self, function: AsyncUnary[R, Either[L, S]]) -> Left[L]:
         return self
 
-    def iter_left(self) -> Iter[L]:
-        return iter.once(self.value)
+    def iter_left(self) -> Iterator[L]:
+        return once(self.value)
 
-    def iter_right(self) -> Iter[Never]:
-        return iter.empty()
+    def iter_right(self) -> Iterator[Never]:
+        return empty()
 
-    def iter_either(self: Left[T]) -> Iter[T]:
-        return iter.once(self.value)
+    def iter_either(self: Left[T]) -> Iterator[T]:
+        return once(self.value)
 
-    def async_iter_left(self) -> AsyncIter[L]:
-        return async_iter.once(self.value)
+    def async_iter_left(self) -> AsyncIterator[L]:
+        return async_once(self.value)
 
-    def async_iter_right(self) -> AsyncIter[Never]:
-        return async_iter.empty()
+    def async_iter_right(self) -> AsyncIterator[Never]:
+        return async_empty()
 
-    def async_iter_either(self: Left[T]) -> AsyncIter[T]:
-        return async_iter.once(self.value)
+    def async_iter_either(self: Left[T]) -> AsyncIterator[T]:
+        return async_once(self.value)
 
     def contains_left(self, value: M) -> bool:
         return self.value == value
@@ -520,23 +518,23 @@ class Right(EitherProtocol[Never, R]):
     async def right_and_then_await(self, function: AsyncUnary[R, Either[L, S]]) -> Either[L, S]:
         return await function(self.value)
 
-    def iter_left(self) -> Iter[Never]:
-        return iter.empty()
+    def iter_left(self) -> Iterator[Never]:
+        return empty()
 
-    def iter_right(self) -> Iter[R]:
-        return iter.once(self.value)
+    def iter_right(self) -> Iterator[R]:
+        return once(self.value)
 
-    def iter_either(self: Right[T]) -> Iter[T]:
-        return iter.once(self.value)
+    def iter_either(self: Right[T]) -> Iterator[T]:
+        return once(self.value)
 
-    def async_iter_left(self) -> AsyncIter[Never]:
-        return async_iter.empty()
+    def async_iter_left(self) -> AsyncIterator[Never]:
+        return async_empty()
 
-    def async_iter_right(self) -> AsyncIter[R]:
-        return async_iter.once(self.value)
+    def async_iter_right(self) -> AsyncIterator[R]:
+        return async_once(self.value)
 
-    def async_iter_either(self: Right[T]) -> AsyncIter[T]:
-        return async_iter.once(self.value)
+    def async_iter_either(self: Right[T]) -> AsyncIterator[T]:
+        return async_once(self.value)
 
     def contains_left(self, value: M) -> Literal[False]:
         return False

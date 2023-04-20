@@ -4,12 +4,12 @@ from functools import wraps
 from typing import Awaitable, Callable, TypeVar
 
 from attrs import field, frozen
+from funcs.typing import AsyncInspect, AsyncNullary, AsyncUnary, Inspect, Nullary, Unary
 from typing_extensions import Never, ParamSpec
 
 from wraps.future import Future, ReAwaitable
 from wraps.option import Option
 from wraps.result import Error, Ok, Result, is_error, is_ok
-from wraps.typing import AsyncInspect, AsyncNullary, AsyncUnary, Inspect, Nullary, Unary
 from wraps.utils import identity
 
 T = TypeVar("T", covariant=True)
