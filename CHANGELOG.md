@@ -2,6 +2,10 @@
 
 <!-- changelogging: start -->
 
+## 0.4.0 (2023-04-24)
+
+Internal improvements.
+
 ## 0.3.0 (2023-01-28)
 
 ### Features

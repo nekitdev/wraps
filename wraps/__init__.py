@@ -1,4 +1,20 @@
-"""Meaningful and safe wrapping types."""
+"""Meaningful and safe wrapping types.
+
+This library implements several types:
+
+- [`Option[T]`][wraps.option.Option] for optional values;
+- [`Result[T, E]`][wraps.result.Result] for error handling;
+- [`Either[L, R]`][wraps.either.Either] for either values;
+- [`Future[T]`][wraps.future.Future] for asynchronous abstractions.
+
+The following types are implemented for conveniece:
+
+- [`Future[Option[T]] -> FutureOption[T]`][wraps.future_option.FutureOption];
+- [`Future[Result[T, E]] -> FutureResult[T, E]`][wraps.future_result.FutureResult];
+- [`Future[Either[L, R]] -> FutureEither[L, R]`][wraps.future_either.FutureEither].
+
+The library also provides various decorators to wrap functions in order to return the types above.
+"""
 
 __description__ = "Meaningful and safe wrapping types."
 __url__ = "https://github.com/nekitdev/wraps"
@@ -6,7 +22,7 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 from wraps.early import early_option, early_option_await, early_result, early_result_await
 from wraps.either import Either, Left, Right, is_left, is_right

@@ -44,7 +44,7 @@ Or by directly specifying it in the configuration like so:
 
 ```toml
 [tool.poetry.dependencies]
-wraps = "^0.3.0"
+wraps = "^0.4.0"
 ```
 
 Alternatively, you can add it directly from the source:
@@ -76,10 +76,10 @@ class Array(List[T]):
         return self[index]
 
 
-array = Array([0, 1, 2, 3])
+array = Array([1, 2, 3])
 
-print(array.get(0).unwrap())  # 0
-print(array.get(7).unwrap_or(0))  # 0
+print(array.get(0).unwrap())  # 1
+print(array.get(5).unwrap_or(0))  # 0
 ```
 
 ### Result
@@ -94,20 +94,17 @@ from enum import Enum
 from wraps import Error, Ok, Result
 
 
-class MathError(Enum):
+class DivideError(Enum):
     DIVISION_BY_ZERO = "division by zero"
 
 
-def divide(numerator: float, denominator: float) -> Result[float, MathError]:
-    if not denominator:
-        return Error(MathError.DIVISION_BY_ZERO)
-
-    return Ok(numerator / denominator)
+def divide(numerator: float, denominator: float) -> Result[float, DivideError]:
+    return Ok(numerator / denominator) if denominator else Error(DivideError.DIVISION_BY_ZERO)
 ```
 
 ### Early Return
 
-Early return functionality (`?` operator in Rust) is implemented via `early` functions
+Early return functionality (`?` operator in Rust) is implemented via `early` methods
 (for both [`Option`][wraps.option.Option] and [`Result`][wraps.result.Result] types)
 combined with the [`@early_option`][wraps.early.early_option] and
 [`@early_result`][wraps.early.early_result] decorators respectively.
@@ -133,7 +130,7 @@ def function(x: str, y: str) -> Option[float]:
 
 ### Decorators
 
-In Python 3.9, the restrictions on the decorators' syntax have been lifted, which allows for nifty
+In Python 3.9 the restrictions on the decorators' syntax have been lifted, which allows for nifty
 syntax which can be seen above. On older versions of Python, one can use:
 
 ```python

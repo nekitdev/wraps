@@ -46,10 +46,10 @@ def early_option_await(function: AsyncCallable[P, Option[T]]) -> AsyncCallable[P
     to handle *early returns* via the `early` (`?` in Rust) operator.
 
     Arguments:
-        function: The function to wrap.
+        function: The asynchronous function to wrap.
 
     Returns:
-        The wrapping function.
+        The asynchronous wrapping function.
     """
 
     @wraps(function)
@@ -90,10 +90,10 @@ def early_result_await(function: AsyncCallable[P, Result[T, E]]) -> AsyncCallabl
     to handle *early returns* via the `early` (`?` in Rust) operator.
 
     Arguments:
-        function: The function to wrap.
+        function: The asynchronous function to wrap.
 
     Returns:
-        The wrapping function.
+        The asynchronous wrapping function.
     """
 
     @wraps(function)
