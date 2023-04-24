@@ -7,7 +7,7 @@ __all__ = ("Panic", "panic", "EarlyOption", "EarlyResult")
 
 
 class Panic(AnyError):
-    """Represents the panic as an error.
+    """Represents panics as errors.
 
     Panics should not be explicitly handled in general, therefore [`Panic`][wraps.errors.Panic]
     is derived from [`AnyError`][funcs.typing.AnyError].
@@ -15,6 +15,14 @@ class Panic(AnyError):
 
 
 def panic(message: str) -> Never:
+    """Panics with the given `message`.
+
+    Arguments:
+        message: The message to panic with.
+
+    Raises:
+        Panic: Always raised.
+    """
     raise Panic(message)
 
 

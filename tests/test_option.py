@@ -1,1 +1,1 @@
-from wraps.option import Null, Option, Some, wrap_option
+from wraps.option import Null, Option, Some

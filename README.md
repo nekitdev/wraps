@@ -24,7 +24,7 @@ Installing the library with `pip` is quite simple:
 $ pip install wraps
 ```
 
-Alternatively, the library can be installed from source:
+Alternatively, the library can be installed from the source:
 
 ```console
 $ git clone https://github.com/nekitdev/wraps.git
@@ -61,7 +61,7 @@ git = "https://github.com/nekitdev/wraps.git"
 [`Option[T]`][wraps.option.Option] type represents an optional value: every option is either
 [`Some[T]`][wraps.option.Some] and contains a value, or [`Null`][wraps.option.Null], and does not.
 
-Here is an example of using [`wrap_option`][wraps.option.wrap_option] to catch any errors:
+Here is an example of using [`wrap_option`][wraps.wraps.wrap_option] to catch any errors:
 
 ```python
 from typing import List, TypeVar
@@ -70,16 +70,16 @@ from wraps import wrap_option
 T = TypeVar("T", covariant=True)
 
 
-class SafeList(List[T]):
+class Array(List[T]):
     @wrap_option
     def get(self, index: int) -> T:
         return self[index]
 
 
-array = SafeList([0, 1, 2, 3])
+array = Array([0, 1, 2, 3])
 
-print(array.get(0))  # Some(value=0)
-print(array.get(7))  # Null()
+print(array.get(0).unwrap())  # 0
+print(array.get(7).unwrap_or(0))  # 0
 ```
 
 ### Result
@@ -89,69 +89,75 @@ It has two variants, [`Ok[T]`][wraps.result.Ok], representing success and contai
 and [`Error[E]`][wraps.result.Error], representing error and containing an error value.
 
 ```python
-from wraps import Result, wrap_result
+from enum import Enum
+
+from wraps import Error, Ok, Result
 
 
-@wrap_result[ValueError]
-def parse(string: str) -> int:
-    return int(string)
+class MathError(Enum):
+    DIVISION_BY_ZERO = "division by zero"
 
 
-def multiply(x: str, y: str) -> Result[int, ValueError]:
-    # try to parse two strings and multiply results
-    return parse(x).and_then(lambda m: parse(y).map(lambda n: m * n))
+def divide(numerator: float, denominator: float) -> Result[float, MathError]:
+    if not denominator:
+        return Error(MathError.DIVISION_BY_ZERO)
 
-
-print(multiply("21", "2").unwrap())  # 42
-print(multiply("!", "42").unwrap_error())  # invalid literal for `int` with base 10: `!`
-```
-
-In python versions before 3.9 (where grammar restrictions on decorators were relaxed),
-one can use [`wrap_result`][wraps.result.wrap_result] without a concrete type:
-
-```python
-@wrap_result
-def parse(string: str) -> int:
-    return int(string)
-```
-
-However this makes the types less specific, since [`Exception`][Exception]
-is caught instead of [`ValueError`][ValueError].
-
-Instead, you can create a new concrete [`WrapResult[E]`][wraps.result.WrapResult] instance:
-
-```python
-from wraps import WrapResult
-
-wrap_value_error = WrapResult(ValueError)
-
-@wrap_value_error
-def parse(string: str) -> int:
-    return int(string)
+    return Ok(numerator / denominator)
 ```
 
 ### Early Return
 
-Early return functionality (`?` operator in Rust) is implemented via `early` function
+Early return functionality (`?` operator in Rust) is implemented via `early` functions
 (for both [`Option`][wraps.option.Option] and [`Result`][wraps.result.Result] types)
-combined with the [`@early_option`][wraps.early.early_option] or
-[`@early_result`][wraps.early.early_result] decorator respectively.
+combined with the [`@early_option`][wraps.early.early_option] and
+[`@early_result`][wraps.early.early_result] decorators respectively.
 
 ```python
-from wraps import Option, Some, early_option, wrap_option
+from wraps import Option, early_option, wrap_option
 
+
+@wrap_option[ValueError]
+def parse(string: str) -> float:
+    return float(string)
+
+
+@wrap_option[ZeroDivisionError]
+def divide(numerator: float, denominator: float) -> float:
+    return numerator / denominator
+
+
+@early_option
+def function(x: str, y: str) -> Option[float]:
+    return divide(parse(x).early(), parse(y).early())
+```
+
+### Decorators
+
+In Python 3.9, the restrictions on the decorators' syntax have been lifted, which allows for nifty
+syntax which can be seen above. On older versions of Python, one can use:
+
+```python
+from wraps import wrap_option
 
 @wrap_option
 def parse(string: str) -> int:
     return int(string)
+```
+
+However, this isn't the best way to handle errors, as *any* normal errors will be caught, without
+a way to distinguish between them.
+To counter this, one can use [`WrapOption`][wraps.wraps.WrapOption] directly,
+passing the concrete error type:
+
+```python
+from wraps import WrapOption
+
+wrap_value_error = WrapOption(ValueError)
 
 
-@early_option
-def try_add(x: str, y: str) -> Option[int]:
-    m = parse(x).early()
-    n = parse(y).early()
-
-    return Some(m + n)
+@wrap_value_error
+def parse(string: str) -> int:
+    return int(string)
 ```
 
 ## Documentation
@@ -210,17 +216,14 @@ If you are interested in contributing to `wraps`, make sure to take a look at th
 [wraps.option.Option]: https://nekitdev.github.io/wraps/reference/option#wraps.option.Option
 [wraps.option.Some]: https://nekitdev.github.io/wraps/reference/option#wraps.option.Some
 [wraps.option.Null]: https://nekitdev.github.io/wraps/reference/option#wraps.option.Null
-[wraps.option.wrap_option]: https://nekitdev.github.io/wraps/reference/option#wraps.option.wrap_option
 
 [wraps.result.Result]: https://nekitdev.github.io/wraps/reference/result#wraps.result.Result
 [wraps.result.Ok]: https://nekitdev.github.io/wraps/reference/result#wraps.result.Ok
 [wraps.result.Error]: https://nekitdev.github.io/wraps/reference/result#wraps.result.Error
-[wraps.result.wrap_result]: https://nekitdev.github.io/wraps/reference/result#wraps.result.wrap_result
 
-[wraps.result.WrapResult]: https://nekitdev.github.io/wraps/reference/result#wraps.result.WrapResult
+[wraps.wraps.wrap_option]: https://nekitdev.github.io/wraps/reference/wraps#wraps.wraps.wrap_option
+
+[wraps.wraps.WrapOption]: https://nekitdev.github.io/wraps/reference/wraps#wraps.wraps.WrapOption
 
 [wraps.early.early_option]: https://nekitdev.github.io/wraps/reference/early#wraps.early.early_option
 [wraps.early.early_result]: https://nekitdev.github.io/wraps/reference/early#wraps.early.early_result
-
-[Exception]: https://docs.python.org/3/library/exceptions#Exception
-[ValueError]: https://docs.python.org/3/library/exceptions#ValueError

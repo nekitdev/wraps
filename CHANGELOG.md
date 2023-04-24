@@ -6,7 +6,7 @@
 
 ### Features
 
-- Implement `Either[L, R]` type.
+- Implemented `Either[L, R]` type.
 
 ## 0.2.0 (2022-10-03)
 

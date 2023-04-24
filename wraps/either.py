@@ -1,3 +1,10 @@
+"""Either values.
+
+The [`Either[L, R]`][wraps.either.Either] type is symmetric and treats its variants the same way,
+without preference.
+For representing results (values and errors), use the [`Result[T, E]`][wraps.result.Result] instead.
+"""
+
 from __future__ import annotations
 
 from abc import abstractmethod as required
@@ -155,11 +162,11 @@ class EitherProtocol(Protocol[L, R]):  # type: ignore[misc]
         ...
 
     @required
-    def map_either(self, left: Unary[L, T], right: Unary[R, T]) -> T:
+    def either(self, left: Unary[L, T], right: Unary[R, T]) -> T:
         ...
 
     @required
-    async def map_either_await(self, left: AsyncUnary[L, T], right: AsyncUnary[R, T]) -> T:
+    async def either_await(self, left: AsyncUnary[L, T], right: AsyncUnary[R, T]) -> T:
         ...
 
     @required
@@ -346,10 +353,10 @@ class Left(EitherProtocol[L, Never]):
     async def map_await(self: Left[T], function: AsyncUnary[T, U]) -> Left[U]:
         return self.create(await function(self.value))
 
-    def map_either(self, left: Unary[L, T], right: Unary[R, T]) -> T:
+    def either(self, left: Unary[L, T], right: Unary[R, T]) -> T:
         return left(self.value)
 
-    async def map_either_await(self, left: AsyncUnary[L, T], right: AsyncUnary[R, T]) -> T:
+    async def either_await(self, left: AsyncUnary[L, T], right: AsyncUnary[R, T]) -> T:
         return await left(self.value)
 
     def left_and_then(self, function: Unary[L, Either[M, R]]) -> Either[M, R]:
@@ -500,10 +507,10 @@ class Right(EitherProtocol[Never, R]):
     async def map_await(self: Right[T], function: AsyncUnary[T, U]) -> Right[U]:
         return self.create(await function(self.value))
 
-    def map_either(self, left: Unary[L, T], right: Unary[R, T]) -> T:
+    def either(self, left: Unary[L, T], right: Unary[R, T]) -> T:
         return right(self.value)
 
-    async def map_either_await(self, left: AsyncUnary[L, T], right: AsyncUnary[R, T]) -> T:
+    async def either_await(self, left: AsyncUnary[L, T], right: AsyncUnary[R, T]) -> T:
         return await right(self.value)
 
     def left_and_then(self, function: Unary[L, Either[M, R]]) -> Right[R]:

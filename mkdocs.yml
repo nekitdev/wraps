@@ -9,7 +9,6 @@ remote_branch: github-pages
 
 nav:
   - Index: "index.md"
-  - Usage: "usage.md"
   - Reference:
     - Option: "reference/option.md"
     - Result: "reference/result.md"
@@ -19,8 +18,9 @@ nav:
     - Future Option: "reference/future_option.md"
     - Future Result: "reference/future_result.md"
     - Future Either: "reference/future_either.md"
+    - ReAwaitable: "reference/reawaitable.md"
+    - Wraps: "reference/wraps.md"
     - Errors: "reference/errors.md"
-    - Typing: "reference/typing.md"
   - Changelog: "changelog.md"
   - Security: "security.md"
   - Code of Conduct: "code_of_conduct.md"
@@ -67,10 +67,10 @@ plugins:
 
           import:
             - https://docs.python.org/3/objects.inv
+            - http://nekitdev.github.io/funcs/objects.inv
 
 markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
+  - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences

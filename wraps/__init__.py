@@ -8,23 +8,29 @@ __author__ = "nekitdev"
 __license__ = "MIT"
 __version__ = "0.3.0"
 
-from wraps.early import early_option, early_result
+from wraps.early import early_option, early_option_await, early_result, early_result_await
 from wraps.either import Either, Left, Right, is_left, is_right
 from wraps.errors import Panic, panic
-from wraps.future import Future, wrap_future
-from wraps.future_option import FutureOption, wrap_future_option
-from wraps.future_result import FutureResult, wrap_future_result
-from wraps.option import (
-    Null,
-    Option,
-    Some,
-    is_null,
-    is_some,
+from wraps.future import Future
+from wraps.future_option import FutureOption
+from wraps.future_result import FutureResult
+from wraps.option import Null, Option, Some, is_null, is_some
+from wraps.reawaitable import ReAwaitable, reawaitable
+from wraps.result import Error, Ok, Result, is_error, is_ok
+from wraps.wraps import (
+    WrapOption,
+    WrapOptionAwait,
+    WrapResult,
+    WrapResultAwait,
+    wrap_future,
+    wrap_future_either,
+    wrap_future_option,
+    wrap_future_result,
     wrap_option,
     wrap_option_await,
-    wrap_optional,
+    wrap_result,
+    wrap_result_await,
 )
-from wraps.result import Error, Ok, Result, is_error, is_ok, wrap_result, wrap_result_await
 
 __all__ = (
     # option
@@ -33,18 +39,12 @@ __all__ = (
     "Null",
     "is_some",
     "is_null",
-    "wrap_option",
-    "wrap_option_await",
-    # optional
-    "wrap_optional",
     # result
     "Result",
     "Ok",
     "Error",
     "is_ok",
     "is_error",
-    "wrap_result",
-    "wrap_result_await",
     # either
     "Either",
     "Left",
@@ -56,14 +56,29 @@ __all__ = (
     "panic",
     # early
     "early_option",
+    "early_option_await",
     "early_result",
+    "early_result_await",
+    # re-awaitable
+    "ReAwaitable",
+    "reawaitable",
     # future
     "Future",
-    "wrap_future",
     # future option
     "FutureOption",
-    "wrap_future_option",
     # future result
     "FutureResult",
+    # wraps
+    "WrapOption",
+    "WrapOptionAwait",
+    "WrapResult",
+    "WrapResultAwait",
+    "wrap_option",
+    "wrap_option_await",
+    "wrap_result",
+    "wrap_result_await",
+    "wrap_future",
+    "wrap_future_option",
     "wrap_future_result",
+    "wrap_future_either",
 )
