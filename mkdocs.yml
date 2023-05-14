@@ -20,6 +20,7 @@ nav:
     - Future Result: "reference/future_result.md"
     - Future Either: "reference/future_either.md"
     - Wraps: "reference/wraps.md"
+    - Markers: "reference/markers.md"
     - Errors: "reference/errors.md"
   - Changelog: "changelog.md"
   - Security: "security.md"
