@@ -104,7 +104,7 @@ def divide(numerator: float, denominator: float) -> Result[float, DivideError]:
 
 ### Early Return
 
-Early return functionality (`?` operator in Rust) is implemented via `early` methods
+Early return functionality (like the *question-mark* (`?`) operator in Rust) is implemented via `early` methods
 (for both [`Option`][wraps.option.Option] and [`Result`][wraps.result.Result] types)
 combined with the [`@early_option`][wraps.early.early_option] and
 [`@early_result`][wraps.early.early_result] decorators respectively.
