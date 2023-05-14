@@ -1,8 +1,10 @@
+"""Asynchronous computation using futures."""
+
 from __future__ import annotations
 
 from typing import AsyncIterator, Awaitable, Generator, TypeVar
 
-from attrs import define, field
+from attrs import field, frozen
 from funcs.typing import AsyncUnary, Unary
 
 from wraps.reawaitable import ReAwaitable
@@ -13,12 +15,19 @@ __all__ = ("Future",)
 T = TypeVar("T", covariant=True)
 U = TypeVar("U")
 
+
 # NOTE: functions here are suffixed with `future` to avoid name clashes with derived types
 
 
-@define()
+def reawaitable_converter(awaitable: Awaitable[T]) -> ReAwaitable[T]:
+    return ReAwaitable(awaitable)
+
+
+@frozen()
 class Future(Awaitable[T]):
-    reawaitable: ReAwaitable[T] = field(repr=False)
+    """Represents future computations."""
+
+    reawaitable: ReAwaitable[T] = field(repr=False, converter=reawaitable_converter)
 
     @property
     def awaitable(self) -> Awaitable[T]:
@@ -28,7 +37,7 @@ class Future(Awaitable[T]):
         return self.awaitable.__await__()
 
     @classmethod
-    def from_awaitable(cls, awaitable: Awaitable[U]) -> Future[U]:
+    def create(cls, awaitable: Awaitable[U]) -> Future[U]:
         """Creates a [`Future[U]`][wraps.future.Future] from an [`Awaitable[U]`][typing.Awaitable].
 
         Arguments:
@@ -37,11 +46,11 @@ class Future(Awaitable[T]):
         Returns:
             The future wrapping the given awaitable.
         """
-        return cls(ReAwaitable(awaitable))  # type: ignore
+        return cls(awaitable)  # type: ignore
 
     def map_future(self, function: Unary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to a [`Future[U]`][wraps.future.Future]
-        by applying the `function` to the result.
+        by applying the `function` to its result.
 
         Arguments:
             function: The function to apply.
@@ -49,11 +58,11 @@ class Future(Awaitable[T]):
         Returns:
             The mapped future.
         """
-        return self.from_awaitable(self.actual_map_future(function))
+        return self.create(self.actual_map_future(function))
 
     def map_future_await(self, function: AsyncUnary[T, U]) -> Future[U]:
         """Maps a [`Future[T]`][wraps.future.Future] to a [`Future[U]`][wraps.future.Future]
-        by applying the asynchronous `function` to the result.
+        by applying the asynchronous `function` to its result.
 
         Arguments:
             function: The asynchronous function to apply.
@@ -61,7 +70,7 @@ class Future(Awaitable[T]):
         Returns:
             The mapped future.
         """
-        return self.from_awaitable(self.actual_map_future_await(function))
+        return self.create(self.actual_map_future_await(function))
 
     async def actual_map_future(self, function: Unary[T, U]) -> U:
         return function(await self.awaitable)
@@ -69,23 +78,35 @@ class Future(Awaitable[T]):
     async def actual_map_future_await(self, function: AsyncUnary[T, U]) -> U:
         return await function(await self.awaitable)
 
-    def then_future(self, function: Unary[T, Future[U]]) -> Future[U]:
-        """Chains computation by applying the `function` to the result, returning
+    def then(self, function: Unary[T, Future[U]]) -> Future[U]:
+        """Chains computation by applying the `function` to the result, returning the resulting
         [`Future[U]`][wraps.future.Future].
 
         Arguments:
-            function: The function returning future to apply.
+            function: The future-returning function to apply.
 
         Returns:
             The resulting future.
         """
-        return self.from_awaitable(self.actual_then_future(function))
+        return self.create(self.actual_then(function))
 
-    async def actual_then_future(self, function: Unary[T, Future[U]]) -> U:
+    async def actual_then(self, function: Unary[T, Future[U]]) -> U:
         return await function(await self.awaitable).awaitable
 
     def flatten_future(self: Future[Future[T]]) -> Future[T]:
-        return self.then_future(identity)
+        """Flattens a [`Future[Future[T]]`][wraps.future.Future]
+        to a [`Future[T]`][wraps.future.Future].
+
+        This is identical to:
+
+        ```python
+        future.then(identity)
+        ```
+
+        Returns:
+            The flattened future.
+        """
+        return self.then(identity)
 
     def __aiter__(self) -> AsyncIterator[T]:
         return self.async_iter()
@@ -111,7 +132,7 @@ class Future(Awaitable[T]):
 
         value = 42
 
-        future = Future.from_awaitable(async_identity(value))
+        future = Future.create(async_identity(value))
         ```
 
         Example:
@@ -127,4 +148,4 @@ class Future(Awaitable[T]):
         Returns:
             The future wrapping the given value.
         """
-        return cls.from_awaitable(async_identity(value))
+        return cls.create(async_identity(value))

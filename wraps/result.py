@@ -45,7 +45,7 @@ match result:
 from __future__ import annotations
 
 from abc import abstractmethod as required
-from typing import AsyncIterator, Iterator, TypeVar, Union, final
+from typing import AsyncIterable, AsyncIterator, Iterable, Iterator, TypeVar, Union, final
 
 from attrs import frozen
 from funcs.typing import (
@@ -63,7 +63,7 @@ from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
 
 from wraps.errors import EarlyResult, panic
 from wraps.option import Null, Option, Some
-from wraps.utils import async_empty, async_once, empty, once
+from wraps.utils import async_empty, async_once, empty, identity, once
 
 __all__ = ("Result", "Ok", "Error", "is_ok", "is_error")
 
@@ -78,7 +78,7 @@ F = TypeVar("F")
 V = TypeVar("V")
 
 
-class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
+class ResultProtocol(AsyncIterable[T], Iterable[T], Protocol[T, E]):  # type: ignore[misc]
     def __iter__(self) -> Iterator[T]:
         return self.iter()
 
@@ -138,7 +138,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
         Example:
             ```python
-            def is_positive(value: int) -> bool:
+            async def is_positive(value: int) -> bool:
                 return value > 0
 
             ok = Ok(13)
@@ -404,6 +404,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
             >>> error = Error(13)
             >>> error.unwrap_error()
             13
+
             >>> ok = Ok(42)
             >>> ok.unwrap_error()
             Traceback (most recent call last):
@@ -476,7 +477,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
             assert await error.unwrap_error_or_else_await(default)
 
             ok = Ok(5)
-            assert not ok.unwrap_error_or_else_await(default)
+            assert not await ok.unwrap_error_or_else_await(default)
             ```
 
         Arguments:
@@ -497,6 +498,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
             >>> ok = Ok(13)
             >>> ok.raising()
             13
+
             >>> error = Error(ValueError("error..."))
             >>> error.raising()
             Traceback (most recent call last):
@@ -515,7 +517,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     @required
     def ok(self) -> Option[T]:
         """Converts a [`Result[T, E]`][wraps.result.Result]
-        to an [`Option[T]`][wraps.option.Option].
+        into an [`Option[T]`][wraps.option.Option].
 
         Converts `self` into an [`Option[T]`][wraps.option.Option], discarding errors, if any.
 
@@ -538,7 +540,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     @required
     def error(self) -> Option[E]:
         """Converts a [`Result[T, E]`][wraps.result.Result]
-        to an [`Option[E]`][wraps.option.Option].
+        into an [`Option[E]`][wraps.option.Option].
 
         Converts `self` into an [`Option[E]`][wraps.option.Option],
         discarding success values, if any.
@@ -1285,7 +1287,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     def try_flatten(self: ResultProtocol[ResultProtocol[T, E], E]) -> Result[T, E]:
         """Flattens a [`Result[Result[T, E], E]`][wraps.result.Result]
-        to a [`Result[T, E]`][wraps.result.Result].
+        into a [`Result[T, E]`][wraps.result.Result].
 
         This is equivalent to [`result.and_then(identity)`][wraps.result.ResultProtocol.and_then].
 
@@ -1309,7 +1311,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     def try_flatten_error(self: ResultProtocol[T, ResultProtocol[T, E]]) -> Result[T, E]:
         """Flattens a [`Result[T, Result[T, E]]`][wraps.result.Result]
-        to a [`Result[T, E]`][wraps.result.Result].
+        into a [`Result[T, E]`][wraps.result.Result].
 
         This is equivalent to [`result.or_else(identity)`][wraps.result.ResultProtocol.or_else].
 
@@ -1331,9 +1333,8 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
         """
         return self.or_else(identity)  # type: ignore
 
-    # @required
     # def transpose(self: ResultProtocol[OptionProtocol[T], E]) -> Option[Result[T, E]]:
-    #     """Transposes a result of an option into option of a result.
+    #     """Transposes a result of an option into an option of a result.
     #     This function maps [`Result[Option[T], E]`][wraps.result.Result] into
     #     [`Option[Result[T, E]]`][wraps.option.Option] in the following way:
 
@@ -1346,15 +1347,14 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     #     Example:
     #         ```python
     #         result = Ok(Some(64))
-    #         option = Some(Ok(64))
-
+    #         option = Some(Ok(64)
     #         assert result.transpose() == option
     #         ```
 
     #     Returns:
     #         The transposed option.
     #     """
-    #     ...
+    #     return transpose_result(self)  # type: ignore
 
     @required
     def contains(self, value: U) -> bool:
@@ -1409,7 +1409,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
     @required
     def flip(self) -> Result[E, T]:
         """Converts a [`Result[T, E]`][wraps.result.Result]
-        to a [`Result[E, T]`][wraps.result.Result].
+        into a [`Result[E, T]`][wraps.result.Result].
 
         [`Ok(value)`][wraps.result.Ok] and [`Error(error)`][wraps.result.Error] get swapped to
         [`Error(value)`][wraps.result.Error] and [`Ok(error)`][wraps.result.Ok] respectively.
@@ -1431,18 +1431,19 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @required
     def into_ok_or_error(self: ResultProtocol[V, V]) -> V:
-        """Returns the [`Ok[V]`][wraps.result.Ok] value if `self` is [`Ok[V]`][wraps.result.Ok], and
-        the [`Error[V]`][wraps.result.Error] value if `self` is an [`Error[V]`][wraps.result.Error].
-
-        In other words, this function returns the value of a [`Result[V, V]`][wraps.result.Result],
-        regardless of whether or not that result is
-        [`Ok[V]`][wraps.result.Ok] or [`Error[V]`][wraps.result.Error].
+        """Returns the value contained within [`Result[V, V]`][wraps.result.Result], regardless
+        of whether or not that result is [`Ok[V]`][wraps.result.Ok]
+        or [`Error[V]`][wraps.result.Error].
 
         Example:
             ```python
             result: Result[int, int] = Ok(69)
 
-            print(result.into_ok_or_error())  # 69
+            print(result.into_ok_or_error())  # 69; inferred `int`
+
+            result = Error(42)
+
+            print(result.into_ok_or_error())  # 42; inferred `int`
             ```
 
         Returns:
@@ -1452,7 +1453,8 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @required
     def into_either(self) -> Either[T, E]:
-        """Maps a [`Result[T, E]`][wraps.result.Result] to an [`Either[T, E]`][wraps.either.Either].
+        """Converts a [`Result[T, E]`][wraps.result.Result]
+        into an [`Either[T, E]`][wraps.either.Either].
 
         [`Ok(value)`][wraps.result.Ok] is mapped to [`Left(value)`][wraps.either.Left]
         and [`Error(error)`][wraps.result.Error] is mapped to [`Right(error)`][wraps.either.Right].
@@ -1479,7 +1481,7 @@ class ResultProtocol(Protocol[T, E]):  # type: ignore[misc]
 
     @required
     def early(self) -> T:
-        """Functionally similar to `?` operator in Rust.
+        """Functionally similar to the *question-mark* (`?`) operator in Rust.
 
         See [`early`][wraps.early] for more information.
         """

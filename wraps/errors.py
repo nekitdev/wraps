@@ -1,3 +1,5 @@
+"""Panics and early return errors."""
+
 from typing import Generic, TypeVar
 
 from funcs.typing import AnyError

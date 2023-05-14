@@ -1,3 +1,5 @@
+"""Highly composable wrapping decorators."""
+
 from __future__ import annotations
 
 from typing import Callable, Generic, Optional, Type, TypeVar, final
@@ -274,7 +276,7 @@ def wrap_future(function: AsyncCallable[P, T]) -> Callable[P, Future[T]]:
 
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> Future[T]:
-        return Future.from_awaitable(function(*args, **kwargs))
+        return Future(function(*args, **kwargs))
 
     return wrap
 
@@ -292,7 +294,7 @@ def wrap_future_option(function: AsyncCallable[P, Option[T]]) -> Callable[P, Fut
 
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> FutureOption[T]:
-        return FutureOption.from_awaitable(function(*args, **kwargs))
+        return FutureOption(function(*args, **kwargs))
 
     return wrap
 
@@ -310,7 +312,7 @@ def wrap_future_result(function: AsyncCallable[P, Result[T, E]]) -> Callable[P, 
 
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> FutureResult[T, E]:
-        return FutureResult.from_awaitable(function(*args, **kwargs))
+        return FutureResult(function(*args, **kwargs))
 
     return wrap
 
@@ -328,6 +330,6 @@ def wrap_future_either(function: AsyncCallable[P, Either[L, R]]) -> Callable[P, 
 
     @wraps(function)
     def wrap(*args: P.args, **kwargs: P.kwargs) -> FutureEither[L, R]:
-        return FutureEither.from_awaitable(function(*args, **kwargs))
+        return FutureEither(function(*args, **kwargs))
 
     return wrap

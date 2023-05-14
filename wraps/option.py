@@ -44,7 +44,7 @@ match option:
         print(DIVISION_BY_ZERO)
 ```
 
-Her, we know that [`Null`][wraps.option.Null] represents only one case,
+Here, we know that [`Null`][wraps.option.Null] represents only one case,
 that is, attempts to divide by zero. However, when we need to represent multiple errors
 from one function, we might want to use [`Result[T, E]`][wraps.result.Result] instead,
 as described in the [`result`][wraps.result] section.
@@ -53,7 +53,18 @@ as described in the [`result`][wraps.result] section.
 from __future__ import annotations
 
 from abc import abstractmethod as required
-from typing import AsyncIterator, Iterator, Optional, Tuple, TypeVar, Union, final, overload
+from typing import (
+    AsyncIterable,
+    AsyncIterator,
+    Iterable,
+    Iterator,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+    final,
+    overload,
+)
 
 from attrs import frozen
 from funcs.typing import (
@@ -82,7 +93,7 @@ V = TypeVar("V")
 E = TypeVar("E")
 
 
-class OptionProtocol(Protocol[T]):  # type: ignore[misc]
+class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignore[misc]
     def __iter__(self) -> Iterator[T]:
         return self.iter()
 
@@ -1053,7 +1064,6 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
         """
         ...
 
-    # @required
     # def transpose(self: OptionProtocol[ResultProtocol[T, E]]) -> Result[Option[T], E]:
     #     """Transposes an option of a result into result of an option.
     #     This function maps [`Option[Result[T, E]]`][wraps.option.Option] into
@@ -1076,7 +1086,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
     #     Returns:
     #         The transposed result.
     #     """
-    #     ...
+    #     return transpose_option(self)  # type: ignore
 
     def flatten(self: OptionProtocol[OptionProtocol[U]]) -> Option[U]:
         """Flattens an [`Option[Option[T]]`][wraps.option.Option]
@@ -1127,7 +1137,7 @@ class OptionProtocol(Protocol[T]):  # type: ignore[misc]
 
     @required
     def early(self) -> T:
-        """Functionally similar to `?` operator in Rust.
+        """Functionally similar to the *question-mark* (`?`) operator in Rust.
 
         See [`early`][wraps.early] for more information.
         """

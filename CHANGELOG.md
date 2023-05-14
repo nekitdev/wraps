@@ -2,9 +2,17 @@
 
 <!-- changelogging: start -->
 
+## 0.5.0 (2023-05-12)
+
+### Features
+
+- Implement missing methods in future variants of options and results.
+
 ## 0.4.0 (2023-04-24)
 
-Internal improvements.
+### Internal
+
+- Internal improvements.
 
 ## 0.3.0 (2023-01-28)
 

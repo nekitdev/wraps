@@ -22,7 +22,7 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 from wraps.early import early_option, early_option_await, early_result, early_result_await
 from wraps.either import Either, Left, Right, is_left, is_right
@@ -44,6 +44,7 @@ from wraps.wraps import (
     wrap_future_result,
     wrap_option,
     wrap_option_await,
+    wrap_optional,
     wrap_result,
     wrap_result_await,
 )
@@ -91,6 +92,7 @@ __all__ = (
     "WrapResultAwait",
     "wrap_option",
     "wrap_option_await",
+    "wrap_optional",
     "wrap_result",
     "wrap_result_await",
     "wrap_future",

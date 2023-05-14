@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wraps"
-version = "0.4.0"
+version = "0.5.0"
 description = "Meaningful and safe wrapping types."
 authors = ["nekitdev"]
 license = "MIT"
@@ -145,7 +145,7 @@ warn_unused_ignores = false  # compatibility
 
 [tool.changelogging]
 name = "wraps"
-version = "0.4.0"
+version = "0.5.0"
 url = "https://github.com/nekitdev/wraps"
 directory = "changes"
 output = "CHANGELOG.md"
