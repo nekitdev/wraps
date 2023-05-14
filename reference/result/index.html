@@ -1547,7 +1547,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
   <div class="doc doc-contents ">
       <p class="doc doc-class-bases">
-        Bases: <code><span title="typing_extensions.Protocol">Protocol</span>[<span title="wraps.result.T">T</span>, <span title="wraps.result.E">E</span>]</code></p>
+        Bases: <code><a class="autorefs autorefs-external" title="typing.AsyncIterable" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterable">AsyncIterable</a>[<span title="wraps.result.T">T</span>]</code>, <code><a class="autorefs autorefs-external" title="typing.Iterable" href="https://docs.python.org/3/library/typing.html#typing.Iterable">Iterable</a>[<span title="wraps.result.T">T</span>]</code>, <code><span title="typing_extensions.Protocol">Protocol</span>[<span title="wraps.result.T">T</span>, <span title="wraps.result.E">E</span>]</code></p>
 
 
 
@@ -2958,7 +2958,9 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 <span class="normal">1483</span>
 <span class="normal">1484</span>
 <span class="normal">1485</span>
-<span class="normal">1486</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ResultProtocol</span><span class="p">(</span><span class="n">Protocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]):</span>  <span class="c1"># type: ignore[misc]</span>
+<span class="normal">1486</span>
+<span class="normal">1487</span>
+<span class="normal">1488</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ResultProtocol</span><span class="p">(</span><span class="n">AsyncIterable</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]):</span>  <span class="c1"># type: ignore[misc]</span>
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter</span><span class="p">()</span>
 
@@ -3018,7 +3020,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
 <span class="sd">        Example:</span>
 <span class="sd">            ```python</span>
-<span class="sd">            def is_positive(value: int) -&gt; bool:</span>
+<span class="sd">            async def is_positive(value: int) -&gt; bool:</span>
 <span class="sd">                return value &gt; 0</span>
 
 <span class="sd">            ok = Ok(13)</span>
@@ -3284,6 +3286,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 <span class="sd">            &gt;&gt;&gt; error = Error(13)</span>
 <span class="sd">            &gt;&gt;&gt; error.unwrap_error()</span>
 <span class="sd">            13</span>
+
 <span class="sd">            &gt;&gt;&gt; ok = Ok(42)</span>
 <span class="sd">            &gt;&gt;&gt; ok.unwrap_error()</span>
 <span class="sd">            Traceback (most recent call last):</span>
@@ -3356,7 +3359,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 <span class="sd">            assert await error.unwrap_error_or_else_await(default)</span>
 
 <span class="sd">            ok = Ok(5)</span>
-<span class="sd">            assert not ok.unwrap_error_or_else_await(default)</span>
+<span class="sd">            assert not await ok.unwrap_error_or_else_await(default)</span>
 <span class="sd">            ```</span>
 
 <span class="sd">        Arguments:</span>
@@ -3377,6 +3380,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 <span class="sd">            &gt;&gt;&gt; ok = Ok(13)</span>
 <span class="sd">            &gt;&gt;&gt; ok.raising()</span>
 <span class="sd">            13</span>
+
 <span class="sd">            &gt;&gt;&gt; error = Error(ValueError(&quot;error...&quot;))</span>
 <span class="sd">            &gt;&gt;&gt; error.raising()</span>
 <span class="sd">            Traceback (most recent call last):</span>
@@ -3395,7 +3399,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
     <span class="nd">@required</span>
     <span class="k">def</span> <span class="nf">ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts a [`Result[T, E]`][wraps.result.Result]</span>
-<span class="sd">        to an [`Option[T]`][wraps.option.Option].</span>
+<span class="sd">        into an [`Option[T]`][wraps.option.Option].</span>
 
 <span class="sd">        Converts `self` into an [`Option[T]`][wraps.option.Option], discarding errors, if any.</span>
 
@@ -3418,7 +3422,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
     <span class="nd">@required</span>
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">E</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts a [`Result[T, E]`][wraps.result.Result]</span>
-<span class="sd">        to an [`Option[E]`][wraps.option.Option].</span>
+<span class="sd">        into an [`Option[E]`][wraps.option.Option].</span>
 
 <span class="sd">        Converts `self` into an [`Option[E]`][wraps.option.Option],</span>
 <span class="sd">        discarding success values, if any.</span>
@@ -4165,7 +4169,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
     <span class="k">def</span> <span class="nf">try_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span> <span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Flattens a [`Result[Result[T, E], E]`][wraps.result.Result]</span>
-<span class="sd">        to a [`Result[T, E]`][wraps.result.Result].</span>
+<span class="sd">        into a [`Result[T, E]`][wraps.result.Result].</span>
 
 <span class="sd">        This is equivalent to [`result.and_then(identity)`][wraps.result.ResultProtocol.and_then].</span>
 
@@ -4189,7 +4193,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
     <span class="k">def</span> <span class="nf">try_flatten_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Flattens a [`Result[T, Result[T, E]]`][wraps.result.Result]</span>
-<span class="sd">        to a [`Result[T, E]`][wraps.result.Result].</span>
+<span class="sd">        into a [`Result[T, E]`][wraps.result.Result].</span>
 
 <span class="sd">        This is equivalent to [`result.or_else(identity)`][wraps.result.ResultProtocol.or_else].</span>
 
@@ -4211,9 +4215,8 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">or_else</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
-    <span class="c1"># @required</span>
     <span class="c1"># def transpose(self: ResultProtocol[OptionProtocol[T], E]) -&gt; Option[Result[T, E]]:</span>
-    <span class="c1">#     &quot;&quot;&quot;Transposes a result of an option into option of a result.</span>
+    <span class="c1">#     &quot;&quot;&quot;Transposes a result of an option into an option of a result.</span>
     <span class="c1">#     This function maps [`Result[Option[T], E]`][wraps.result.Result] into</span>
     <span class="c1">#     [`Option[Result[T, E]]`][wraps.option.Option] in the following way:</span>
 
@@ -4226,15 +4229,14 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
     <span class="c1">#     Example:</span>
     <span class="c1">#         ```python</span>
     <span class="c1">#         result = Ok(Some(64))</span>
-    <span class="c1">#         option = Some(Ok(64))</span>
-
+    <span class="c1">#         option = Some(Ok(64)</span>
     <span class="c1">#         assert result.transpose() == option</span>
     <span class="c1">#         ```</span>
 
     <span class="c1">#     Returns:</span>
     <span class="c1">#         The transposed option.</span>
     <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     ...</span>
+    <span class="c1">#     return transpose_result(self)  # type: ignore</span>
 
     <span class="nd">@required</span>
     <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">U</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -4289,7 +4291,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
     <span class="nd">@required</span>
     <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">T</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts a [`Result[T, E]`][wraps.result.Result]</span>
-<span class="sd">        to a [`Result[E, T]`][wraps.result.Result].</span>
+<span class="sd">        into a [`Result[E, T]`][wraps.result.Result].</span>
 
 <span class="sd">        [`Ok(value)`][wraps.result.Ok] and [`Error(error)`][wraps.result.Error] get swapped to</span>
 <span class="sd">        [`Error(value)`][wraps.result.Error] and [`Ok(error)`][wraps.result.Ok] respectively.</span>
@@ -4311,18 +4313,19 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
     <span class="nd">@required</span>
     <span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">V</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">V</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the [`Ok[V]`][wraps.result.Ok] value if `self` is [`Ok[V]`][wraps.result.Ok], and</span>
-<span class="sd">        the [`Error[V]`][wraps.result.Error] value if `self` is an [`Error[V]`][wraps.result.Error].</span>
-
-<span class="sd">        In other words, this function returns the value of a [`Result[V, V]`][wraps.result.Result],</span>
-<span class="sd">        regardless of whether or not that result is</span>
-<span class="sd">        [`Ok[V]`][wraps.result.Ok] or [`Error[V]`][wraps.result.Error].</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the value contained within [`Result[V, V]`][wraps.result.Result], regardless</span>
+<span class="sd">        of whether or not that result is [`Ok[V]`][wraps.result.Ok]</span>
+<span class="sd">        or [`Error[V]`][wraps.result.Error].</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            ```python</span>
 <span class="sd">            result: Result[int, int] = Ok(69)</span>
 
-<span class="sd">            print(result.into_ok_or_error())  # 69</span>
+<span class="sd">            print(result.into_ok_or_error())  # 69; inferred `int`</span>
+
+<span class="sd">            result = Error(42)</span>
+
+<span class="sd">            print(result.into_ok_or_error())  # 42; inferred `int`</span>
 <span class="sd">            ```</span>
 
 <span class="sd">        Returns:</span>
@@ -4332,7 +4335,8 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
     <span class="nd">@required</span>
     <span class="k">def</span> <span class="nf">into_either</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Either</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Maps a [`Result[T, E]`][wraps.result.Result] to an [`Either[T, E]`][wraps.either.Either].</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts a [`Result[T, E]`][wraps.result.Result]</span>
+<span class="sd">        into an [`Either[T, E]`][wraps.either.Either].</span>
 
 <span class="sd">        [`Ok(value)`][wraps.result.Ok] is mapped to [`Left(value)`][wraps.either.Left]</span>
 <span class="sd">        and [`Error(error)`][wraps.result.Error] is mapped to [`Right(error)`][wraps.either.Right].</span>
@@ -4359,7 +4363,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
     <span class="nd">@required</span>
     <span class="k">def</span> <span class="nf">early</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Functionally similar to `?` operator in Rust.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Functionally similar to the *question-mark* (`?`) operator in Rust.</span>
 
 <span class="sd">        See [`early`][wraps.early] for more information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -4397,7 +4401,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
   
       <p>Checks if the result is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">ok</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span>
@@ -4484,7 +4488,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
       <p>Checks if the result is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> and the value
 inside of it matches the <code>predicate</code>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_positive</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span>
@@ -4610,8 +4614,8 @@ inside of it matches the <code>predicate</code>.</p>
 <code class="highlight language-python"><span class="n">is_ok_and_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">AsyncPredicate</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -4622,9 +4626,9 @@ inside of it matches the <code>predicate</code>.</p>
       <p>Checks if the result is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> and the value
 inside of it matches the asynchronous <code>predicate</code>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
-  <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_positive</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">is_positive</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
 <span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
@@ -4721,7 +4725,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 
 <span class="sd">    Example:</span>
 <span class="sd">        ```python</span>
-<span class="sd">        def is_positive(value: int) -&gt; bool:</span>
+<span class="sd">        async def is_positive(value: int) -&gt; bool:</span>
 <span class="sd">            return value &gt; 0</span>
 
 <span class="sd">        ok = Ok(13)</span>
@@ -4766,7 +4770,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
   
       <p>Checks if the result is <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">error</span><span class="o">.</span><span class="n">is_error</span><span class="p">()</span>
@@ -4853,7 +4857,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
       <p>Checks if the result is <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> and the value
 inside of it matches the <code>predicate</code>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_negative</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span>
@@ -4979,8 +4983,8 @@ inside of it matches the <code>predicate</code>.</p>
 <code class="highlight language-python"><span class="n">is_error_and_await</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">AsyncPredicate</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -4991,7 +4995,7 @@ inside of it matches the <code>predicate</code>.</p>
       <p>Checks if the result is <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> and the value
 inside of it matches the asynchronous <code>predicate</code>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">is_negative</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span>
@@ -5135,7 +5139,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
   
       <p>Returns the contained <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="s2">&quot;error!&quot;</span><span class="p">)</span>
@@ -5284,7 +5288,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
   
       <p>Returns the contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span><span class="o">.</span><span class="n">expect_error</span><span class="p">(</span><span class="s2">&quot;ok!&quot;</span><span class="p">)</span>
@@ -5440,7 +5444,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 case explicitly, or call <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.unwrap_or"><code>unwrap_or</code></a>
 or <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.unwrap_or_else"><code>unwrap_or_else</code></a>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
@@ -5574,7 +5578,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.unwr
   
       <p>Returns the contained <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> value or the provided <code>default</code>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">69</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">ok</span><span class="o">.</span><span class="n">unwrap_or</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -5691,7 +5695,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.unwr
       <p>Returns the contained <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> value
 or computes it from the <code>default</code> function.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">ok</span><span class="o">.</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
@@ -5799,8 +5803,8 @@ or computes it from the <code>default</code> function.</p>
 <code class="highlight language-python"><span class="n">unwrap_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -5811,7 +5815,7 @@ or computes it from the <code>default</code> function.</p>
       <p>Returns the contained <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> value
 or computes it from the asynchronous <code>default</code> function.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="mi">0</span>
@@ -5942,11 +5946,12 @@ or computes it from the asynchronous <code>default</code> function.</p>
 case explicitly, or call <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.unwrap_error_or"><code>unwrap_error_or</code></a>
 or <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.unwrap_error_or_else"><code>unwrap_error_or_else</code></a>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">error</span><span class="o">.</span><span class="n">unwrap_error</span><span class="p">()</span>
 <span class="mi">13</span>
+
 <span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span><span class="o">.</span><span class="n">unwrap_error</span><span class="p">()</span>
 <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
@@ -6020,7 +6025,8 @@ or <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.unwr
 <span class="normal">417</span>
 <span class="normal">418</span>
 <span class="normal">419</span>
-<span class="normal">420</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">420</span>
+<span class="normal">421</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">unwrap_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the contained [`Error[E]`][wraps.result.Error] value.</span>
 
@@ -6035,6 +6041,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.unwr
 <span class="sd">        &gt;&gt;&gt; error = Error(13)</span>
 <span class="sd">        &gt;&gt;&gt; error.unwrap_error()</span>
 <span class="sd">        13</span>
+
 <span class="sd">        &gt;&gt;&gt; ok = Ok(42)</span>
 <span class="sd">        &gt;&gt;&gt; ok.unwrap_error()</span>
 <span class="sd">        Traceback (most recent call last):</span>
@@ -6074,7 +6081,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.unwr
       <p>Returns the contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> value (of type <code>E</code>)
 or a provided default.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">error</span><span class="o">.</span><span class="n">unwrap_error_or</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -6127,8 +6134,7 @@ or a provided default.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">422</span>
-<span class="normal">423</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">423</span>
 <span class="normal">424</span>
 <span class="normal">425</span>
 <span class="normal">426</span>
@@ -6147,7 +6153,8 @@ or a provided default.</p>
 <span class="normal">439</span>
 <span class="normal">440</span>
 <span class="normal">441</span>
-<span class="normal">442</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">442</span>
+<span class="normal">443</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">unwrap_error_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the contained [`Error[E]`][wraps.result.Error] value (of type `E`)</span>
 <span class="sd">    or a provided default.</span>
@@ -6193,7 +6200,7 @@ or a provided default.</p>
       <p>Returns the contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> value
 or computes it from the <code>default</code> function.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <p>```python
 error = Error(5)
@@ -6245,8 +6252,7 @@ assert not ok.unwrap_error_or_else(int)</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">444</span>
-<span class="normal">445</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">445</span>
 <span class="normal">446</span>
 <span class="normal">447</span>
 <span class="normal">448</span>
@@ -6264,7 +6270,8 @@ assert not ok.unwrap_error_or_else(int)</p>
 <span class="normal">460</span>
 <span class="normal">461</span>
 <span class="normal">462</span>
-<span class="normal">463</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">463</span>
+<span class="normal">464</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">unwrap_error_or_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the contained [`Error[E]`][wraps.result.Error] value</span>
 <span class="sd">    or computes it from the `default` function.</span>
@@ -6298,8 +6305,8 @@ assert not ok.unwrap_error_or_else(int)</p>
 <code class="highlight language-python"><span class="n">unwrap_error_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">E</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -6310,7 +6317,7 @@ assert not ok.unwrap_error_or_else(int)</p>
       <p>Returns the contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> value
 or computes it from the asynchronous <code>default</code> function.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="mi">0</span>
@@ -6319,7 +6326,7 @@ or computes it from the asynchronous <code>default</code> function.</p>
 <span class="k">assert</span> <span class="k">await</span> <span class="n">error</span><span class="o">.</span><span class="n">unwrap_error_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
 
 <span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">assert</span> <span class="ow">not</span> <span class="n">ok</span><span class="o">.</span><span class="n">unwrap_error_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="k">await</span> <span class="n">ok</span><span class="o">.</span><span class="n">unwrap_error_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
 </code></pre></div>
 </details>
   <p><strong>Parameters:</strong></p>
@@ -6366,8 +6373,7 @@ or computes it from the asynchronous <code>default</code> function.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">465</span>
-<span class="normal">466</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">466</span>
 <span class="normal">467</span>
 <span class="normal">468</span>
 <span class="normal">469</span>
@@ -6389,7 +6395,8 @@ or computes it from the asynchronous <code>default</code> function.</p>
 <span class="normal">485</span>
 <span class="normal">486</span>
 <span class="normal">487</span>
-<span class="normal">488</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">488</span>
+<span class="normal">489</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">unwrap_error_or_else_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the contained [`Error[E]`][wraps.result.Error] value</span>
 <span class="sd">    or computes it from the asynchronous `default` function.</span>
@@ -6403,7 +6410,7 @@ or computes it from the asynchronous <code>default</code> function.</p>
 <span class="sd">        assert await error.unwrap_error_or_else_await(default)</span>
 
 <span class="sd">        ok = Ok(5)</span>
-<span class="sd">        assert not ok.unwrap_error_or_else_await(default)</span>
+<span class="sd">        assert not await ok.unwrap_error_or_else_await(default)</span>
 <span class="sd">        ```</span>
 
 <span class="sd">    Arguments:</span>
@@ -6438,11 +6445,12 @@ or computes it from the asynchronous <code>default</code> function.</p>
       <p>Returns the contained <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> value or raises the
 contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[AnyError]</code></a> value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span><span class="o">.</span><span class="n">raising</span><span class="p">()</span>
 <span class="mi">13</span>
+
 <span class="o">&gt;&gt;&gt;</span> <span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;error...&quot;</span><span class="p">))</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">error</span><span class="o">.</span><span class="n">raising</span><span class="p">()</span>
 <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
@@ -6488,8 +6496,7 @@ contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">490</span>
-<span class="normal">491</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">491</span>
 <span class="normal">492</span>
 <span class="normal">493</span>
 <span class="normal">494</span>
@@ -6511,7 +6518,9 @@ contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code
 <span class="normal">510</span>
 <span class="normal">511</span>
 <span class="normal">512</span>
-<span class="normal">513</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">raising</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">AnyError</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the contained [`Ok[T]`][wraps.result.Ok] value or raises the</span>
 <span class="sd">    contained [`Error[AnyError]`][wraps.result.Error] value.</span>
@@ -6521,6 +6530,7 @@ contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code
 <span class="sd">        &gt;&gt;&gt; ok = Ok(13)</span>
 <span class="sd">        &gt;&gt;&gt; ok.raising()</span>
 <span class="sd">        13</span>
+
 <span class="sd">        &gt;&gt;&gt; error = Error(ValueError(&quot;error...&quot;))</span>
 <span class="sd">        &gt;&gt;&gt; error.raising()</span>
 <span class="sd">        Traceback (most recent call last):</span>
@@ -6558,10 +6568,10 @@ contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code
   <div class="doc doc-contents ">
   
       <p>Converts a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, E]</code></a>
-to an <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option"><code>Option[T]</code></a>.</p>
+into an <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option"><code>Option[T]</code></a>.</p>
 <p>Converts <code>self</code> into an <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option"><code>Option[T]</code></a>, discarding errors, if any.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
@@ -6592,9 +6602,7 @@ to an <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">515</span>
-<span class="normal">516</span>
-<span class="normal">517</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">517</span>
 <span class="normal">518</span>
 <span class="normal">519</span>
 <span class="normal">520</span>
@@ -6613,10 +6621,12 @@ to an <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option
 <span class="normal">533</span>
 <span class="normal">534</span>
 <span class="normal">535</span>
-<span class="normal">536</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a [`Result[T, E]`][wraps.result.Result]</span>
-<span class="sd">    to an [`Option[T]`][wraps.option.Option].</span>
+<span class="sd">    into an [`Option[T]`][wraps.option.Option].</span>
 
 <span class="sd">    Converts `self` into an [`Option[T]`][wraps.option.Option], discarding errors, if any.</span>
 
@@ -6658,11 +6668,11 @@ to an <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option
   <div class="doc doc-contents ">
   
       <p>Converts a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, E]</code></a>
-to an <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option"><code>Option[E]</code></a>.</p>
+into an <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option"><code>Option[E]</code></a>.</p>
 <p>Converts <code>self</code> into an <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option"><code>Option[E]</code></a>,
 discarding success values, if any.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
 
@@ -6693,9 +6703,7 @@ discarding success values, if any.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">538</span>
-<span class="normal">539</span>
-<span class="normal">540</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">540</span>
 <span class="normal">541</span>
 <span class="normal">542</span>
 <span class="normal">543</span>
@@ -6715,10 +6723,12 @@ discarding success values, if any.</p>
 <span class="normal">557</span>
 <span class="normal">558</span>
 <span class="normal">559</span>
-<span class="normal">560</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">560</span>
+<span class="normal">561</span>
+<span class="normal">562</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a [`Result[T, E]`][wraps.result.Result]</span>
-<span class="sd">    to an [`Option[E]`][wraps.option.Option].</span>
+<span class="sd">    into an [`Option[E]`][wraps.option.Option].</span>
 
 <span class="sd">    Converts `self` into an [`Option[E]`][wraps.option.Option],</span>
 <span class="sd">    discarding success values, if any.</span>
@@ -6762,7 +6772,7 @@ discarding success values, if any.</p>
   
       <p>Inspects a possibly contained <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
 
@@ -6815,9 +6825,7 @@ discarding success values, if any.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">562</span>
-<span class="normal">563</span>
-<span class="normal">564</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">564</span>
 <span class="normal">565</span>
 <span class="normal">566</span>
 <span class="normal">567</span>
@@ -6834,7 +6842,9 @@ discarding success values, if any.</p>
 <span class="normal">578</span>
 <span class="normal">579</span>
 <span class="normal">580</span>
-<span class="normal">581</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">inspect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Inspect</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspects a possibly contained [`Ok[T]`][wraps.result.Ok] value.</span>
 
@@ -6868,8 +6878,8 @@ discarding success values, if any.</p>
 <code class="highlight language-python"><span class="n">inspect_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncInspect</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -6879,7 +6889,7 @@ discarding success values, if any.</p>
   
       <p>Inspects a possibly contained <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -6935,9 +6945,7 @@ discarding success values, if any.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">583</span>
-<span class="normal">584</span>
-<span class="normal">585</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">585</span>
 <span class="normal">586</span>
 <span class="normal">587</span>
 <span class="normal">588</span>
@@ -6957,7 +6965,9 @@ discarding success values, if any.</p>
 <span class="normal">602</span>
 <span class="normal">603</span>
 <span class="normal">604</span>
-<span class="normal">605</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">605</span>
+<span class="normal">606</span>
+<span class="normal">607</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">inspect_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncInspect</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspects a possibly contained [`Ok[T]`][wraps.result.Ok] value.</span>
 
@@ -7004,7 +7014,7 @@ discarding success values, if any.</p>
   
       <p>Inspects a possibly contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="s2">&quot;Bye, world!&quot;</span><span class="p">)</span>
 
@@ -7057,9 +7067,7 @@ discarding success values, if any.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">607</span>
-<span class="normal">608</span>
-<span class="normal">609</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">609</span>
 <span class="normal">610</span>
 <span class="normal">611</span>
 <span class="normal">612</span>
@@ -7076,7 +7084,9 @@ discarding success values, if any.</p>
 <span class="normal">623</span>
 <span class="normal">624</span>
 <span class="normal">625</span>
-<span class="normal">626</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">626</span>
+<span class="normal">627</span>
+<span class="normal">628</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">inspect_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Inspect</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspects a possibly contained [`Error[E]`][wraps.result.Error] value.</span>
 
@@ -7110,8 +7120,8 @@ discarding success values, if any.</p>
 <code class="highlight language-python"><span class="n">inspect_error_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncInspect</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -7121,7 +7131,7 @@ discarding success values, if any.</p>
   
       <p>Inspects a possibly contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -7177,9 +7187,7 @@ discarding success values, if any.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">628</span>
-<span class="normal">629</span>
-<span class="normal">630</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">630</span>
 <span class="normal">631</span>
 <span class="normal">632</span>
 <span class="normal">633</span>
@@ -7199,7 +7207,9 @@ discarding success values, if any.</p>
 <span class="normal">647</span>
 <span class="normal">648</span>
 <span class="normal">649</span>
-<span class="normal">650</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">650</span>
+<span class="normal">651</span>
+<span class="normal">652</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">inspect_error_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncInspect</span><span class="p">[</span><span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspects a possibly contained [`Error[E]`][wraps.result.Error] value.</span>
 
@@ -7249,7 +7259,7 @@ by applying <code>function</code> to the contained <a class="autorefs autorefs-i
 leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> values untouched.</p>
 <p>This function can be used to compose the results of two functions.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">value</span> <span class="o">=</span> <span class="mi">69</span>
 <span class="n">mapped</span> <span class="o">=</span> <span class="s2">&quot;69&quot;</span>
@@ -7307,9 +7317,7 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><co
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">652</span>
-<span class="normal">653</span>
-<span class="normal">654</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">654</span>
 <span class="normal">655</span>
 <span class="normal">656</span>
 <span class="normal">657</span>
@@ -7335,7 +7343,9 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><co
 <span class="normal">677</span>
 <span class="normal">678</span>
 <span class="normal">679</span>
-<span class="normal">680</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">680</span>
+<span class="normal">681</span>
+<span class="normal">682</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps a [`Result[T, E]`][wraps.result.Result] to a [`Result[U, E]`][wraps.result.Result]</span>
 <span class="sd">    by applying `function` to the contained [`Ok[T]`][wraps.result.Ok] value,</span>
@@ -7389,7 +7399,7 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><co
       <p>Returns the default value (if errored), or applies the <code>function</code>
 to the contained value (if succeeded).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ok</span><span class="o">.</span><span class="n">map_or</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 13</span>
@@ -7452,9 +7462,7 @@ to the contained value (if succeeded).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">682</span>
-<span class="normal">683</span>
-<span class="normal">684</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">684</span>
 <span class="normal">685</span>
 <span class="normal">686</span>
 <span class="normal">687</span>
@@ -7473,7 +7481,9 @@ to the contained value (if succeeded).</p>
 <span class="normal">700</span>
 <span class="normal">701</span>
 <span class="normal">702</span>
-<span class="normal">703</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">703</span>
+<span class="normal">704</span>
+<span class="normal">705</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">map_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">U</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the default value (if errored), or applies the `function`</span>
 <span class="sd">    to the contained value (if succeeded).</span>
@@ -7520,7 +7530,7 @@ to the contained value (if succeeded).</p>
       <p>Computes the default value (if errored), or applies the <code>function</code>
 to the contained value (if succeeded).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ok</span><span class="o">.</span><span class="n">map_or_else</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 13</span>
@@ -7583,9 +7593,7 @@ to the contained value (if succeeded).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">705</span>
-<span class="normal">706</span>
-<span class="normal">707</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">707</span>
 <span class="normal">708</span>
 <span class="normal">709</span>
 <span class="normal">710</span>
@@ -7604,7 +7612,9 @@ to the contained value (if succeeded).</p>
 <span class="normal">723</span>
 <span class="normal">724</span>
 <span class="normal">725</span>
-<span class="normal">726</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">726</span>
+<span class="normal">727</span>
+<span class="normal">728</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">map_or_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the default value (if errored), or applies the `function`</span>
 <span class="sd">    to the contained value (if succeeded).</span>
@@ -7640,8 +7650,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -7652,7 +7662,7 @@ to the contained value (if succeeded).</p>
       <p>Computes the default value (if errored), or applies the <code>function</code>
 to the contained value (if succeeded).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="mi">0</span>
@@ -7718,9 +7728,7 @@ to the contained value (if succeeded).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">728</span>
-<span class="normal">729</span>
-<span class="normal">730</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">730</span>
 <span class="normal">731</span>
 <span class="normal">732</span>
 <span class="normal">733</span>
@@ -7742,7 +7750,9 @@ to the contained value (if succeeded).</p>
 <span class="normal">749</span>
 <span class="normal">750</span>
 <span class="normal">751</span>
-<span class="normal">752</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">752</span>
+<span class="normal">753</span>
+<span class="normal">754</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_or_else_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the default value (if errored), or applies the `function`</span>
 <span class="sd">    to the contained value (if succeeded).</span>
@@ -7793,7 +7803,7 @@ to the contained value (if succeeded).</p>
 by applying the <code>function</code> to the contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> value,
 leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> values untouched.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">value</span> <span class="o">=</span> <span class="mi">42</span>
 <span class="n">mapped</span> <span class="o">=</span> <span class="s2">&quot;42&quot;</span>
@@ -7851,9 +7861,7 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">754</span>
-<span class="normal">755</span>
-<span class="normal">756</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">756</span>
 <span class="normal">757</span>
 <span class="normal">758</span>
 <span class="normal">759</span>
@@ -7877,7 +7885,9 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>
 <span class="normal">777</span>
 <span class="normal">778</span>
 <span class="normal">779</span>
-<span class="normal">780</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
+<span class="normal">782</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">map_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps a [`Result[T, E]`][wraps.result.Result] to a [`Result[T, F]`][wraps.result.Result]</span>
 <span class="sd">    by applying the `function` to the contained [`Error[E]`][wraps.result.Error] value,</span>
@@ -7929,7 +7939,7 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>
       <p>Returns the default value (if succeeded), or applies the <code>function</code>
 to the contained error value (if errored).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="s2">&quot;nekit&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">map_error_or</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 5</span>
@@ -7992,9 +8002,7 @@ to the contained error value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">782</span>
-<span class="normal">783</span>
-<span class="normal">784</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">784</span>
 <span class="normal">785</span>
 <span class="normal">786</span>
 <span class="normal">787</span>
@@ -8013,7 +8021,9 @@ to the contained error value (if errored).</p>
 <span class="normal">800</span>
 <span class="normal">801</span>
 <span class="normal">802</span>
-<span class="normal">803</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">803</span>
+<span class="normal">804</span>
+<span class="normal">805</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">map_error_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">F</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the default value (if succeeded), or applies the `function`</span>
 <span class="sd">    to the contained error value (if errored).</span>
@@ -8060,7 +8070,7 @@ to the contained error value (if errored).</p>
       <p>Computes the default value (if succeeded), or applies the <code>function</code>
 to the contained value (if errored).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="s2">&quot;error...&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">map_error_or_else</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 8</span>
@@ -8123,9 +8133,7 @@ to the contained value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">805</span>
-<span class="normal">806</span>
-<span class="normal">807</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">807</span>
 <span class="normal">808</span>
 <span class="normal">809</span>
 <span class="normal">810</span>
@@ -8144,7 +8152,9 @@ to the contained value (if errored).</p>
 <span class="normal">823</span>
 <span class="normal">824</span>
 <span class="normal">825</span>
-<span class="normal">826</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">826</span>
+<span class="normal">827</span>
+<span class="normal">828</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">map_error_or_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the default value (if succeeded), or applies the `function`</span>
 <span class="sd">    to the contained value (if errored).</span>
@@ -8180,8 +8190,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_error_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -8192,7 +8202,7 @@ to the contained value (if errored).</p>
       <p>Computes the default value (if succeeded), or applies the <code>function</code>
 to the contained value (if errored).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="s2">&quot;error...&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">error</span><span class="o">.</span><span class="n">map_error_or_else</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 8</span>
@@ -8255,9 +8265,7 @@ to the contained value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">828</span>
-<span class="normal">829</span>
-<span class="normal">830</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">830</span>
 <span class="normal">831</span>
 <span class="normal">832</span>
 <span class="normal">833</span>
@@ -8276,7 +8284,9 @@ to the contained value (if errored).</p>
 <span class="normal">846</span>
 <span class="normal">847</span>
 <span class="normal">848</span>
-<span class="normal">849</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">849</span>
+<span class="normal">850</span>
+<span class="normal">851</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_error_or_else_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the default value (if succeeded), or applies the `function`</span>
 <span class="sd">    to the contained value (if errored).</span>
@@ -8312,8 +8322,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -8326,7 +8336,7 @@ by applying the asynchronous <code>function</code> to the contained <a class="au
 leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> values untouched.</p>
 <p>This function can be used to compose the results of two functions.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -8387,9 +8397,7 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><co
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">851</span>
-<span class="normal">852</span>
-<span class="normal">853</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">853</span>
 <span class="normal">854</span>
 <span class="normal">855</span>
 <span class="normal">856</span>
@@ -8418,7 +8426,9 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><co
 <span class="normal">879</span>
 <span class="normal">880</span>
 <span class="normal">881</span>
-<span class="normal">882</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">882</span>
+<span class="normal">883</span>
+<span class="normal">884</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps a [`Result[T, E]`][wraps.result.Result] to a [`Result[U, E]`][wraps.result.Result]</span>
 <span class="sd">    by applying the asynchronous `function` to the contained [`Ok[T]`][wraps.result.Ok] value,</span>
@@ -8464,8 +8474,8 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><co
 <code class="highlight language-python"><span class="n">map_await_or</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">U</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -8476,7 +8486,7 @@ leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Error"><co
       <p>Returns the default value (if errored), or applies the asynchronous <code>function</code>
 to the contained value (if succeeded).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -8542,9 +8552,7 @@ to the contained value (if succeeded).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">884</span>
-<span class="normal">885</span>
-<span class="normal">886</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">886</span>
 <span class="normal">887</span>
 <span class="normal">888</span>
 <span class="normal">889</span>
@@ -8566,7 +8574,9 @@ to the contained value (if succeeded).</p>
 <span class="normal">905</span>
 <span class="normal">906</span>
 <span class="normal">907</span>
-<span class="normal">908</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">908</span>
+<span class="normal">909</span>
+<span class="normal">910</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_await_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">U</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the default value (if errored), or applies the asynchronous `function`</span>
 <span class="sd">    to the contained value (if succeeded).</span>
@@ -8605,8 +8615,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -8617,7 +8627,7 @@ to the contained value (if succeeded).</p>
       <p>Computes the default value (if errored), or applies the asynchronous <code>function</code>
 to the contained value (if succeeded).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">async_len</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -8683,9 +8693,7 @@ to the contained value (if succeeded).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">910</span>
-<span class="normal">911</span>
-<span class="normal">912</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">912</span>
 <span class="normal">913</span>
 <span class="normal">914</span>
 <span class="normal">915</span>
@@ -8707,7 +8715,9 @@ to the contained value (if succeeded).</p>
 <span class="normal">931</span>
 <span class="normal">932</span>
 <span class="normal">933</span>
-<span class="normal">934</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">934</span>
+<span class="normal">935</span>
+<span class="normal">936</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_await_or_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the default value (if errored), or applies the asynchronous `function`</span>
 <span class="sd">    to the contained value (if succeeded).</span>
@@ -8746,8 +8756,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -8758,7 +8768,7 @@ to the contained value (if succeeded).</p>
       <p>Computes the default value (if errored), or applies the asynchronous <code>function</code>
 to the contained value (if succeeded).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="mi">0</span>
@@ -8827,9 +8837,7 @@ to the contained value (if succeeded).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">936</span>
-<span class="normal">937</span>
-<span class="normal">938</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">938</span>
 <span class="normal">939</span>
 <span class="normal">940</span>
 <span class="normal">941</span>
@@ -8856,7 +8864,9 @@ to the contained value (if succeeded).</p>
 <span class="normal">962</span>
 <span class="normal">963</span>
 <span class="normal">964</span>
-<span class="normal">965</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">965</span>
+<span class="normal">966</span>
+<span class="normal">967</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_await_or_else_await</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
@@ -8900,8 +8910,8 @@ to the contained value (if succeeded).</p>
 <code class="highlight language-python"><span class="n">map_error_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -8913,7 +8923,7 @@ to the contained value (if succeeded).</p>
 by applying the asynchronous <code>function</code> to the contained <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a>
 value, leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> values untouched.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -8974,9 +8984,7 @@ value, leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">967</span>
-<span class="normal">968</span>
-<span class="normal">969</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">969</span>
 <span class="normal">970</span>
 <span class="normal">971</span>
 <span class="normal">972</span>
@@ -9003,7 +9011,9 @@ value, leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"
 <span class="normal">993</span>
 <span class="normal">994</span>
 <span class="normal">995</span>
-<span class="normal">996</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">996</span>
+<span class="normal">997</span>
+<span class="normal">998</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_error_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps a [`Result[T, E]`][wraps.result.Result] to a [`Result[T, F]`][wraps.result.Result]</span>
 <span class="sd">    by applying the asynchronous `function` to the contained [`Error[E]`][wraps.result.Error]</span>
@@ -9047,8 +9057,8 @@ value, leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"
 <code class="highlight language-python"><span class="n">map_error_await_or</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">F</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -9059,7 +9069,7 @@ value, leaving any <a class="autorefs autorefs-internal" href="#wraps.result.Ok"
       <p>Returns the default value (if succeeded), or applies the asynchronous <code>function</code>
 to the contained value (if errored).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -9125,9 +9135,7 @@ to the contained value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 998</span>
-<span class="normal"> 999</span>
-<span class="normal">1000</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1000</span>
 <span class="normal">1001</span>
 <span class="normal">1002</span>
 <span class="normal">1003</span>
@@ -9149,7 +9157,9 @@ to the contained value (if errored).</p>
 <span class="normal">1019</span>
 <span class="normal">1020</span>
 <span class="normal">1021</span>
-<span class="normal">1022</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1022</span>
+<span class="normal">1023</span>
+<span class="normal">1024</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_error_await_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">F</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the default value (if succeeded), or applies the asynchronous `function`</span>
 <span class="sd">    to the contained value (if errored).</span>
@@ -9188,8 +9198,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_error_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -9200,7 +9210,7 @@ to the contained value (if errored).</p>
       <p>Computes the default value (if succeeded), or applies the asynchronous <code>function</code>
 to the contained value (if errored).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">async_len</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -9266,9 +9276,7 @@ to the contained value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1024</span>
-<span class="normal">1025</span>
-<span class="normal">1026</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1026</span>
 <span class="normal">1027</span>
 <span class="normal">1028</span>
 <span class="normal">1029</span>
@@ -9290,7 +9298,9 @@ to the contained value (if errored).</p>
 <span class="normal">1045</span>
 <span class="normal">1046</span>
 <span class="normal">1047</span>
-<span class="normal">1048</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1048</span>
+<span class="normal">1049</span>
+<span class="normal">1050</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_error_await_or_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the default value (if succeeded), or applies the asynchronous `function`</span>
 <span class="sd">    to the contained value (if errored).</span>
@@ -9329,8 +9339,8 @@ to the contained value (if errored).</p>
 <code class="highlight language-python"><span class="n">map_error_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">F</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -9341,7 +9351,7 @@ to the contained value (if errored).</p>
       <p>Computes the default value (if succeeded), or applies the asynchronous <code>function</code>
 to the contained value (if errored).</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="mi">0</span>
@@ -9410,9 +9420,7 @@ to the contained value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1050</span>
-<span class="normal">1051</span>
-<span class="normal">1052</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1052</span>
 <span class="normal">1053</span>
 <span class="normal">1054</span>
 <span class="normal">1055</span>
@@ -9439,7 +9447,9 @@ to the contained value (if errored).</p>
 <span class="normal">1076</span>
 <span class="normal">1077</span>
 <span class="normal">1078</span>
-<span class="normal">1079</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1079</span>
+<span class="normal">1080</span>
+<span class="normal">1081</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">map_error_await_or_else_await</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">AsyncNullary</span><span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">F</span><span class="p">:</span>
@@ -9493,7 +9503,7 @@ to the contained value (if errored).</p>
   
       <p>Returns an iterator over the possibly contained value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">ok</span><span class="o">.</span><span class="n">iter</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
@@ -9523,9 +9533,7 @@ to the contained value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1081</span>
-<span class="normal">1082</span>
-<span class="normal">1083</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1083</span>
 <span class="normal">1084</span>
 <span class="normal">1085</span>
 <span class="normal">1086</span>
@@ -9540,7 +9548,9 @@ to the contained value (if errored).</p>
 <span class="normal">1095</span>
 <span class="normal">1096</span>
 <span class="normal">1097</span>
-<span class="normal">1098</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1098</span>
+<span class="normal">1099</span>
+<span class="normal">1100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an iterator over the possibly contained value.</span>
 
@@ -9582,7 +9592,7 @@ to the contained value (if errored).</p>
   
       <p>Returns an iterator over the possibly contained error value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">iter_error</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
@@ -9612,9 +9622,7 @@ to the contained value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1100</span>
-<span class="normal">1101</span>
-<span class="normal">1102</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1102</span>
 <span class="normal">1103</span>
 <span class="normal">1104</span>
 <span class="normal">1105</span>
@@ -9629,7 +9637,9 @@ to the contained value (if errored).</p>
 <span class="normal">1114</span>
 <span class="normal">1115</span>
 <span class="normal">1116</span>
-<span class="normal">1117</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1117</span>
+<span class="normal">1118</span>
+<span class="normal">1119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">iter_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an iterator over the possibly contained error value.</span>
 
@@ -9672,7 +9682,7 @@ to the contained value (if errored).</p>
       <p>Returns an asynchronous iterator over the possibly contained
 <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a> value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">async_next</span><span class="p">(</span><span class="n">ok</span><span class="o">.</span><span class="n">async_iter</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
@@ -9702,9 +9712,7 @@ to the contained value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1119</span>
-<span class="normal">1120</span>
-<span class="normal">1121</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1121</span>
 <span class="normal">1122</span>
 <span class="normal">1123</span>
 <span class="normal">1124</span>
@@ -9720,7 +9728,9 @@ to the contained value (if errored).</p>
 <span class="normal">1134</span>
 <span class="normal">1135</span>
 <span class="normal">1136</span>
-<span class="normal">1137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1137</span>
+<span class="normal">1138</span>
+<span class="normal">1139</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">async_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an asynchronous iterator over the possibly contained</span>
 <span class="sd">    [`Ok[T]`][wraps.result.Ok] value.</span>
@@ -9764,7 +9774,7 @@ to the contained value (if errored).</p>
       <p>Returns an asynchronous iterator over the possibly contained
 <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a> value.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">async_next</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">async_iter_error</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
@@ -9794,9 +9804,7 @@ to the contained value (if errored).</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1139</span>
-<span class="normal">1140</span>
-<span class="normal">1141</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1141</span>
 <span class="normal">1142</span>
 <span class="normal">1143</span>
 <span class="normal">1144</span>
@@ -9812,7 +9820,9 @@ to the contained value (if errored).</p>
 <span class="normal">1154</span>
 <span class="normal">1155</span>
 <span class="normal">1156</span>
-<span class="normal">1157</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1157</span>
+<span class="normal">1158</span>
+<span class="normal">1159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">async_iter_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an asynchronous iterator over the possibly contained</span>
 <span class="sd">    [`Error[E]`][wraps.result.Error] value.</span>
@@ -9857,7 +9867,7 @@ to the contained value (if errored).</p>
 otherwise calls the <code>function</code> with the wrapped value and returns the result.</p>
 <p>This function is also known as <em>bind</em> in functional programming.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">InverseError</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">DIVISION_BY_ZERO</span> <span class="o">=</span> <span class="s2">&quot;division by zero&quot;</span>
@@ -9919,9 +9929,7 @@ otherwise calls the <code>function</code> with the wrapped value and returns the
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1159</span>
-<span class="normal">1160</span>
-<span class="normal">1161</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1161</span>
 <span class="normal">1162</span>
 <span class="normal">1163</span>
 <span class="normal">1164</span>
@@ -9950,7 +9958,9 @@ otherwise calls the <code>function</code> with the wrapped value and returns the
 <span class="normal">1187</span>
 <span class="normal">1188</span>
 <span class="normal">1189</span>
-<span class="normal">1190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1190</span>
+<span class="normal">1191</span>
+<span class="normal">1192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">and_then</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the result if it is an [`Error[E]`][wraps.result.Error],</span>
 <span class="sd">    otherwise calls the `function` with the wrapped value and returns the result.</span>
@@ -9996,8 +10006,8 @@ otherwise calls the <code>function</code> with the wrapped value and returns the
 <code class="highlight language-python"><span class="n">and_then_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -10008,7 +10018,7 @@ otherwise calls the <code>function</code> with the wrapped value and returns the
       <p>Returns the result if it is an <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[E]</code></a>,
 otherwise calls the asynchronous <code>function</code> with the wrapped value and returns the result.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">InverseError</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">DIVISION_BY_ZERO</span> <span class="o">=</span> <span class="s2">&quot;division by zero&quot;</span>
@@ -10070,9 +10080,7 @@ otherwise calls the asynchronous <code>function</code> with the wrapped value an
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1194</span>
 <span class="normal">1195</span>
 <span class="normal">1196</span>
 <span class="normal">1197</span>
@@ -10099,7 +10107,9 @@ otherwise calls the asynchronous <code>function</code> with the wrapped value an
 <span class="normal">1218</span>
 <span class="normal">1219</span>
 <span class="normal">1220</span>
-<span class="normal">1221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1221</span>
+<span class="normal">1222</span>
+<span class="normal">1223</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">and_then_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the result if it is an [`Error[E]`][wraps.result.Error],</span>
 <span class="sd">    otherwise calls the asynchronous `function` with the wrapped value and returns the result.</span>
@@ -10154,7 +10164,7 @@ otherwise calls the asynchronous <code>function</code> with the wrapped value an
       <p>Returns the result if it is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a>, otherwise calls the <code>function</code>
 with the wrapped error value and returns the result.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">NonZeroError</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">ZERO</span> <span class="o">=</span> <span class="s2">&quot;the value is zero&quot;</span>
@@ -10216,9 +10226,7 @@ with the wrapped error value and returns the result.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1223</span>
-<span class="normal">1224</span>
-<span class="normal">1225</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1225</span>
 <span class="normal">1226</span>
 <span class="normal">1227</span>
 <span class="normal">1228</span>
@@ -10245,7 +10253,9 @@ with the wrapped error value and returns the result.</p>
 <span class="normal">1249</span>
 <span class="normal">1250</span>
 <span class="normal">1251</span>
-<span class="normal">1252</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1252</span>
+<span class="normal">1253</span>
+<span class="normal">1254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">or_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the result if it is [`Ok[T]`][wraps.result.Ok], otherwise calls the `function`</span>
 <span class="sd">    with the wrapped error value and returns the result.</span>
@@ -10289,8 +10299,8 @@ with the wrapped error value and returns the result.</p>
 <code class="highlight language-python"><span class="n">or_else_await</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h3>
@@ -10301,7 +10311,7 @@ with the wrapped error value and returns the result.</p>
       <p>Returns the result if it is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[T]</code></a>, otherwise calls the asynchronous
 <code>function</code> with the wrapped error value and returns the result.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">NonZeroError</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">ZERO</span> <span class="o">=</span> <span class="s2">&quot;the value is zero&quot;</span>
@@ -10364,9 +10374,7 @@ with the wrapped error value and returns the result.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1254</span>
-<span class="normal">1255</span>
-<span class="normal">1256</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1256</span>
 <span class="normal">1257</span>
 <span class="normal">1258</span>
 <span class="normal">1259</span>
@@ -10394,7 +10402,9 @@ with the wrapped error value and returns the result.</p>
 <span class="normal">1281</span>
 <span class="normal">1282</span>
 <span class="normal">1283</span>
-<span class="normal">1284</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1284</span>
+<span class="normal">1285</span>
+<span class="normal">1286</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">or_else_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncUnary</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the result if it is [`Ok[T]`][wraps.result.Ok], otherwise calls the asynchronous</span>
 <span class="sd">    `function` with the wrapped error value and returns the result.</span>
@@ -10444,10 +10454,10 @@ with the wrapped error value and returns the result.</p>
   <div class="doc doc-contents ">
   
       <p>Flattens a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[Result[T, E], E]</code></a>
-to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, E]</code></a>.</p>
+into a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, E]</code></a>.</p>
 <p>This is equivalent to <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.and_then"><code>result.and_then(identity)</code></a>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">ok_nested</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span>
@@ -10480,9 +10490,7 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1286</span>
-<span class="normal">1287</span>
-<span class="normal">1288</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1288</span>
 <span class="normal">1289</span>
 <span class="normal">1290</span>
 <span class="normal">1291</span>
@@ -10502,9 +10510,11 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
 <span class="normal">1305</span>
 <span class="normal">1306</span>
 <span class="normal">1307</span>
-<span class="normal">1308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">try_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span> <span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="normal">1308</span>
+<span class="normal">1309</span>
+<span class="normal">1310</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">try_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span> <span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Flattens a [`Result[Result[T, E], E]`][wraps.result.Result]</span>
-<span class="sd">    to a [`Result[T, E]`][wraps.result.Result].</span>
+<span class="sd">    into a [`Result[T, E]`][wraps.result.Result].</span>
 
 <span class="sd">    This is equivalent to [`result.and_then(identity)`][wraps.result.ResultProtocol.and_then].</span>
 
@@ -10544,10 +10554,10 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
   <div class="doc doc-contents ">
   
       <p>Flattens a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, Result[T, E]]</code></a>
-to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, E]</code></a>.</p>
+into a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, E]</code></a>.</p>
 <p>This is equivalent to <a class="autorefs autorefs-internal" href="#wraps.result.ResultProtocol.or_else"><code>result.or_else(identity)</code></a>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">ok</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">ok_nested</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span>
@@ -10580,9 +10590,7 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1310</span>
-<span class="normal">1311</span>
-<span class="normal">1312</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1312</span>
 <span class="normal">1313</span>
 <span class="normal">1314</span>
 <span class="normal">1315</span>
@@ -10602,9 +10610,11 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
 <span class="normal">1329</span>
 <span class="normal">1330</span>
 <span class="normal">1331</span>
-<span class="normal">1332</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">try_flatten_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="normal">1332</span>
+<span class="normal">1333</span>
+<span class="normal">1334</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">try_flatten_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Flattens a [`Result[T, Result[T, E]]`][wraps.result.Result]</span>
-<span class="sd">    to a [`Result[T, E]`][wraps.result.Result].</span>
+<span class="sd">    into a [`Result[T, E]`][wraps.result.Result].</span>
 
 <span class="sd">    This is equivalent to [`result.or_else(identity)`][wraps.result.ResultProtocol.or_else].</span>
 
@@ -10649,7 +10659,7 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
   
       <p>Checks if the contained value is equal to the <code>value</code>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">value</span> <span class="o">=</span> <span class="mi">42</span>
 <span class="n">other</span> <span class="o">=</span> <span class="mi">69</span>
@@ -10777,7 +10787,7 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
   
       <p>Checks if the contained error value is equal to the <code>error</code>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">value</span> <span class="o">=</span> <span class="mi">42</span>
 <span class="n">other</span> <span class="o">=</span> <span class="mi">69</span>
@@ -10904,11 +10914,11 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
   <div class="doc doc-contents ">
   
       <p>Converts a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, E]</code></a>
-to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[E, T]</code></a>.</p>
+into a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[E, T]</code></a>.</p>
 <p><a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok(value)</code></a> and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error(error)</code></a> get swapped to
 <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error(value)</code></a> and <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok(error)</code></a> respectively.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">value</span> <span class="o">=</span> <span class="mi">42</span>
 
@@ -10962,7 +10972,7 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
 <span class="normal">1430</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="n">T</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a [`Result[T, E]`][wraps.result.Result]</span>
-<span class="sd">    to a [`Result[E, T]`][wraps.result.Result].</span>
+<span class="sd">    into a [`Result[E, T]`][wraps.result.Result].</span>
 
 <span class="sd">    [`Ok(value)`][wraps.result.Ok] and [`Error(error)`][wraps.result.Error] get swapped to</span>
 <span class="sd">    [`Error(value)`][wraps.result.Error] and [`Ok(error)`][wraps.result.Ok] respectively.</span>
@@ -11003,17 +11013,19 @@ to a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Res
 
   <div class="doc doc-contents ">
   
-      <p>Returns the <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[V]</code></a> value if <code>self</code> is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[V]</code></a>, and
-the <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[V]</code></a> value if <code>self</code> is an <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[V]</code></a>.</p>
-<p>In other words, this function returns the value of a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[V, V]</code></a>,
-regardless of whether or not that result is
-<a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[V]</code></a> or <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[V]</code></a>.</p>
+      <p>Returns the value contained within <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[V, V]</code></a>, regardless
+of whether or not that result is <a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok[V]</code></a>
+or <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error[V]</code></a>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">69</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">into_ok_or_error</span><span class="p">())</span>  <span class="c1"># 69</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">into_ok_or_error</span><span class="p">())</span>  <span class="c1"># 69; inferred `int`</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">into_ok_or_error</span><span class="p">())</span>  <span class="c1"># 42; inferred `int`</span>
 </code></pre></div>
 </details>
   <p><strong>Returns:</strong></p>
@@ -11055,20 +11067,22 @@ regardless of whether or not that result is
 <span class="normal">1448</span>
 <span class="normal">1449</span>
 <span class="normal">1450</span>
-<span class="normal">1451</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1451</span>
+<span class="normal">1452</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">into_ok_or_error</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ResultProtocol</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">V</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">V</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the [`Ok[V]`][wraps.result.Ok] value if `self` is [`Ok[V]`][wraps.result.Ok], and</span>
-<span class="sd">    the [`Error[V]`][wraps.result.Error] value if `self` is an [`Error[V]`][wraps.result.Error].</span>
-
-<span class="sd">    In other words, this function returns the value of a [`Result[V, V]`][wraps.result.Result],</span>
-<span class="sd">    regardless of whether or not that result is</span>
-<span class="sd">    [`Ok[V]`][wraps.result.Ok] or [`Error[V]`][wraps.result.Error].</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the value contained within [`Result[V, V]`][wraps.result.Result], regardless</span>
+<span class="sd">    of whether or not that result is [`Ok[V]`][wraps.result.Ok]</span>
+<span class="sd">    or [`Error[V]`][wraps.result.Error].</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        ```python</span>
 <span class="sd">        result: Result[int, int] = Ok(69)</span>
 
-<span class="sd">        print(result.into_ok_or_error())  # 69</span>
+<span class="sd">        print(result.into_ok_or_error())  # 69; inferred `int`</span>
+
+<span class="sd">        result = Error(42)</span>
+
+<span class="sd">        print(result.into_ok_or_error())  # 42; inferred `int`</span>
 <span class="sd">        ```</span>
 
 <span class="sd">    Returns:</span>
@@ -11097,11 +11111,12 @@ regardless of whether or not that result is
 
   <div class="doc doc-contents ">
   
-      <p>Maps a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, E]</code></a> to an <a class="autorefs autorefs-internal" href="../either/#wraps.either.Either"><code>Either[T, E]</code></a>.</p>
+      <p>Converts a <a class="autorefs autorefs-internal" href="#wraps.result.Result"><code>Result[T, E]</code></a>
+into an <a class="autorefs autorefs-internal" href="../either/#wraps.either.Either"><code>Either[T, E]</code></a>.</p>
 <p><a class="autorefs autorefs-internal" href="#wraps.result.Ok"><code>Ok(value)</code></a> is mapped to <a class="autorefs autorefs-internal" href="../either/#wraps.either.Left"><code>Left(value)</code></a>
 and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error(error)</code></a> is mapped to <a class="autorefs autorefs-internal" href="../either/#wraps.either.Right"><code>Right(error)</code></a>.</p>
 
-<details class="example">
+<details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="n">value</span> <span class="o">=</span> <span class="mi">42</span>
 
@@ -11136,8 +11151,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1453</span>
-<span class="normal">1454</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1454</span>
 <span class="normal">1455</span>
 <span class="normal">1456</span>
 <span class="normal">1457</span>
@@ -11161,9 +11175,12 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 <span class="normal">1475</span>
 <span class="normal">1476</span>
 <span class="normal">1477</span>
-<span class="normal">1478</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1478</span>
+<span class="normal">1479</span>
+<span class="normal">1480</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">into_either</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Either</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps a [`Result[T, E]`][wraps.result.Result] to an [`Either[T, E]`][wraps.either.Either].</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a [`Result[T, E]`][wraps.result.Result]</span>
+<span class="sd">    into an [`Either[T, E]`][wraps.either.Either].</span>
 
 <span class="sd">    [`Ok(value)`][wraps.result.Ok] is mapped to [`Left(value)`][wraps.either.Left]</span>
 <span class="sd">    and [`Error(error)`][wraps.result.Error] is mapped to [`Right(error)`][wraps.either.Right].</span>
@@ -11209,20 +11226,20 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
   <div class="doc doc-contents ">
   
-      <p>Functionally similar to <code>?</code> operator in Rust.</p>
+      <p>Functionally similar to the <em>question-mark</em> (<code>?</code>) operator in Rust.</p>
 <p>See <a class="autorefs autorefs-internal" href="../early/#wraps.early"><code>early</code></a> for more information.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1480</span>
-<span class="normal">1481</span>
-<span class="normal">1482</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1482</span>
 <span class="normal">1483</span>
 <span class="normal">1484</span>
 <span class="normal">1485</span>
-<span class="normal">1486</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
+<span class="normal">1486</span>
+<span class="normal">1487</span>
+<span class="normal">1488</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@required</span>
 <span class="k">def</span> <span class="nf">early</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Functionally similar to `?` operator in Rust.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Functionally similar to the *question-mark* (`?`) operator in Rust.</span>
 
 <span class="sd">    See [`early`][wraps.early] for more information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -11262,9 +11279,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
         <details class="quote">
           <summary>Source code in <code>wraps/result.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1493</span>
-<span class="normal">1494</span>
-<span class="normal">1495</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1495</span>
 <span class="normal">1496</span>
 <span class="normal">1497</span>
 <span class="normal">1498</span>
@@ -11438,7 +11453,9 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 <span class="normal">1666</span>
 <span class="normal">1667</span>
 <span class="normal">1668</span>
-<span class="normal">1669</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@final</span>
+<span class="normal">1669</span>
+<span class="normal">1670</span>
+<span class="normal">1671</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@final</span>
 <span class="nd">@frozen</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">Ok</span><span class="p">(</span><span class="n">ResultProtocol</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Never</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;[`Ok[T]`][wraps.result.Ok] variant of [`Result[T, E]`][wraps.result.Result].&quot;&quot;&quot;</span>
@@ -11659,9 +11676,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 
         <details class="quote">
           <summary>Source code in <code>wraps/result.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1672</span>
-<span class="normal">1673</span>
-<span class="normal">1674</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1674</span>
 <span class="normal">1675</span>
 <span class="normal">1676</span>
 <span class="normal">1677</span>
@@ -11838,7 +11853,9 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
 <span class="normal">1848</span>
 <span class="normal">1849</span>
 <span class="normal">1850</span>
-<span class="normal">1851</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@final</span>
+<span class="normal">1851</span>
+<span class="normal">1852</span>
+<span class="normal">1853</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@final</span>
 <span class="nd">@frozen</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">Error</span><span class="p">(</span><span class="n">ResultProtocol</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span> <span class="n">E</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;[`Error[E]`][wraps.result.Error] variant of [`Result[T, E]`][wraps.result.Result].&quot;&quot;&quot;</span>
@@ -12059,11 +12076,11 @@ except it works as a <em>type guard</em>.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1860</span>
-<span class="normal">1861</span>
-<span class="normal">1862</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1862</span>
 <span class="normal">1863</span>
-<span class="normal">1864</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_ok</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Ok</span><span class="p">[</span><span class="n">T</span><span class="p">]]:</span>
+<span class="normal">1864</span>
+<span class="normal">1865</span>
+<span class="normal">1866</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_ok</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Ok</span><span class="p">[</span><span class="n">T</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is the same as [`Result.is_ok`][wraps.result.ResultProtocol.is_ok],</span>
 <span class="sd">    except it works as a *type guard*.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -12091,11 +12108,11 @@ except it works as a <em>type guard</em>.</p>
 
       <details class="quote">
         <summary>Source code in <code>wraps/result.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1867</span>
-<span class="normal">1868</span>
-<span class="normal">1869</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1869</span>
 <span class="normal">1870</span>
-<span class="normal">1871</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_error</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Error</span><span class="p">[</span><span class="n">E</span><span class="p">]]:</span>
+<span class="normal">1871</span>
+<span class="normal">1872</span>
+<span class="normal">1873</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_error</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Error</span><span class="p">[</span><span class="n">E</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is the same as [`Result.is_error`][wraps.result.ResultProtocol.is_error],</span>
 <span class="sd">    except it works as a *type guard*.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
