@@ -6,7 +6,7 @@ from typing import Callable, Generic, Optional, Type, TypeVar, final
 
 from attrs import frozen
 from funcs.decorators import wraps
-from funcs.typing import AnyError, AsyncCallable, NormalError
+from typing_aliases import AnyError, AsyncCallable, NormalError
 from typing_extensions import ParamSpec
 
 from wraps.either import Either

@@ -2,7 +2,7 @@
 
 from typing import Generic, TypeVar
 
-from funcs.typing import AnyError
+from typing_aliases import AnyError
 from typing_extensions import Never
 
 __all__ = ("Panic", "panic", "EarlyOption", "EarlyResult")

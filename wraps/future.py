@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import AsyncIterator, Awaitable, Generator, TypeVar
 
 from attrs import field, frozen
-from funcs.typing import AsyncUnary, Unary
+from typing_aliases import AsyncUnary, Unary
 
 from wraps.reawaitable import ReAwaitable
 from wraps.utils import async_identity, identity

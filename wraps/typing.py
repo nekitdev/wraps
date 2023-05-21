@@ -1,6 +1,6 @@
 from typing import Callable, TypeVar
 
-from funcs.typing import Binary, Nullary, Quaternary, Ternary, Unary
+from typing_aliases import Binary, Nullary, Quaternary, Ternary, Unary
 from typing_extensions import ParamSpec
 
 from wraps.future import Future

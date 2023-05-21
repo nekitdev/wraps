@@ -67,7 +67,7 @@ from typing import (
 )
 
 from attrs import frozen
-from funcs.typing import (
+from typing_aliases import (
     AsyncBinary,
     AsyncInspect,
     AsyncNullary,

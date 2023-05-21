@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Awaitable, TypeVar, final
 
 from attrs import field, frozen
-from funcs.typing import (
+from typing_aliases import (
     AnyError,
     AsyncInspect,
     AsyncNullary,

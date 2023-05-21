@@ -48,7 +48,7 @@ from abc import abstractmethod as required
 from typing import AsyncIterable, AsyncIterator, Iterable, Iterator, TypeVar, Union, final
 
 from attrs import frozen
-from funcs.typing import (
+from typing_aliases import (
     AnyError,
     AsyncInspect,
     AsyncNullary,

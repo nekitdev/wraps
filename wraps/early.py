@@ -3,7 +3,7 @@
 from typing import Callable, TypeVar
 
 from funcs.decorators import wraps
-from funcs.typing import AsyncCallable
+from typing_aliases import AsyncCallable
 from typing_extensions import ParamSpec
 
 from wraps.errors import EarlyOption, EarlyResult
