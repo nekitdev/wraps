@@ -36,7 +36,7 @@ attrs = ">= 23.1.0"
 
 funcs = ">= 0.5.1"
 
-typing-aliases = ">= 1.1.0"
+typing-aliases = ">= 1.1.2"
 typing-extensions = ">= 4.5.0"
 
 [tool.poetry.group.format]
