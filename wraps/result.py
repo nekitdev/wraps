@@ -45,7 +45,7 @@ match result:
 from __future__ import annotations
 
 from abc import abstractmethod as required
-from typing import AsyncIterable, AsyncIterator, Iterable, Iterator, TypeVar, Union, final
+from typing import AsyncIterable, AsyncIterator, Iterable, Iterator, TypeVar, Union
 
 from attrs import frozen
 from typing_aliases import (
@@ -59,7 +59,7 @@ from typing_aliases import (
     Predicate,
     Unary,
 )
-from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard
+from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard, final
 
 from wraps.errors import EarlyResult, panic
 from wraps.option import Null, Option, Some

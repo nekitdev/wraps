@@ -1,9 +1,9 @@
-from typing import Awaitable, Callable, Generator, TypeVar, final
+from typing import Awaitable, Callable, Generator, TypeVar
 
 from attrs import define, field
 from funcs.decorators import wraps
 from typing_aliases import AsyncCallable
-from typing_extensions import ParamSpec
+from typing_extensions import ParamSpec, final
 
 from wraps.option import Null, Option, Some
 

@@ -62,7 +62,6 @@ from typing import (
     Tuple,
     TypeVar,
     Union,
-    final,
     overload,
 )
 
@@ -79,7 +78,7 @@ from typing_aliases import (
     Predicate,
     Unary,
 )
-from typing_extensions import Literal, Never, Protocol, TypeGuard
+from typing_extensions import Literal, Never, Protocol, TypeGuard, final
 
 from wraps.errors import EarlyOption, panic
 from wraps.utils import async_empty, async_once, empty, identity, once

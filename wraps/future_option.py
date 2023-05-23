@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Awaitable, Optional, Tuple, TypeVar, final
+from typing import Awaitable, Optional, Tuple, TypeVar
 
 from attrs import field, frozen
 from typing_aliases import (
@@ -17,7 +17,7 @@ from typing_aliases import (
     Predicate,
     Unary,
 )
-from typing_extensions import Never
+from typing_extensions import Never, final
 
 from wraps.future import Future, identity
 from wraps.option import Null, Option, Some

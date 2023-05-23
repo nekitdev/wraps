@@ -22,7 +22,7 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.6.0"
+__version__ = "0.6.1"
 
 from wraps.early import early_option, early_option_await, early_result, early_result_await
 from wraps.either import Either, Left, Right, is_left, is_right
