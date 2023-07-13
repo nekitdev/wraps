@@ -67,7 +67,7 @@ optional = true
 pytest = "7.3.1"
 pytest-cov = "4.0.0"
 anyio = "3.6.2"
-trio = "0.22.0"
+trio = "0.22.2"
 
 [tool.poetry.group.docs]
 optional = true
