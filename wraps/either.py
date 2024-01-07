@@ -7,8 +7,7 @@ For representing results (values and errors), use the [`Result[T, E]`][wraps.res
 
 from __future__ import annotations
 
-from abc import abstractmethod as required
-from typing import AsyncIterator, Iterator, TypeVar, Union
+from typing import AsyncIterator, Iterator, Literal, Protocol, TypeVar, Union, final
 
 from attrs import frozen
 from typing_aliases import (
@@ -20,11 +19,12 @@ from typing_aliases import (
     Nullary,
     Predicate,
     Unary,
+    required,
 )
-from typing_extensions import Literal, Never, Protocol, TypeGuard, final
+from typing_extensions import Never, TypeGuard
 
-from wraps.errors import panic
 from wraps.option import Null, Option, Some
+from wraps.panics import panic
 from wraps.utils import async_empty, async_once, empty, identity, once
 
 __all__ = ("Either", "Left", "Right", "is_left", "is_right")

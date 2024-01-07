@@ -44,7 +44,6 @@ match result:
 
 from __future__ import annotations
 
-from abc import abstractmethod as required
 from typing import AsyncIterable, AsyncIterator, Iterable, Iterator, TypeVar, Union
 
 from attrs import frozen
@@ -58,11 +57,13 @@ from typing_aliases import (
     Nullary,
     Predicate,
     Unary,
+    required,
 )
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard, final
 
-from wraps.errors import EarlyResult, panic
+from wraps.errors import EarlyResult
 from wraps.option import Null, Option, Some
+from wraps.panics import panic
 from wraps.utils import async_empty, async_once, empty, identity, once
 
 __all__ = ("Result", "Ok", "Error", "is_ok", "is_error")
@@ -248,7 +249,7 @@ class ResultProtocol(AsyncIterable[T], Iterable[T], Protocol[T, E]):  # type: ig
             >>> error.expect("error!")
             Traceback (most recent call last):
               ...
-            wraps.errors.Panic: error!
+            wraps.panics.Panic: error!
             ```
 
         Arguments:
@@ -272,7 +273,7 @@ class ResultProtocol(AsyncIterable[T], Iterable[T], Protocol[T, E]):  # type: ig
             >>> ok.expect_error("ok!")
             Traceback (most recent call last):
               ...
-            wraps.errors.Panic: ok!
+            wraps.panics.Panic: ok!
 
             >>> error = Error(0)
             >>> error.expect_error("ok!")
@@ -310,7 +311,7 @@ class ResultProtocol(AsyncIterable[T], Iterable[T], Protocol[T, E]):  # type: ig
             >>> error.unwrap()
             Traceback (most recent call last):
               ...
-            wraps.errors.Panic: called `unwrap` on error
+            wraps.panics.Panic: called `unwrap` on error
             ```
 
         Raises:
@@ -409,7 +410,7 @@ class ResultProtocol(AsyncIterable[T], Iterable[T], Protocol[T, E]):  # type: ig
             >>> ok.unwrap_error()
             Traceback (most recent call last):
               ...
-            wraps.errors.Panic: called `unwrap_error` on ok
+            wraps.panics.Panic: called `unwrap_error` on ok
             ```
 
         Raises:

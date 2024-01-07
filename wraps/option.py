@@ -52,7 +52,6 @@ as described in the [`result`][wraps.result] section.
 
 from __future__ import annotations
 
-from abc import abstractmethod as required
 from typing import (
     AsyncIterable,
     AsyncIterator,
@@ -77,10 +76,12 @@ from typing_aliases import (
     Nullary,
     Predicate,
     Unary,
+    required,
 )
 from typing_extensions import Literal, Never, Protocol, TypeGuard, final
 
-from wraps.errors import EarlyOption, panic
+from wraps.errors import EarlyOption
+from wraps.panics import panic
 from wraps.utils import async_empty, async_once, empty, identity, once
 
 __all__ = ("Option", "Some", "Null", "is_some", "is_null")
@@ -205,7 +206,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             >>> null.expect("panic!")
             Traceback (most recent call last):
               ...
-            wraps.errors.Panic: panic!
+            wraps.panics.Panic: panic!
             ```
 
         Arguments:
@@ -257,7 +258,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             >>> null.unwrap()
             Traceback (most recent call last):
               ...
-            wraps.errors.Panic: called `unwrap` on null
+            wraps.panics.Panic: called `unwrap` on null
             ```
 
         Raises:

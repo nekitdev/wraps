@@ -11,6 +11,8 @@ __all__ = (
     "once",
 )
 
+# NOTE: we can not use `iters` here as it depends on `wraps`
+
 T = TypeVar("T")
 
 
@@ -24,12 +26,12 @@ def identity(item: T) -> T:
 
 async def async_empty() -> AsyncIterator[Never]:
     return
-    yield  # type: ignore
+    yield
 
 
 def empty() -> Iterator[Never]:
     return
-    yield  # type: ignore
+    yield
 
 
 async def async_once(item: T) -> AsyncIterator[T]:

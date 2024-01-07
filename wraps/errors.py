@@ -1,32 +1,10 @@
-"""Panics and early return errors."""
+"""Various errors."""
 
 from typing import Generic, TypeVar
 
 from typing_aliases import AnyError
-from typing_extensions import Never
 
-__all__ = ("Panic", "panic", "EarlyOption", "EarlyResult")
-
-
-class Panic(AnyError):
-    """Represents panics as errors.
-
-    Panics should not be explicitly handled in general, therefore [`Panic`][wraps.errors.Panic]
-    is derived from [`AnyError`][funcs.typing.AnyError].
-    """
-
-
-def panic(message: str) -> Never:
-    """Panics with the given `message`.
-
-    Arguments:
-        message: The message to panic with.
-
-    Raises:
-        Panic: Always raised.
-    """
-    raise Panic(message)
-
+__all__ = ("EarlyOption", "EarlyResult")
 
 E = TypeVar("E", covariant=True)
 

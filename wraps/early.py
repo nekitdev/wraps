@@ -1,25 +1,31 @@
 """Early returns."""
 
-from typing import Callable, TypeVar
+from typing import TypeVar
 
 from funcs.decorators import wraps
-from typing_aliases import AsyncCallable
 from typing_extensions import ParamSpec
 
 from wraps.errors import EarlyOption, EarlyResult
 from wraps.option import Null, Option
 from wraps.result import Error, Result
+from wraps.typing import OptionAsyncCallable, OptionCallable, ResultAsyncCallable, ResultCallable
 
-__all__ = ("early_option", "early_option_await", "early_result", "early_result_await")
+__all__ = (
+    # option
+    "early_option",
+    "early_option_await",
+    # result
+    "early_result",
+    "early_result_await",
+)
 
 P = ParamSpec("P")
 
 T = TypeVar("T")
-
 E = TypeVar("E")
 
 
-def early_option(function: Callable[P, Option[T]]) -> Callable[P, Option[T]]:
+def early_option(function: OptionCallable[P, T]) -> OptionCallable[P, T]:
     """Decorates the `function` returning [`Option[T]`][wraps.result.Option]
     to handle *early returns* via the `early` (`?` in Rust) operator.
 
@@ -41,7 +47,7 @@ def early_option(function: Callable[P, Option[T]]) -> Callable[P, Option[T]]:
     return wrap
 
 
-def early_option_await(function: AsyncCallable[P, Option[T]]) -> AsyncCallable[P, Option[T]]:
+def early_option_await(function: OptionAsyncCallable[P, T]) -> OptionAsyncCallable[P, T]:
     """Decorates the asynchronous `function` returning [`Option[T]`][wraps.result.Option]
     to handle *early returns* via the `early` (`?` in Rust) operator.
 
@@ -63,7 +69,7 @@ def early_option_await(function: AsyncCallable[P, Option[T]]) -> AsyncCallable[P
     return wrap
 
 
-def early_result(function: Callable[P, Result[T, E]]) -> Callable[P, Result[T, E]]:
+def early_result(function: ResultCallable[P, T, E]) -> ResultCallable[P, T, E]:
     """Decorates the `function` returning [`Result[T, E]`][wraps.result.Result]
     to handle *early returns* via the `early` (`?` in Rust) operator.
 
@@ -85,7 +91,7 @@ def early_result(function: Callable[P, Result[T, E]]) -> Callable[P, Result[T, E
     return wrap
 
 
-def early_result_await(function: AsyncCallable[P, Result[T, E]]) -> AsyncCallable[P, Result[T, E]]:
+def early_result_await(function: ResultAsyncCallable[P, T, E]) -> ResultAsyncCallable[P, T, E]:
     """Decorates the asynchronous `function` returning [`Result[T, E]`][wraps.result.Result]
     to handle *early returns* via the `early` (`?` in Rust) operator.
 

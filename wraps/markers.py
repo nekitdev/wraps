@@ -1,6 +1,6 @@
 from typing_extensions import Never
 
-from wraps.errors import panic
+from wraps.panics import panic
 
 __all__ = ("unreachable",)
 

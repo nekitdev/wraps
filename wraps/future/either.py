@@ -8,7 +8,7 @@ from attrs import field, frozen
 from typing_extensions import Never, final
 
 from wraps.either import Either, Left, Right
-from wraps.future import Future
+from wraps.future.base import Future
 from wraps.reawaitable import ReAwaitable
 
 __all__ = ("FutureEither",)
@@ -27,7 +27,7 @@ def reawaitable_converter(awaitable: Awaitable[Either[L, R]]) -> ReAwaitable[Eit
 @final
 @frozen()
 class FutureEither(Future[Either[L, R]]):
-    """[`Future[Either[L, R]]`][wraps.future.Future], adapted to leverage future functionality."""
+    """[`Future[Either[L, R]]`][wraps.future.base.Future], adapted to leverage future functionality."""
 
     reawaitable: ReAwaitable[Either[L, R]] = field(repr=False, converter=reawaitable_converter)
 

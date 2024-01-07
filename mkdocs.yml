@@ -15,13 +15,14 @@ nav:
     - Early: "reference/early.md"
     - Either: "reference/either.md"
     - ReAwaitable: "reference/reawaitable.md"
-    - Future: "reference/future.md"
-    - Future Option: "reference/future_option.md"
-    - Future Result: "reference/future_result.md"
-    - Future Either: "reference/future_either.md"
+    - Future:
+      - Base: "reference/future/base.md"
+      - Option: "reference/future/option.md"
+      - Result: "reference/future/result.md"
+      - Either: "reference/future/either.md"
     - Wraps: "reference/wraps.md"
     - Markers: "reference/markers.md"
-    - Errors: "reference/errors.md"
+    - Panics: "reference/panics.md"
   - Changelog: "changelog.md"
   - Security: "security.md"
   - Code of Conduct: "code_of_conduct.md"
@@ -68,7 +69,7 @@ plugins:
 
           import:
             - https://docs.python.org/3/objects.inv
-            - http://nekitdev.github.io/funcs/objects.inv
+            - http://nekitdev.github.io/typing-aliases/objects.inv
 
 markdown_extensions:
   - pymdownx.highlight

@@ -19,7 +19,7 @@ from typing_aliases import (
 from typing_extensions import Never, final
 
 from wraps.either import Either
-from wraps.future import Future
+from wraps.future.base import Future
 from wraps.option import Option
 from wraps.reawaitable import ReAwaitable
 from wraps.result import Error, Ok, Result
@@ -43,7 +43,7 @@ def reawaitable_converter(awaitable: Awaitable[Result[T, E]]) -> ReAwaitable[Res
 @final
 @frozen()
 class FutureResult(Future[Result[T, E]]):
-    """[`Future[Result[T, E]]`][wraps.future.Future], adapted to leverage future functionality."""
+    """[`Future[Result[T, E]]`][wraps.future.base.Future], adapted to leverage future functionality."""
 
     reawaitable: ReAwaitable[Result[T, E]] = field(repr=False, converter=reawaitable_converter)
 
@@ -379,5 +379,5 @@ class FutureResult(Future[Result[T, E]]):
         return super().create(self.awaitable)
 
 
-from wraps.future_either import FutureEither
-from wraps.future_option import FutureOption
+from wraps.future.either import FutureEither
+from wraps.future.option import FutureOption

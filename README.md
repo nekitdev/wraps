@@ -14,7 +14,7 @@
 
 ## Installing
 
-**Python 3.7 or above is required.**
+**Python 3.8 or above is required.**
 
 ### pip
 
@@ -44,7 +44,7 @@ Or by directly specifying it in the configuration like so:
 
 ```toml
 [tool.poetry.dependencies]
-wraps = "^0.6.1"
+wraps = "^0.7.0"
 ```
 
 Alternatively, you can add it directly from the source:

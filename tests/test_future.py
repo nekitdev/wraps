@@ -1,6 +1,6 @@
 import pytest
 
-from wraps.future import Future
+from wraps.future.base import Future
 
 
 @pytest.mark.anyio

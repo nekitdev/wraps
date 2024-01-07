@@ -10,6 +10,7 @@ from wraps.option import Null, Option, Some
 __all__ = ("ReAwaitable", "reawaitable")
 
 P = ParamSpec("P")
+R = TypeVar("R")
 
 T = TypeVar("T", covariant=True)
 
@@ -35,10 +36,10 @@ class ReAwaitable(Awaitable[T]):
         return self.awaitable.__await__()
 
 
-ReAsyncCallable = Callable[P, ReAwaitable[T]]
+ReAsyncCallable = Callable[P, ReAwaitable[R]]
 
 
-def reawaitable(function: AsyncCallable[P, T]) -> ReAsyncCallable[P, T]:
+def reawaitable(function: AsyncCallable[P, R]) -> ReAsyncCallable[P, R]:
     """Wraps the asynchronous `function` to allow re-awaiting.
 
     Example:
@@ -73,7 +74,7 @@ def reawaitable(function: AsyncCallable[P, T]) -> ReAsyncCallable[P, T]:
     """
 
     @wraps(function)
-    def wrap(*args: P.args, **kwargs: P.kwargs) -> ReAwaitable[T]:
+    def wrap(*args: P.args, **kwargs: P.kwargs) -> ReAwaitable[R]:
         return ReAwaitable(function(*args, **kwargs))
 
     return wrap

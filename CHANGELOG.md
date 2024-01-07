@@ -2,6 +2,16 @@
 
 <!-- changelogging: start -->
 
+## 0.7.0 (2024-01-07)
+
+### Changes
+
+- Renamed functions in `Future[T]`; `name_future` is now `base_name`.
+
+### Internal
+
+- Migrated to Python 3.8.
+
 ## 0.6.1 (2023-05-24)
 
 ### Fixes

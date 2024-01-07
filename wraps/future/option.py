@@ -19,10 +19,11 @@ from typing_aliases import (
 )
 from typing_extensions import Never, final
 
-from wraps.future import Future, identity
+from wraps.future.base import Future
 from wraps.option import Null, Option, Some
 from wraps.reawaitable import ReAwaitable
 from wraps.result import Result
+from wraps.utils import identity
 
 __all__ = ("FutureOption",)
 
@@ -41,7 +42,7 @@ def reawaitable_converter(awaitable: Awaitable[Option[T]]) -> ReAwaitable[Option
 @final
 @frozen()
 class FutureOption(Future[Option[T]]):
-    """[`Future[Option[T]]`][wraps.future.Future], adapted to leverage future functionality."""
+    """[`Future[Option[T]]`][wraps.future.base.Future], adapted to leverage future functionality."""
 
     reawaitable: ReAwaitable[Option[T]] = field(repr=False, converter=reawaitable_converter)
 
@@ -304,4 +305,4 @@ class FutureOption(Future[Option[T]]):
         return (await self.awaitable).early()
 
 
-from wraps.future_result import FutureResult
+from wraps.future.result import FutureResult

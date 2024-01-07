@@ -10,10 +10,10 @@ from typing_aliases import AnyError, AsyncCallable, NormalError
 from typing_extensions import ParamSpec, final
 
 from wraps.either import Either
-from wraps.future import Future
-from wraps.future_either import FutureEither
-from wraps.future_option import FutureOption
-from wraps.future_result import FutureResult
+from wraps.future.base import Future
+from wraps.future.either import FutureEither
+from wraps.future.option import FutureOption
+from wraps.future.result import FutureResult
 from wraps.option import Null, Option, Some
 from wraps.result import Error, Ok, Result
 
@@ -95,7 +95,7 @@ class WrapOption(Generic[ET]):
 
 wrap_option = WrapOption(NormalError)
 """An instance of [`WrapOption[ET]`][wraps.wraps.WrapOption] with `error_type` set to
-[`NormalError`][funcs.typing.NormalError].
+[`NormalError`][typing_aliases.typing.NormalError].
 """
 
 
@@ -144,7 +144,7 @@ class WrapOptionAwait(Generic[ET]):
 
 wrap_option_await = WrapOptionAwait(NormalError)
 """An instance of [`WrapOptionAwait[ET]`][wraps.wraps.WrapOptionAwait] with `error_type` set to
-[`NormalError`][funcs.typing.NormalError].
+[`NormalError`][typing_aliases.typing.NormalError].
 """
 
 
@@ -197,7 +197,7 @@ class WrapResult(Generic[ET]):
 
 wrap_result = WrapResult(NormalError)
 """An instance of [`WrapResult[ET]`][wraps.wraps.WrapResult] with `error_type` set to
-[`NormalError`][funcs.typing.NormalError].
+[`NormalError`][typing_aliases.typing.NormalError].
 """
 
 
@@ -246,13 +246,13 @@ class WrapResultAwait(Generic[ET]):
 
 wrap_result_await = WrapResultAwait(NormalError)
 """An instance of [`WrapResultAwait[ET]`][wraps.wraps.WrapResultAwait] with `error_type` set to
-[`NormalError`][funcs.typing.NormalError].
+[`NormalError`][typing_aliases.typing.NormalError].
 """
 
 
 def wrap_future(function: AsyncCallable[P, T]) -> Callable[P, Future[T]]:
     """Wraps an asynchronous `function` returning `T` into a function
-    returning [`Future[T]`][wraps.future.Future].
+    returning [`Future[T]`][wraps.future.base.Future].
 
     Example:
         ```python
@@ -283,7 +283,7 @@ def wrap_future(function: AsyncCallable[P, T]) -> Callable[P, Future[T]]:
 
 def wrap_future_option(function: AsyncCallable[P, Option[T]]) -> Callable[P, FutureOption[T]]:
     """Wraps an asynchronous `function` returning [`Option[T]`][wraps.option.Option] into a function
-    returning [`FutureOption[T]`][wraps.future_option.FutureOption].
+    returning [`FutureOption[T]`][wraps.future.option.FutureOption].
 
     Arguments:
         function: The function to wrap.
@@ -301,7 +301,7 @@ def wrap_future_option(function: AsyncCallable[P, Option[T]]) -> Callable[P, Fut
 
 def wrap_future_result(function: AsyncCallable[P, Result[T, E]]) -> Callable[P, FutureResult[T, E]]:
     """Wraps an asynchronous `function` returning [`Result[T, E]`][wraps.result.Result]
-    into a function returning [`FutureResult[T, E]`][wraps.future_result.FutureResult].
+    into a function returning [`FutureResult[T, E]`][wraps.future.result.FutureResult].
 
     Arguments:
         function: The function to wrap.
@@ -319,7 +319,7 @@ def wrap_future_result(function: AsyncCallable[P, Result[T, E]]) -> Callable[P, 
 
 def wrap_future_either(function: AsyncCallable[P, Either[L, R]]) -> Callable[P, FutureEither[L, R]]:
     """Wraps an asynchronous `function` returning [`Either[L, R]`][wraps.either.Either]
-    into a function returning [`FutureEither[L, R]`][wraps.future_either.FutureEither].
+    into a function returning [`FutureEither[L, R]`][wraps.future.either.FutureEither].
 
     Arguments:
         function: The function to wrap.
