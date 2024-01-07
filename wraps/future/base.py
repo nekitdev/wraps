@@ -93,9 +93,9 @@ class Future(Awaitable[T]):
     async def actual_then(self, function: Unary[T, Future[U]]) -> U:
         return await function(await self.awaitable).awaitable
 
-    def base_flatten(self: Future[Future[T]]) -> Future[T]:
-        """Flattens a [`Future[Future[T]]`][wraps.future.base.Future]
-        to a [`Future[T]`][wraps.future.base.Future].
+    def base_flatten(self: Future[Future[U]]) -> Future[U]:
+        """Flattens a [`Future[Future[U]]`][wraps.future.base.Future]
+        to a [`Future[U]`][wraps.future.base.Future].
 
         This is identical to:
 
