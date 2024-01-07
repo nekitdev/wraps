@@ -1185,9 +1185,9 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">actual_then</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Unary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">function</span><span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">awaitable</span><span class="p">)</span><span class="o">.</span><span class="n">awaitable</span>
 
-    <span class="k">def</span> <span class="nf">base_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Future</span><span class="p">[</span><span class="n">Future</span><span class="p">[</span><span class="n">T</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Flattens a [`Future[Future[T]]`][wraps.future.base.Future]</span>
-<span class="sd">        to a [`Future[T]`][wraps.future.base.Future].</span>
+    <span class="k">def</span> <span class="nf">base_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Future</span><span class="p">[</span><span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Flattens a [`Future[Future[U]]`][wraps.future.base.Future]</span>
+<span class="sd">        to a [`Future[U]`][wraps.future.base.Future].</span>
 
 <span class="sd">        This is identical to:</span>
 
@@ -1666,15 +1666,15 @@ by applying the asynchronous <code>function</code> to its result.</p>
 
 
 <h3 id="wraps.future.base.Future.base_flatten" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">base_flatten</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
+          <code class="highlight language-python"><span class="n">base_flatten</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]</span></code>
 
 </h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>Flattens a <a class="autorefs autorefs-internal" href="#wraps.future.base.Future"><code>Future[Future[T]]</code></a>
-to a <a class="autorefs autorefs-internal" href="#wraps.future.base.Future"><code>Future[T]</code></a>.</p>
+      <p>Flattens a <a class="autorefs autorefs-internal" href="#wraps.future.base.Future"><code>Future[Future[U]]</code></a>
+to a <a class="autorefs autorefs-internal" href="#wraps.future.base.Future"><code>Future[U]</code></a>.</p>
 <p>This is identical to:</p>
 <div class="highlight"><pre><span></span><code><span class="n">future</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
 </code></pre></div>
@@ -1692,7 +1692,7 @@ to a <a class="autorefs autorefs-internal" href="#wraps.future.base.Future"><cod
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="wraps.future.base.Future" href="#wraps.future.base.Future">Future</a>[<span title="wraps.future.base.T">T</span>]</code>
+                <code><a class="autorefs autorefs-internal" title="wraps.future.base.Future" href="#wraps.future.base.Future">Future</a>[<span title="wraps.future.base.U">U</span>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -1718,9 +1718,9 @@ to a <a class="autorefs autorefs-internal" href="#wraps.future.base.Future"><cod
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
-<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">base_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Future</span><span class="p">[</span><span class="n">Future</span><span class="p">[</span><span class="n">T</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flattens a [`Future[Future[T]]`][wraps.future.base.Future]</span>
-<span class="sd">    to a [`Future[T]`][wraps.future.base.Future].</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">base_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Future</span><span class="p">[</span><span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="n">U</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flattens a [`Future[Future[U]]`][wraps.future.base.Future]</span>
+<span class="sd">    to a [`Future[U]`][wraps.future.base.Future].</span>
 
 <span class="sd">    This is identical to:</span>
 
