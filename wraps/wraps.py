@@ -14,7 +14,7 @@ from wraps.future.base import Future
 from wraps.future.either import FutureEither
 from wraps.future.option import FutureOption
 from wraps.future.result import FutureResult
-from wraps.option import Null, Option, Some
+from wraps.option import NULL, Option, Some
 from wraps.result import Error, Ok, Result
 
 __all__ = (
@@ -56,7 +56,7 @@ FT = TypeVar("FT", bound=AnyError)
 class WrapOption(Generic[ET]):
     """Wraps functions returning `T` into functions returning [`Option[T]`][wraps.option.Option].
 
-    Errors are handled via returning [`Null()`][wraps.option.Null] on `error` of `error_type`,
+    Errors are handled via returning [`NULL`][wraps.option.NULL] on `error` of `error_type`,
     wrapping the resulting `value` into [`Some(value)`][wraps.option.Some].
 
     Example:
@@ -85,7 +85,7 @@ class WrapOption(Generic[ET]):
                 return Some(function(*args, **kwargs))
 
             except self.error_type:
-                return Null()
+                return NULL
 
         return wrap
 
@@ -105,7 +105,7 @@ class WrapOptionAwait(Generic[ET]):
     """Wraps asynchronous functions returning `T` into asynchronous functions returning
     [`Option[T]`][wraps.option.Option].
 
-    Errors are handled via returning [`Null()`][wraps.option.Null] on `error` of `error_type`,
+    Errors are handled via returning [`NULL`][wraps.option.NULL] on `error` of `error_type`,
     wrapping the resulting `value` into [`Some(value)`][wraps.option.Some].
 
     Example:
@@ -134,7 +134,7 @@ class WrapOptionAwait(Generic[ET]):
                 return Some(await function(*args, **kwargs))
 
             except self.error_type:
-                return Null()
+                return NULL
 
         return wrap
 
@@ -149,7 +149,7 @@ wrap_option_await = WrapOptionAwait(NormalError)
 
 
 def wrap_optional(optional: Optional[T]) -> Option[T]:
-    return Null() if optional is None else Some(optional)
+    return NULL if optional is None else Some(optional)
 
 
 @final

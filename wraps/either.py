@@ -23,7 +23,7 @@ from typing_aliases import (
 )
 from typing_extensions import Never, TypeGuard
 
-from wraps.option import Null, Option, Some
+from wraps.option import NULL, Null, Option, Some
 from wraps.panics import panic
 from wraps.utils import async_empty, async_once, empty, identity, once
 
@@ -290,7 +290,7 @@ class Left(EitherProtocol[L, Never]):
         return self.value
 
     def right(self) -> Null:
-        return Null()
+        return NULL
 
     def right_or(self, default: R) -> R:  # type: ignore
         return default
@@ -432,7 +432,7 @@ class Right(EitherProtocol[Never, R]):
         return await predicate(self.value)
 
     def left(self) -> Null:
-        return Null()
+        return NULL
 
     def left_or(self, default: L) -> L:  # type: ignore
         return default

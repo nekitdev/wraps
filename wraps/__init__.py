@@ -22,7 +22,7 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 from wraps.early import early_option, early_option_await, early_result, early_result_await
 from wraps.either import Either, Left, Right, is_left, is_right
@@ -30,7 +30,7 @@ from wraps.future.base import Future
 from wraps.future.either import FutureEither
 from wraps.future.option import FutureOption
 from wraps.future.result import FutureResult
-from wraps.option import Null, Option, Some, is_null, is_some
+from wraps.option import NULL, Null, Option, Some, is_null, is_some
 from wraps.panics import Panic, panic
 from wraps.reawaitable import ReAwaitable, reawaitable
 from wraps.result import Error, Ok, Result, is_error, is_ok
@@ -55,6 +55,7 @@ __all__ = (
     "Option",
     "Some",
     "Null",
+    "NULL",
     "is_some",
     "is_null",
     # result

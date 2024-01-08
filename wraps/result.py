@@ -62,7 +62,7 @@ from typing_aliases import (
 from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard, final
 
 from wraps.errors import EarlyResult
-from wraps.option import Null, Option, Some
+from wraps.option import NULL, Null, Option, Some
 from wraps.panics import panic
 from wraps.utils import async_empty, async_once, empty, identity, once
 
@@ -1339,7 +1339,7 @@ class ResultProtocol(AsyncIterable[T], Iterable[T], Protocol[T, E]):  # type: ig
     #     This function maps [`Result[Option[T], E]`][wraps.result.Result] into
     #     [`Option[Result[T, E]]`][wraps.option.Option] in the following way:
 
-    #     - [`Ok(Null())`][wraps.result.Ok] is mapped to [`Null()`][wraps.option.Null];
+    #     - [`Ok(NULL)`][wraps.result.Ok] is mapped to [`NULL`][wraps.option.NULL];
     #     - [`Ok(Some(value))`][wraps.result.Ok] is mapped to
     #       [`Some(Ok(value))`][wraps.option.Some];
     #     - [`Error(error)`][wraps.result.Error] is mapped to
@@ -1559,7 +1559,7 @@ class Ok(ResultProtocol[T, Never]):
         return Some(self.value)
 
     def error(self) -> Null:
-        return Null()
+        return NULL
 
     def inspect(self, function: Inspect[T]) -> Ok[T]:
         function(self.value)
@@ -1705,7 +1705,7 @@ class Error(ResultProtocol[Never, E]):
         return await predicate(self.value)
 
     def ok(self) -> Null:
-        return Null()
+        return NULL
 
     def error(self) -> Some[E]:
         return Some(self.value)

@@ -20,7 +20,7 @@ from typing_aliases import (
 from typing_extensions import Never, final
 
 from wraps.future.base import Future
-from wraps.option import Null, Option, Some
+from wraps.option import NULL, Option, Some
 from wraps.reawaitable import ReAwaitable
 from wraps.result import Result
 from wraps.utils import identity
@@ -60,7 +60,7 @@ class FutureOption(Future[Option[T]]):
 
     @classmethod
     def from_null(cls) -> FutureOption[Never]:
-        return cls.from_option(Null())
+        return cls.from_option(NULL)
 
     def is_some(self) -> Future[bool]:
         return super().create(self.actual_is_some())

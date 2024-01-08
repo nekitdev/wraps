@@ -6,7 +6,7 @@ from funcs.decorators import wraps
 from typing_extensions import ParamSpec
 
 from wraps.errors import EarlyOption, EarlyResult
-from wraps.option import Null, Option
+from wraps.option import NULL, Option
 from wraps.result import Error, Result
 from wraps.typing import OptionAsyncCallable, OptionCallable, ResultAsyncCallable, ResultCallable
 
@@ -42,7 +42,7 @@ def early_option(function: OptionCallable[P, T]) -> OptionCallable[P, T]:
             return function(*args, **kwargs)
 
         except EarlyOption:
-            return Null()
+            return NULL
 
     return wrap
 
@@ -64,7 +64,7 @@ def early_option_await(function: OptionAsyncCallable[P, T]) -> OptionAsyncCallab
             return await function(*args, **kwargs)
 
         except EarlyOption:
-            return Null()
+            return NULL
 
     return wrap
 

@@ -20,11 +20,11 @@ always accounting for the [`Null`][wraps.option.Null] case:
 ```python
 # option.py
 
-from wraps import Null, Option, Some
+from wraps import NULL, Option, Some
 
 
 def divide(numerator: float, denominator: float) -> Option[float]:
-    return Some(numerator / denominator) if denominator else Null()
+    return Some(numerator / denominator) if denominator else NULL
 ```
 
 ```python
@@ -40,7 +40,7 @@ match option:
     case Some(result):
         print(result)
 
-    case Null():
+    case Null:
         print(DIVISION_BY_ZERO)
 ```
 
@@ -84,7 +84,7 @@ from wraps.errors import EarlyOption
 from wraps.panics import panic
 from wraps.utils import async_empty, async_once, empty, identity, once
 
-__all__ = ("Option", "Some", "Null", "is_some", "is_null")
+__all__ = ("NULL", "Option", "Some", "Null", "is_some", "is_null")
 
 T = TypeVar("T", covariant=True)
 U = TypeVar("U")
@@ -109,7 +109,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             some = Some(42)
             assert some.is_some()
 
-            null = Null()
+            null = NULL
             assert not null.is_some()
             ```
 
@@ -134,7 +134,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             zero = Some(0)
             assert not zero.is_some_and(is_positive)
 
-            null = Null()
+            null = NULL
             assert not null.is_some_and(is_positive)
             ```
 
@@ -162,7 +162,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             zero = Some(0)
             assert not await zero.is_some_and_await(is_negative)
 
-            null = Null()
+            null = NULL
             assert not await null.is_some_and_await(is_negative)
             ```
 
@@ -181,7 +181,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
         Example:
             ```python
-            null = Null()
+            null = NULL
             assert null.is_null()
 
             some = Some(34)
@@ -202,7 +202,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             >>> some = Some(42)
             >>> some.expect("panic!")
             42
-            >>> null = Null()
+            >>> null = NULL
             >>> null.expect("panic!")
             Traceback (most recent call last):
               ...
@@ -229,7 +229,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             >>> some = Some(42)
             >>> some.extract()
             42
-            >>> null = Null()
+            >>> null = NULL
             >>> null.extract()
             >>> # None
             ```
@@ -254,7 +254,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             >>> some = Some(42)
             >>> some.unwrap()
             42
-            >>> null = Null()
+            >>> null = NULL
             >>> null.unwrap()
             Traceback (most recent call last):
               ...
@@ -278,7 +278,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             some = Some(13)
             assert some.unwrap_or(0)
 
-            null = Null()
+            null = NULL
             assert not null.unwrap_or(0)
             ```
 
@@ -300,7 +300,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             some = Some(13)
             assert some.unwrap_or_else(int)
 
-            null = Null()
+            null = NULL
             assert not null.unwrap_or_else(int)
             ```
 
@@ -325,7 +325,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             some = Some(42)
             assert await some.unwrap_or_else_await(default)
 
-            null = Null()
+            null = NULL
             assert not await null.unwrap_or_else_await(default)
             ```
 
@@ -413,7 +413,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             print(some.map_or(42, len))  # 5
 
-            null = Null()
+            null = NULL
 
             print(null.map_or(42, len))  # 42
             ```
@@ -441,7 +441,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             print(some.map_or_else(default, len))  # 13
 
-            null = Null()
+            null = NULL
 
             print(null.map_or_else(default, len))  # 42
             ```
@@ -469,7 +469,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             print(await some.map_or_else_await(default, len))  # 13
 
-            null = Null()
+            null = NULL
 
             print(await null.map_or_else_await(default, len))  # 42
             ```
@@ -522,7 +522,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             print(await some.map_await_or(42, function))  # 5
 
-            null = Null()
+            null = NULL
 
             print(await null.map_await_or(42, function))  # 42
             ```
@@ -553,7 +553,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             print(await some.map_await_or_else(default, function))  # 13
 
-            null = Null()
+            null = NULL
 
             print(await null.map_await_or_else(default, function))  # 0
             ```
@@ -586,7 +586,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             print(await some.map_await_or_else_await(default, function))  # 13
 
-            null = Null()
+            null = NULL
 
             print(await null.map_await_or_else_await(default, function))  # 42
             ```
@@ -614,7 +614,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             some = Some(42)
             assert some.ok_or(error).is_ok()
 
-            null = Null()
+            null = NULL
             assert null.ok_or(error).is_error()
             ```
 
@@ -641,7 +641,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             some = Some(7)
             assert some.ok_or_else(error).is_ok()
 
-            null = Null()
+            null = NULL
             assert null.ok_or_else(error).is_error()
             ```
 
@@ -670,7 +670,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             assert result.is_ok()
 
-            null = Null()
+            null = NULL
             result = await null.ok_or_else_await(error)
 
             assert result.is_error()
@@ -693,7 +693,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             >>> some = Some(42)
             >>> next(some.iter(), 0)
             42
-            >>> null = Null()
+            >>> null = NULL
             >>> next(null.iter(), 0)
             0
             ```
@@ -712,7 +712,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             >>> some = Some(42)
             >>> await async_next(some.async_iter(), 0)
             42
-            >>> null = Null()
+            >>> null = NULL
             >>> await async_next(null.async_iter(), 0)
             0
             ```
@@ -732,7 +732,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
         Example:
             ```python
             def inverse(value: float) -> Option[float]:
-                return Some(1.0 / value) if value else Null()
+                return Some(1.0 / value) if value else NULL
 
             some = Some(2.0)
             print(some.and_then(inverse).unwrap())  # 0.5
@@ -740,7 +740,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             zero = Some(0.0)
             assert zero.and_then(inverse).is_null()
 
-            null = Null()
+            null = NULL
             assert null.and_then(inverse).is_null()
             ```
 
@@ -760,7 +760,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
         Example:
             ```python
             async def inverse(value: float) -> Option[float]:
-                return Some(1.0 / value) if value else Null()
+                return Some(1.0 / value) if value else NULL
 
             some = Some(2.0)
             option = await some.and_then_await(inverse)
@@ -772,7 +772,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             assert option.is_null()
 
-            null = Null()
+            null = NULL
             option = await null.and_then_await(inverse)
 
             assert option.is_null()
@@ -799,7 +799,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             def is_even(value: int) -> bool:
                 return not value % 2
 
-            null = Null()
+            null = NULL
             assert null.filter(is_even).is_null()
 
             even = Some(2)
@@ -830,7 +830,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             async def is_even(value: int) -> bool:
                 return not value % 2
 
-            null = Null()
+            null = NULL
             assert (await null.filter_await(is_even)).is_null()
 
             even = Some(2)
@@ -859,7 +859,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
                 return Some(13)
 
             some = Some(42)
-            null = Null()
+            null = NULL
 
             assert some.or_else(default).is_some()
             assert null.or_else(default).is_some()
@@ -884,7 +884,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
                 return Some(13)
 
             some = Some(42)
-            null = Null()
+            null = NULL
 
             assert (await some.or_else_await(default)).is_some()
             assert (await null.or_else_await(default)).is_some()
@@ -908,7 +908,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             some = Some(69)
             other = Some(7)
 
-            null = Null()
+            null = NULL
 
             assert some.xor(other) == null
             assert null.xor(other) == other
@@ -944,7 +944,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             assert some_x.zip(some_y) == some_point
 
-            null = Null()
+            null = NULL
 
             assert some_y.zip(null) == null
             ```
@@ -982,7 +982,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             assert some_x.zip_with(some_y, Point) == some_point
 
-            null = Null()
+            null = NULL
 
             assert some_x.zip_with(null, Point) == null
             ```
@@ -1024,7 +1024,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             assert await some_x.zip_with(some_y, point) == some_point
 
-            null = Null()
+            null = NULL
 
             assert await some_x.zip_with(null, point) == null
             ```
@@ -1055,9 +1055,9 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
             assert zipped.unzip() == (Some(value), Some(other))
 
-            null = Null()
+            null = NULL
 
-            assert null.unzip() == (Null(), Null())
+            assert null.unzip() == (NULL, NULL)
 
         Returns:
             The resulting tuple of two options.
@@ -1069,7 +1069,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
     #     This function maps [`Option[Result[T, E]]`][wraps.option.Option] into
     #     [`Result[Option[T], E]]`][wraps.result.Result] in the following way:
 
-    #     - [`Null()`][wraps.option.Null] is mapped to [`Ok(Null())`][wraps.result.Ok];
+    #     - [`NULL`][wraps.option.NULL] is mapped to [`Ok(NULL)`][wraps.result.Ok];
     #     - [`Some(Ok(value))`][wraps.option.Some] is mapped to
     #       [`Ok(Some(value))`][wraps.result.Ok];
     #     - [`Some(Error(error))`][wraps.option.Some] is mapped to
@@ -1098,7 +1098,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             some_nested = Some(some)
             assert some_nested.flatten() == some
 
-            null = Null()
+            null = NULL
             null_nested = Some(null)
             assert null_nested.flatten() == null
 
@@ -1123,7 +1123,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             assert some.contains(value)
             assert not some.contains(other)
 
-            null = Null()
+            null = NULL
             assert not null.contains(value)
             ```
 
@@ -1378,10 +1378,10 @@ class Some(OptionProtocol[T]):
         return await function(self.value)
 
     def filter(self, predicate: Predicate[T]) -> Option[T]:
-        return self if predicate(self.value) else Null()
+        return self if predicate(self.value) else NULL
 
     async def filter_await(self, predicate: AsyncPredicate[T]) -> Option[T]:
-        return self if await predicate(self.value) else Null()
+        return self if await predicate(self.value) else NULL
 
     def or_else(self, default: Nullary[Option[T]]) -> Some[T]:
         return self
@@ -1390,7 +1390,7 @@ class Some(OptionProtocol[T]):
         return self
 
     def xor(self, option: Option[T]) -> Option[T]:
-        return self if is_null(option) else Null()
+        return self if is_null(option) else NULL
 
     @overload
     def zip(self, option: Null) -> Null:
@@ -1426,7 +1426,7 @@ class Some(OptionProtocol[T]):
         if is_some(option):
             return self.create(function(self.value, option.value))
 
-        return Null()
+        return NULL
 
     @overload
     async def zip_with_await(self, option: Null, function: AsyncBinary[T, U, V]) -> Null:
@@ -1444,7 +1444,7 @@ class Some(OptionProtocol[T]):
         if is_some(option):
             return self.create(await function(self.value, option.value))
 
-        return Null()
+        return NULL
 
     def unzip(self: Some[Tuple[U, V]]) -> Tuple[Some[U], Some[V]]:
         u, v = self.value
@@ -1462,6 +1462,9 @@ Option = Union[Some[T], Null]
 """Optional value, expressed as the union of [`Some[T]`][wraps.option.Some]
 and [`Null`][wraps.option.Null].
 """
+
+NULL = Null()
+"""The instance of [`Null`][wraps.option.Null]."""
 
 
 def is_some(option: Option[T]) -> TypeGuard[Some[T]]:

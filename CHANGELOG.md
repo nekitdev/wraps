@@ -2,6 +2,16 @@
 
 <!-- changelogging: start -->
 
+## 0.8.0 (2024-01-08)
+
+### Features
+
+- Added `NULL` for convenience:
+
+  ```python
+  NULL = Null()
+  ```
+
 ## 0.7.0 (2024-01-07)
 
 ### Changes
