@@ -1136,7 +1136,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_null</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FutureOption</span><span class="p">[</span><span class="n">Never</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_option</span><span class="p">(</span><span class="n">Null</span><span class="p">())</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_option</span><span class="p">(</span><span class="n">NULL</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">is_some</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Future</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actual_is_some</span><span class="p">())</span>

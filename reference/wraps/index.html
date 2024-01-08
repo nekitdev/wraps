@@ -1137,7 +1137,7 @@
 
   
       <p>Wraps functions returning <code>T</code> into functions returning <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option"><code>Option[T]</code></a>.</p>
-<p>Errors are handled via returning <a class="autorefs autorefs-internal" href="../option/#wraps.option.Null"><code>Null()</code></a> on <code>error</code> of <code>error_type</code>,
+<p>Errors are handled via returning <a class="autorefs autorefs-internal" href="../option/#wraps.option.NULL"><code>NULL</code></a> on <code>error</code> of <code>error_type</code>,
 wrapping the resulting <code>value</code> into <a class="autorefs autorefs-internal" href="../option/#wraps.option.Some"><code>Some(value)</code></a>.</p>
 
 <details class="example" open>
@@ -1198,7 +1198,7 @@ wrapping the resulting <code>value</code> into <a class="autorefs autorefs-inter
 <span class="k">class</span> <span class="nc">WrapOption</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">ET</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wraps functions returning `T` into functions returning [`Option[T]`][wraps.option.Option].</span>
 
-<span class="sd">    Errors are handled via returning [`Null()`][wraps.option.Null] on `error` of `error_type`,</span>
+<span class="sd">    Errors are handled via returning [`NULL`][wraps.option.NULL] on `error` of `error_type`,</span>
 <span class="sd">    wrapping the resulting `value` into [`Some(value)`][wraps.option.Some].</span>
 
 <span class="sd">    Example:</span>
@@ -1227,7 +1227,7 @@ wrapping the resulting <code>value</code> into <a class="autorefs autorefs-inter
                 <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
             <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_type</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">Null</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">NULL</span>
 
         <span class="k">return</span> <span class="n">wrap</span>
 
@@ -1275,7 +1275,7 @@ wrapping the resulting <code>value</code> into <a class="autorefs autorefs-inter
   
       <p>Wraps asynchronous functions returning <code>T</code> into asynchronous functions returning
 <a class="autorefs autorefs-internal" href="../option/#wraps.option.Option"><code>Option[T]</code></a>.</p>
-<p>Errors are handled via returning <a class="autorefs autorefs-internal" href="../option/#wraps.option.Null"><code>Null()</code></a> on <code>error</code> of <code>error_type</code>,
+<p>Errors are handled via returning <a class="autorefs autorefs-internal" href="../option/#wraps.option.NULL"><code>NULL</code></a> on <code>error</code> of <code>error_type</code>,
 wrapping the resulting <code>value</code> into <a class="autorefs autorefs-internal" href="../option/#wraps.option.Some"><code>Some(value)</code></a>.</p>
 
 <details class="example" open>
@@ -1338,7 +1338,7 @@ wrapping the resulting <code>value</code> into <a class="autorefs autorefs-inter
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wraps asynchronous functions returning `T` into asynchronous functions returning</span>
 <span class="sd">    [`Option[T]`][wraps.option.Option].</span>
 
-<span class="sd">    Errors are handled via returning [`Null()`][wraps.option.Null] on `error` of `error_type`,</span>
+<span class="sd">    Errors are handled via returning [`NULL`][wraps.option.NULL] on `error` of `error_type`,</span>
 <span class="sd">    wrapping the resulting `value` into [`Some(value)`][wraps.option.Some].</span>
 
 <span class="sd">    Example:</span>
@@ -1367,7 +1367,7 @@ wrapping the resulting <code>value</code> into <a class="autorefs autorefs-inter
                 <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="k">await</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
             <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_type</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">Null</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">NULL</span>
 
         <span class="k">return</span> <span class="n">wrap</span>
 

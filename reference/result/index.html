@@ -4663,7 +4663,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
     <span class="c1">#     This function maps [`Result[Option[T], E]`][wraps.result.Result] into</span>
     <span class="c1">#     [`Option[Result[T, E]]`][wraps.option.Option] in the following way:</span>
 
-    <span class="c1">#     - [`Ok(Null())`][wraps.result.Ok] is mapped to [`Null()`][wraps.option.Null];</span>
+    <span class="c1">#     - [`Ok(NULL)`][wraps.result.Ok] is mapped to [`NULL`][wraps.option.NULL];</span>
     <span class="c1">#     - [`Ok(Some(value))`][wraps.result.Ok] is mapped to</span>
     <span class="c1">#       [`Some(Ok(value))`][wraps.option.Some];</span>
     <span class="c1">#     - [`Error(error)`][wraps.result.Error] is mapped to</span>
@@ -12554,7 +12554,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
         <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Null</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Null</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">NULL</span>
 
     <span class="k">def</span> <span class="nf">inspect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Inspect</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Ok</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
         <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
@@ -12921,7 +12921,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.result.Error"><code>Error
         <span class="k">return</span> <span class="k">await</span> <span class="n">predicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Null</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Null</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">NULL</span>
 
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Some</span><span class="p">[</span><span class="n">E</span><span class="p">]:</span>
         <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>

@@ -376,6 +376,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#wraps.option.NULL" class="md-nav__link">
+    <span class="md-ellipsis">
+      NULL
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#wraps.option.OptionProtocol" class="md-nav__link">
     <span class="md-ellipsis">
       OptionProtocol
@@ -1192,6 +1201,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#wraps.option.NULL" class="md-nav__link">
+    <span class="md-ellipsis">
+      NULL
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#wraps.option.OptionProtocol" class="md-nav__link">
     <span class="md-ellipsis">
       OptionProtocol
@@ -1638,11 +1656,11 @@ the presence of <a class="autorefs autorefs-internal" href="#wraps.option.Some">
 always accounting for the <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</code></a> case:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># option.py</span>
 
-<span class="kn">from</span> <span class="nn">wraps</span> <span class="kn">import</span> <span class="n">Null</span><span class="p">,</span> <span class="n">Option</span><span class="p">,</span> <span class="n">Some</span>
+<span class="kn">from</span> <span class="nn">wraps</span> <span class="kn">import</span> <span class="n">NULL</span><span class="p">,</span> <span class="n">Option</span><span class="p">,</span> <span class="n">Some</span>
 
 
 <span class="k">def</span> <span class="nf">divide</span><span class="p">(</span><span class="n">numerator</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">denominator</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">)</span> <span class="k">if</span> <span class="n">denominator</span> <span class="k">else</span> <span class="n">Null</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">)</span> <span class="k">if</span> <span class="n">denominator</span> <span class="k">else</span> <span class="n">NULL</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">wraps</span> <span class="kn">import</span> <span class="n">Null</span><span class="p">,</span> <span class="n">Some</span>
 
@@ -1656,7 +1674,7 @@ always accounting for the <a class="autorefs autorefs-internal" href="#wraps.opt
     <span class="k">case</span> <span class="n">Some</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
-    <span class="k">case</span> <span class="n">Null</span><span class="p">():</span>
+    <span class="k">case</span> <span class="n">Null</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">DIVISION_BY_ZERO</span><span class="p">)</span>
 </code></pre></div>
 <p>Here, we know that <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</code></a> represents only one case,
@@ -1693,6 +1711,28 @@ as described in the <a class="autorefs autorefs-internal" href="../result/#wraps
   
       <p>Optional value, expressed as the union of <a class="autorefs autorefs-internal" href="#wraps.option.Some"><code>Some[T]</code></a>
 and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</code></a>.</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h2 id="wraps.option.NULL" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">NULL</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>The instance of <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</code></a>.</p>
   </div>
 
 </div>
@@ -2781,7 +2821,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            some = Some(42)</span>
 <span class="sd">            assert some.is_some()</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert not null.is_some()</span>
 <span class="sd">            ```</span>
 
@@ -2806,7 +2846,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            zero = Some(0)</span>
 <span class="sd">            assert not zero.is_some_and(is_positive)</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert not null.is_some_and(is_positive)</span>
 <span class="sd">            ```</span>
 
@@ -2834,7 +2874,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            zero = Some(0)</span>
 <span class="sd">            assert not await zero.is_some_and_await(is_negative)</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert not await null.is_some_and_await(is_negative)</span>
 <span class="sd">            ```</span>
 
@@ -2853,7 +2893,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">        Example:</span>
 <span class="sd">            ```python</span>
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert null.is_null()</span>
 
 <span class="sd">            some = Some(34)</span>
@@ -2874,7 +2914,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">            &gt;&gt;&gt; some.expect(&quot;panic!&quot;)</span>
 <span class="sd">            42</span>
-<span class="sd">            &gt;&gt;&gt; null = Null()</span>
+<span class="sd">            &gt;&gt;&gt; null = NULL</span>
 <span class="sd">            &gt;&gt;&gt; null.expect(&quot;panic!&quot;)</span>
 <span class="sd">            Traceback (most recent call last):</span>
 <span class="sd">              ...</span>
@@ -2901,7 +2941,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">            &gt;&gt;&gt; some.extract()</span>
 <span class="sd">            42</span>
-<span class="sd">            &gt;&gt;&gt; null = Null()</span>
+<span class="sd">            &gt;&gt;&gt; null = NULL</span>
 <span class="sd">            &gt;&gt;&gt; null.extract()</span>
 <span class="sd">            &gt;&gt;&gt; # None</span>
 <span class="sd">            ```</span>
@@ -2926,7 +2966,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">            &gt;&gt;&gt; some.unwrap()</span>
 <span class="sd">            42</span>
-<span class="sd">            &gt;&gt;&gt; null = Null()</span>
+<span class="sd">            &gt;&gt;&gt; null = NULL</span>
 <span class="sd">            &gt;&gt;&gt; null.unwrap()</span>
 <span class="sd">            Traceback (most recent call last):</span>
 <span class="sd">              ...</span>
@@ -2950,7 +2990,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            some = Some(13)</span>
 <span class="sd">            assert some.unwrap_or(0)</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert not null.unwrap_or(0)</span>
 <span class="sd">            ```</span>
 
@@ -2972,7 +3012,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            some = Some(13)</span>
 <span class="sd">            assert some.unwrap_or_else(int)</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert not null.unwrap_or_else(int)</span>
 <span class="sd">            ```</span>
 
@@ -2997,7 +3037,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            some = Some(42)</span>
 <span class="sd">            assert await some.unwrap_or_else_await(default)</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert not await null.unwrap_or_else_await(default)</span>
 <span class="sd">            ```</span>
 
@@ -3085,7 +3125,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            print(some.map_or(42, len))  # 5</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            print(null.map_or(42, len))  # 42</span>
 <span class="sd">            ```</span>
@@ -3113,7 +3153,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            print(some.map_or_else(default, len))  # 13</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            print(null.map_or_else(default, len))  # 42</span>
 <span class="sd">            ```</span>
@@ -3141,7 +3181,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            print(await some.map_or_else_await(default, len))  # 13</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            print(await null.map_or_else_await(default, len))  # 42</span>
 <span class="sd">            ```</span>
@@ -3194,7 +3234,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            print(await some.map_await_or(42, function))  # 5</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            print(await null.map_await_or(42, function))  # 42</span>
 <span class="sd">            ```</span>
@@ -3225,7 +3265,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            print(await some.map_await_or_else(default, function))  # 13</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            print(await null.map_await_or_else(default, function))  # 0</span>
 <span class="sd">            ```</span>
@@ -3258,7 +3298,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            print(await some.map_await_or_else_await(default, function))  # 13</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            print(await null.map_await_or_else_await(default, function))  # 42</span>
 <span class="sd">            ```</span>
@@ -3286,7 +3326,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            some = Some(42)</span>
 <span class="sd">            assert some.ok_or(error).is_ok()</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert null.ok_or(error).is_error()</span>
 <span class="sd">            ```</span>
 
@@ -3313,7 +3353,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            some = Some(7)</span>
 <span class="sd">            assert some.ok_or_else(error).is_ok()</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert null.ok_or_else(error).is_error()</span>
 <span class="sd">            ```</span>
 
@@ -3342,7 +3382,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            assert result.is_ok()</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            result = await null.ok_or_else_await(error)</span>
 
 <span class="sd">            assert result.is_error()</span>
@@ -3365,7 +3405,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">            &gt;&gt;&gt; next(some.iter(), 0)</span>
 <span class="sd">            42</span>
-<span class="sd">            &gt;&gt;&gt; null = Null()</span>
+<span class="sd">            &gt;&gt;&gt; null = NULL</span>
 <span class="sd">            &gt;&gt;&gt; next(null.iter(), 0)</span>
 <span class="sd">            0</span>
 <span class="sd">            ```</span>
@@ -3384,7 +3424,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">            &gt;&gt;&gt; await async_next(some.async_iter(), 0)</span>
 <span class="sd">            42</span>
-<span class="sd">            &gt;&gt;&gt; null = Null()</span>
+<span class="sd">            &gt;&gt;&gt; null = NULL</span>
 <span class="sd">            &gt;&gt;&gt; await async_next(null.async_iter(), 0)</span>
 <span class="sd">            0</span>
 <span class="sd">            ```</span>
@@ -3404,7 +3444,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">        Example:</span>
 <span class="sd">            ```python</span>
 <span class="sd">            def inverse(value: float) -&gt; Option[float]:</span>
-<span class="sd">                return Some(1.0 / value) if value else Null()</span>
+<span class="sd">                return Some(1.0 / value) if value else NULL</span>
 
 <span class="sd">            some = Some(2.0)</span>
 <span class="sd">            print(some.and_then(inverse).unwrap())  # 0.5</span>
@@ -3412,7 +3452,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            zero = Some(0.0)</span>
 <span class="sd">            assert zero.and_then(inverse).is_null()</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert null.and_then(inverse).is_null()</span>
 <span class="sd">            ```</span>
 
@@ -3432,7 +3472,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">        Example:</span>
 <span class="sd">            ```python</span>
 <span class="sd">            async def inverse(value: float) -&gt; Option[float]:</span>
-<span class="sd">                return Some(1.0 / value) if value else Null()</span>
+<span class="sd">                return Some(1.0 / value) if value else NULL</span>
 
 <span class="sd">            some = Some(2.0)</span>
 <span class="sd">            option = await some.and_then_await(inverse)</span>
@@ -3444,7 +3484,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            assert option.is_null()</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            option = await null.and_then_await(inverse)</span>
 
 <span class="sd">            assert option.is_null()</span>
@@ -3471,7 +3511,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            def is_even(value: int) -&gt; bool:</span>
 <span class="sd">                return not value % 2</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert null.filter(is_even).is_null()</span>
 
 <span class="sd">            even = Some(2)</span>
@@ -3502,7 +3542,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            async def is_even(value: int) -&gt; bool:</span>
 <span class="sd">                return not value % 2</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert (await null.filter_await(is_even)).is_null()</span>
 
 <span class="sd">            even = Some(2)</span>
@@ -3531,7 +3571,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">                return Some(13)</span>
 
 <span class="sd">            some = Some(42)</span>
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            assert some.or_else(default).is_some()</span>
 <span class="sd">            assert null.or_else(default).is_some()</span>
@@ -3556,7 +3596,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">                return Some(13)</span>
 
 <span class="sd">            some = Some(42)</span>
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            assert (await some.or_else_await(default)).is_some()</span>
 <span class="sd">            assert (await null.or_else_await(default)).is_some()</span>
@@ -3580,7 +3620,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            some = Some(69)</span>
 <span class="sd">            other = Some(7)</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            assert some.xor(other) == null</span>
 <span class="sd">            assert null.xor(other) == other</span>
@@ -3616,7 +3656,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            assert some_x.zip(some_y) == some_point</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            assert some_y.zip(null) == null</span>
 <span class="sd">            ```</span>
@@ -3654,7 +3694,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            assert some_x.zip_with(some_y, Point) == some_point</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            assert some_x.zip_with(null, Point) == null</span>
 <span class="sd">            ```</span>
@@ -3696,7 +3736,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            assert await some_x.zip_with(some_y, point) == some_point</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
 <span class="sd">            assert await some_x.zip_with(null, point) == null</span>
 <span class="sd">            ```</span>
@@ -3727,9 +3767,9 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 
 <span class="sd">            assert zipped.unzip() == (Some(value), Some(other))</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 
-<span class="sd">            assert null.unzip() == (Null(), Null())</span>
+<span class="sd">            assert null.unzip() == (NULL, NULL)</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The resulting tuple of two options.</span>
@@ -3741,7 +3781,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
     <span class="c1">#     This function maps [`Option[Result[T, E]]`][wraps.option.Option] into</span>
     <span class="c1">#     [`Result[Option[T], E]]`][wraps.result.Result] in the following way:</span>
 
-    <span class="c1">#     - [`Null()`][wraps.option.Null] is mapped to [`Ok(Null())`][wraps.result.Ok];</span>
+    <span class="c1">#     - [`NULL`][wraps.option.NULL] is mapped to [`Ok(NULL)`][wraps.result.Ok];</span>
     <span class="c1">#     - [`Some(Ok(value))`][wraps.option.Some] is mapped to</span>
     <span class="c1">#       [`Ok(Some(value))`][wraps.result.Ok];</span>
     <span class="c1">#     - [`Some(Error(error))`][wraps.option.Some] is mapped to</span>
@@ -3770,7 +3810,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            some_nested = Some(some)</span>
 <span class="sd">            assert some_nested.flatten() == some</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            null_nested = Some(null)</span>
 <span class="sd">            assert null_nested.flatten() == null</span>
 
@@ -3795,7 +3835,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">            assert some.contains(value)</span>
 <span class="sd">            assert not some.contains(other)</span>
 
-<span class="sd">            null = Null()</span>
+<span class="sd">            null = NULL</span>
 <span class="sd">            assert not null.contains(value)</span>
 <span class="sd">            ```</span>
 
@@ -3850,7 +3890,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
   <div class="highlight"><pre><span></span><code><span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">some</span><span class="o">.</span><span class="n">is_some</span><span class="p">()</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="n">null</span><span class="o">.</span><span class="n">is_some</span><span class="p">()</span>
 </code></pre></div>
 </details>
@@ -3905,7 +3945,7 @@ and <a class="autorefs autorefs-internal" href="#wraps.option.Null"><code>Null</
 <span class="sd">        some = Some(42)</span>
 <span class="sd">        assert some.is_some()</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert not null.is_some()</span>
 <span class="sd">        ```</span>
 
@@ -3947,7 +3987,7 @@ inside of it matches the <code>predicate</code>.</p>
 <span class="n">zero</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="n">zero</span><span class="o">.</span><span class="n">is_some_and</span><span class="p">(</span><span class="n">is_positive</span><span class="p">)</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="n">null</span><span class="o">.</span><span class="n">is_some_and</span><span class="p">(</span><span class="n">is_positive</span><span class="p">)</span>
 </code></pre></div>
 </details>
@@ -4049,7 +4089,7 @@ inside of it matches the <code>predicate</code>.</p>
 <span class="sd">        zero = Some(0)</span>
 <span class="sd">        assert not zero.is_some_and(is_positive)</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert not null.is_some_and(is_positive)</span>
 <span class="sd">        ```</span>
 
@@ -4098,7 +4138,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 <span class="n">zero</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="k">await</span> <span class="n">zero</span><span class="o">.</span><span class="n">is_some_and_await</span><span class="p">(</span><span class="n">is_negative</span><span class="p">)</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">is_some_and_await</span><span class="p">(</span><span class="n">is_negative</span><span class="p">)</span>
 </code></pre></div>
 </details>
@@ -4211,7 +4251,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 <span class="sd">        zero = Some(0)</span>
 <span class="sd">        assert not await zero.is_some_and_await(is_negative)</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert not await null.is_some_and_await(is_negative)</span>
 <span class="sd">        ```</span>
 
@@ -4247,7 +4287,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 
 <details class="example" open>
   <summary>Example</summary>
-  <div class="highlight"><pre><span></span><code><span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+  <div class="highlight"><pre><span></span><code><span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="n">null</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span>
 
 <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span>
@@ -4302,7 +4342,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 
 <span class="sd">    Example:</span>
 <span class="sd">        ```python</span>
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert null.is_null()</span>
 
 <span class="sd">        some = Some(34)</span>
@@ -4340,7 +4380,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">some</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="s2">&quot;panic!&quot;</span><span class="p">)</span>
 <span class="mi">42</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">null</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="s2">&quot;panic!&quot;</span><span class="p">)</span>
 <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
   <span class="o">...</span>
@@ -4461,7 +4501,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 <span class="sd">        &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">        &gt;&gt;&gt; some.expect(&quot;panic!&quot;)</span>
 <span class="sd">        42</span>
-<span class="sd">        &gt;&gt;&gt; null = Null()</span>
+<span class="sd">        &gt;&gt;&gt; null = NULL</span>
 <span class="sd">        &gt;&gt;&gt; null.expect(&quot;panic!&quot;)</span>
 <span class="sd">        Traceback (most recent call last):</span>
 <span class="sd">          ...</span>
@@ -4505,7 +4545,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">some</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
 <span class="mi">42</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">null</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="c1"># None</span>
 </code></pre></div>
@@ -4562,7 +4602,7 @@ inside of it matches the asynchronous <code>predicate</code>.</p>
 <span class="sd">        &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">        &gt;&gt;&gt; some.extract()</span>
 <span class="sd">        42</span>
-<span class="sd">        &gt;&gt;&gt; null = Null()</span>
+<span class="sd">        &gt;&gt;&gt; null = NULL</span>
 <span class="sd">        &gt;&gt;&gt; null.extract()</span>
 <span class="sd">        &gt;&gt;&gt; # None</span>
 <span class="sd">        ```</span>
@@ -4602,7 +4642,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.option.OptionProtocol.unwr
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">some</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
 <span class="mi">42</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">null</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
 <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
   <span class="o">...</span>
@@ -4702,7 +4742,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.option.OptionProtocol.unwr
 <span class="sd">        &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">        &gt;&gt;&gt; some.unwrap()</span>
 <span class="sd">        42</span>
-<span class="sd">        &gt;&gt;&gt; null = Null()</span>
+<span class="sd">        &gt;&gt;&gt; null = NULL</span>
 <span class="sd">        &gt;&gt;&gt; null.unwrap()</span>
 <span class="sd">        Traceback (most recent call last):</span>
 <span class="sd">          ...</span>
@@ -4743,7 +4783,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.option.OptionProtocol.unwr
   <div class="highlight"><pre><span></span><code><span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">some</span><span class="o">.</span><span class="n">unwrap_or</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="n">null</span><span class="o">.</span><span class="n">unwrap_or</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
 </details>
@@ -4831,7 +4871,7 @@ or <a class="autorefs autorefs-internal" href="#wraps.option.OptionProtocol.unwr
 <span class="sd">        some = Some(13)</span>
 <span class="sd">        assert some.unwrap_or(0)</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert not null.unwrap_or(0)</span>
 <span class="sd">        ```</span>
 
@@ -4870,7 +4910,7 @@ computes it from the <code>default</code> function.</p>
   <div class="highlight"><pre><span></span><code><span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">some</span><span class="o">.</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="n">null</span><span class="o">.</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </code></pre></div>
 </details>
@@ -4960,7 +5000,7 @@ computes it from the <code>default</code> function.</p>
 <span class="sd">        some = Some(13)</span>
 <span class="sd">        assert some.unwrap_or_else(int)</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert not null.unwrap_or_else(int)</span>
 <span class="sd">        ```</span>
 
@@ -5006,7 +5046,7 @@ or computes it from the asynchronous <code>default</code> function.</p>
 <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="k">assert</span> <span class="k">await</span> <span class="n">some</span><span class="o">.</span><span class="n">unwrap_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">unwrap_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
 </code></pre></div>
 </details>
@@ -5102,7 +5142,7 @@ or computes it from the asynchronous <code>default</code> function.</p>
 <span class="sd">        some = Some(42)</span>
 <span class="sd">        assert await some.unwrap_or_else_await(default)</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert not await null.unwrap_or_else_await(default)</span>
 <span class="sd">        ```</span>
 
@@ -5530,7 +5570,7 @@ to the contained value (if any).</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">some</span><span class="o">.</span><span class="n">map_or</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 5</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">null</span><span class="o">.</span><span class="n">map_or</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 42</span>
 </code></pre></div>
@@ -5639,7 +5679,7 @@ to the contained value (if any).</p>
 
 <span class="sd">        print(some.map_or(42, len))  # 5</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        print(null.map_or(42, len))  # 42</span>
 <span class="sd">        ```</span>
@@ -5684,7 +5724,7 @@ or applies the <code>function</code> to the contained value (if any).</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">some</span><span class="o">.</span><span class="n">map_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 13</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">null</span><span class="o">.</span><span class="n">map_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 42</span>
 </code></pre></div>
@@ -5799,7 +5839,7 @@ or applies the <code>function</code> to the contained value (if any).</p>
 
 <span class="sd">        print(some.map_or_else(default, len))  # 13</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        print(null.map_or_else(default, len))  # 42</span>
 <span class="sd">        ```</span>
@@ -5848,7 +5888,7 @@ or applies the <code>function</code> to the contained value (if any).</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">some</span><span class="o">.</span><span class="n">map_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 13</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">map_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="nb">len</span><span class="p">))</span>  <span class="c1"># 42</span>
 </code></pre></div>
@@ -5963,7 +6003,7 @@ or applies the <code>function</code> to the contained value (if any).</p>
 
 <span class="sd">        print(await some.map_or_else_await(default, len))  # 13</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        print(await null.map_or_else_await(default, len))  # 42</span>
 <span class="sd">        ```</span>
@@ -6154,7 +6194,7 @@ to the contained value (if any).</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">some</span><span class="o">.</span><span class="n">map_await_or</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span>  <span class="c1"># 5</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">map_await_or</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span>  <span class="c1"># 42</span>
 </code></pre></div>
@@ -6269,7 +6309,7 @@ to the contained value (if any).</p>
 
 <span class="sd">        print(await some.map_await_or(42, function))  # 5</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        print(await null.map_await_or(42, function))  # 42</span>
 <span class="sd">        ```</span>
@@ -6321,7 +6361,7 @@ or applies the asynchronous <code>function</code> to the contained value (if any
 
 <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">some</span><span class="o">.</span><span class="n">map_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span>  <span class="c1"># 13</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">map_await_or_else</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span>  <span class="c1"># 0</span>
 </code></pre></div>
@@ -6442,7 +6482,7 @@ or applies the asynchronous <code>function</code> to the contained value (if any
 
 <span class="sd">        print(await some.map_await_or_else(default, function))  # 13</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        print(await null.map_await_or_else(default, function))  # 0</span>
 <span class="sd">        ```</span>
@@ -6494,7 +6534,7 @@ to the contained value (if any).</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">some</span><span class="o">.</span><span class="n">map_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span>  <span class="c1"># 13</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">map_await_or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span>  <span class="c1"># 42</span>
 </code></pre></div>
@@ -6619,7 +6659,7 @@ to the contained value (if any).</p>
 
 <span class="sd">        print(await some.map_await_or_else_await(default, function))  # 13</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        print(await null.map_await_or_else_await(default, function))  # 42</span>
 <span class="sd">        ```</span>
@@ -6664,7 +6704,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">some</span><span class="o">.</span><span class="n">ok_or</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="n">null</span><span class="o">.</span><span class="n">ok_or</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="n">is_error</span><span class="p">()</span>
 </code></pre></div>
 </details>
@@ -6762,7 +6802,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 <span class="sd">        some = Some(42)</span>
 <span class="sd">        assert some.ok_or(error).is_ok()</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert null.ok_or(error).is_error()</span>
 <span class="sd">        ```</span>
 
@@ -6806,7 +6846,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">some</span><span class="o">.</span><span class="n">ok_or_else</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="n">null</span><span class="o">.</span><span class="n">ok_or_else</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="n">is_error</span><span class="p">()</span>
 </code></pre></div>
 </details>
@@ -6906,7 +6946,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 <span class="sd">        some = Some(7)</span>
 <span class="sd">        assert some.ok_or_else(error).is_ok()</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert null.ok_or_else(error).is_error()</span>
 <span class="sd">        ```</span>
 
@@ -6956,7 +6996,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 
 <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">ok_or_else_await</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 
 <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">is_error</span><span class="p">()</span>
@@ -7064,7 +7104,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 
 <span class="sd">        assert result.is_ok()</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        result = await null.ok_or_else_await(error)</span>
 
 <span class="sd">        assert result.is_error()</span>
@@ -7104,7 +7144,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">some</span><span class="o">.</span><span class="n">iter</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
 <span class="mi">42</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">null</span><span class="o">.</span><span class="n">iter</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
 <span class="mi">0</span>
 </code></pre></div>
@@ -7161,7 +7201,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 <span class="sd">        &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">        &gt;&gt;&gt; next(some.iter(), 0)</span>
 <span class="sd">        42</span>
-<span class="sd">        &gt;&gt;&gt; null = Null()</span>
+<span class="sd">        &gt;&gt;&gt; null = NULL</span>
 <span class="sd">        &gt;&gt;&gt; next(null.iter(), 0)</span>
 <span class="sd">        0</span>
 <span class="sd">        ```</span>
@@ -7197,7 +7237,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
   <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">async_next</span><span class="p">(</span><span class="n">some</span><span class="o">.</span><span class="n">async_iter</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
 <span class="mi">42</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">async_next</span><span class="p">(</span><span class="n">null</span><span class="o">.</span><span class="n">async_iter</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
 <span class="mi">0</span>
 </code></pre></div>
@@ -7254,7 +7294,7 @@ to <a class="autorefs autorefs-internal" href="../result/#wraps.result.Error"><c
 <span class="sd">        &gt;&gt;&gt; some = Some(42)</span>
 <span class="sd">        &gt;&gt;&gt; await async_next(some.async_iter(), 0)</span>
 <span class="sd">        42</span>
-<span class="sd">        &gt;&gt;&gt; null = Null()</span>
+<span class="sd">        &gt;&gt;&gt; null = NULL</span>
 <span class="sd">        &gt;&gt;&gt; await async_next(null.async_iter(), 0)</span>
 <span class="sd">        0</span>
 <span class="sd">        ```</span>
@@ -7290,7 +7330,7 @@ otherwise calls the <code>function</code> with the wrapped value and returns the
 <details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="n">Null</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="n">NULL</span>
 
 <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">some</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">inverse</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">())</span>  <span class="c1"># 0.5</span>
@@ -7298,7 +7338,7 @@ otherwise calls the <code>function</code> with the wrapped value and returns the
 <span class="n">zero</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">zero</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">inverse</span><span class="p">)</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="n">null</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">inverse</span><span class="p">)</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span>
 </code></pre></div>
 </details>
@@ -7396,7 +7436,7 @@ otherwise calls the <code>function</code> with the wrapped value and returns the
 <span class="sd">    Example:</span>
 <span class="sd">        ```python</span>
 <span class="sd">        def inverse(value: float) -&gt; Option[float]:</span>
-<span class="sd">            return Some(1.0 / value) if value else Null()</span>
+<span class="sd">            return Some(1.0 / value) if value else NULL</span>
 
 <span class="sd">        some = Some(2.0)</span>
 <span class="sd">        print(some.and_then(inverse).unwrap())  # 0.5</span>
@@ -7404,7 +7444,7 @@ otherwise calls the <code>function</code> with the wrapped value and returns the
 <span class="sd">        zero = Some(0.0)</span>
 <span class="sd">        assert zero.and_then(inverse).is_null()</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert null.and_then(inverse).is_null()</span>
 <span class="sd">        ```</span>
 
@@ -7445,7 +7485,7 @@ otherwise calls the asynchronous <code>function</code> with the wrapped value an
 <details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="n">Null</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="n">NULL</span>
 
 <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
 <span class="n">option</span> <span class="o">=</span> <span class="k">await</span> <span class="n">some</span><span class="o">.</span><span class="n">and_then_await</span><span class="p">(</span><span class="n">inverse</span><span class="p">)</span>
@@ -7457,7 +7497,7 @@ otherwise calls the asynchronous <code>function</code> with the wrapped value an
 
 <span class="k">assert</span> <span class="n">option</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="n">option</span> <span class="o">=</span> <span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">and_then_await</span><span class="p">(</span><span class="n">inverse</span><span class="p">)</span>
 
 <span class="k">assert</span> <span class="n">option</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span>
@@ -7559,7 +7599,7 @@ otherwise calls the asynchronous <code>function</code> with the wrapped value an
 <span class="sd">    Example:</span>
 <span class="sd">        ```python</span>
 <span class="sd">        async def inverse(value: float) -&gt; Option[float]:</span>
-<span class="sd">            return Some(1.0 / value) if value else Null()</span>
+<span class="sd">            return Some(1.0 / value) if value else NULL</span>
 
 <span class="sd">        some = Some(2.0)</span>
 <span class="sd">        option = await some.and_then_await(inverse)</span>
@@ -7571,7 +7611,7 @@ otherwise calls the asynchronous <code>function</code> with the wrapped value an
 
 <span class="sd">        assert option.is_null()</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        option = await null.and_then_await(inverse)</span>
 
 <span class="sd">        assert option.is_null()</span>
@@ -7616,7 +7656,7 @@ otherwise calls the <code>predicate</code> with the wrapped value and returns:</
   <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_even</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="ow">not</span> <span class="n">value</span> <span class="o">%</span> <span class="mi">2</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="n">null</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">is_even</span><span class="p">)</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span>
 
 <span class="n">even</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -7724,7 +7764,7 @@ otherwise calls the <code>predicate</code> with the wrapped value and returns:</
 <span class="sd">        def is_even(value: int) -&gt; bool:</span>
 <span class="sd">            return not value % 2</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert null.filter(is_even).is_null()</span>
 
 <span class="sd">        even = Some(2)</span>
@@ -7777,7 +7817,7 @@ otherwise calls the asynchronous <code>predicate</code> with the wrapped value a
   <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">is_even</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="ow">not</span> <span class="n">value</span> <span class="o">%</span> <span class="mi">2</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="p">(</span><span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">filter_await</span><span class="p">(</span><span class="n">is_even</span><span class="p">))</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span>
 
 <span class="n">even</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -7885,7 +7925,7 @@ otherwise calls the asynchronous <code>predicate</code> with the wrapped value a
 <span class="sd">        async def is_even(value: int) -&gt; bool:</span>
 <span class="sd">            return not value % 2</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert (await null.filter_await(is_even)).is_null()</span>
 
 <span class="sd">        even = Some(2)</span>
@@ -7931,7 +7971,7 @@ the <code>default</code> function and returns the result.</p>
     <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
 
 <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="k">assert</span> <span class="n">some</span><span class="o">.</span><span class="n">or_else</span><span class="p">(</span><span class="n">default</span><span class="p">)</span><span class="o">.</span><span class="n">is_some</span><span class="p">()</span>
 <span class="k">assert</span> <span class="n">null</span><span class="o">.</span><span class="n">or_else</span><span class="p">(</span><span class="n">default</span><span class="p">)</span><span class="o">.</span><span class="n">is_some</span><span class="p">()</span>
@@ -8027,7 +8067,7 @@ the <code>default</code> function and returns the result.</p>
 <span class="sd">            return Some(13)</span>
 
 <span class="sd">        some = Some(42)</span>
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        assert some.or_else(default).is_some()</span>
 <span class="sd">        assert null.or_else(default).is_some()</span>
@@ -8073,7 +8113,7 @@ the asynchronous <code>default</code> function and returns the result.</p>
     <span class="k">return</span> <span class="n">Some</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
 
 <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="k">assert</span> <span class="p">(</span><span class="k">await</span> <span class="n">some</span><span class="o">.</span><span class="n">or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">))</span><span class="o">.</span><span class="n">is_some</span><span class="p">()</span>
 <span class="k">assert</span> <span class="p">(</span><span class="k">await</span> <span class="n">null</span><span class="o">.</span><span class="n">or_else_await</span><span class="p">(</span><span class="n">default</span><span class="p">))</span><span class="o">.</span><span class="n">is_some</span><span class="p">()</span>
@@ -8169,7 +8209,7 @@ the asynchronous <code>default</code> function and returns the result.</p>
 <span class="sd">            return Some(13)</span>
 
 <span class="sd">        some = Some(42)</span>
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        assert (await some.or_else_await(default)).is_some()</span>
 <span class="sd">        assert (await null.or_else_await(default)).is_some()</span>
@@ -8210,7 +8250,7 @@ is <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Some[
   <div class="highlight"><pre><span></span><code><span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">69</span><span class="p">)</span>
 <span class="n">other</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="k">assert</span> <span class="n">some</span><span class="o">.</span><span class="n">xor</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">==</span> <span class="n">null</span>
 <span class="k">assert</span> <span class="n">null</span><span class="o">.</span><span class="n">xor</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">==</span> <span class="n">other</span>
@@ -8308,7 +8348,7 @@ is <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Some[
 <span class="sd">        some = Some(69)</span>
 <span class="sd">        other = Some(7)</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        assert some.xor(other) == null</span>
 <span class="sd">        assert null.xor(other) == other</span>
@@ -8360,7 +8400,7 @@ this method returns <a class="autorefs autorefs-internal" href="#wraps.option.So
 
 <span class="k">assert</span> <span class="n">some_x</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">some_y</span><span class="p">)</span> <span class="o">==</span> <span class="n">some_point</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="k">assert</span> <span class="n">some_y</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">null</span><span class="p">)</span> <span class="o">==</span> <span class="n">null</span>
 </code></pre></div>
@@ -8472,7 +8512,7 @@ this method returns <a class="autorefs autorefs-internal" href="#wraps.option.So
 
 <span class="sd">        assert some_x.zip(some_y) == some_point</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        assert some_y.zip(null) == null</span>
 <span class="sd">        ```</span>
@@ -8526,7 +8566,7 @@ this method returns <a class="autorefs autorefs-internal" href="#wraps.option.So
 
 <span class="k">assert</span> <span class="n">some_x</span><span class="o">.</span><span class="n">zip_with</span><span class="p">(</span><span class="n">some_y</span><span class="p">,</span> <span class="n">Point</span><span class="p">)</span> <span class="o">==</span> <span class="n">some_point</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="k">assert</span> <span class="n">some_x</span><span class="o">.</span><span class="n">zip_with</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">Point</span><span class="p">)</span> <span class="o">==</span> <span class="n">null</span>
 </code></pre></div>
@@ -8663,7 +8703,7 @@ this method returns <a class="autorefs autorefs-internal" href="#wraps.option.So
 
 <span class="sd">        assert some_x.zip_with(some_y, Point) == some_point</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        assert some_x.zip_with(null, Point) == null</span>
 <span class="sd">        ```</span>
@@ -8725,7 +8765,7 @@ this method returns <a class="autorefs autorefs-internal" href="#wraps.option.So
 
 <span class="k">assert</span> <span class="k">await</span> <span class="n">some_x</span><span class="o">.</span><span class="n">zip_with</span><span class="p">(</span><span class="n">some_y</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span> <span class="o">==</span> <span class="n">some_point</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 
 <span class="k">assert</span> <span class="k">await</span> <span class="n">some_x</span><span class="o">.</span><span class="n">zip_with</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span> <span class="o">==</span> <span class="n">null</span>
 </code></pre></div>
@@ -8868,7 +8908,7 @@ this method returns <a class="autorefs autorefs-internal" href="#wraps.option.So
 
 <span class="sd">        assert await some_x.zip_with(some_y, point) == some_point</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
 <span class="sd">        assert await some_x.zip_with(null, point) == null</span>
 <span class="sd">        ```</span>
@@ -8913,8 +8953,8 @@ value = 13
 other = 42</p>
 <p>zipped = Some((value, other))</p>
 <p>assert zipped.unzip() == (Some(value), Some(other))</p>
-<p>null = Null()</p>
-<p>assert null.unzip() == (Null(), Null())</p>
+<p>null = NULL</p>
+<p>assert null.unzip() == (NULL, NULL)</p>
 </details>
 
 
@@ -8983,9 +9023,9 @@ other = 42</p>
 
 <span class="sd">        assert zipped.unzip() == (Some(value), Some(other))</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 
-<span class="sd">        assert null.unzip() == (Null(), Null())</span>
+<span class="sd">        assert null.unzip() == (NULL, NULL)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The resulting tuple of two options.</span>
@@ -9020,7 +9060,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
 <span class="n">some_nested</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="n">some</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">some_nested</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">==</span> <span class="n">some</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="n">null_nested</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="n">null</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">null_nested</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">==</span> <span class="n">null</span>
 
@@ -9083,7 +9123,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
 <span class="sd">        some_nested = Some(some)</span>
 <span class="sd">        assert some_nested.flatten() == some</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        null_nested = Some(null)</span>
 <span class="sd">        assert null_nested.flatten() == null</span>
 
@@ -9125,7 +9165,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
 <span class="k">assert</span> <span class="n">some</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="n">some</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-<span class="n">null</span> <span class="o">=</span> <span class="n">Null</span><span class="p">()</span>
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="n">null</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 </code></pre></div>
 </details>
@@ -9221,7 +9261,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
 <span class="sd">        assert some.contains(value)</span>
 <span class="sd">        assert not some.contains(other)</span>
 
-<span class="sd">        null = Null()</span>
+<span class="sd">        null = NULL</span>
 <span class="sd">        assert not null.contains(value)</span>
 <span class="sd">        ```</span>
 
@@ -9883,10 +9923,10 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
         <span class="k">return</span> <span class="k">await</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="p">:</span> <span class="n">Predicate</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">predicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="n">Null</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">predicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="n">NULL</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">filter_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="p">:</span> <span class="n">AsyncPredicate</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span> <span class="k">if</span> <span class="k">await</span> <span class="n">predicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="n">Null</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="k">if</span> <span class="k">await</span> <span class="n">predicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="n">NULL</span>
 
     <span class="k">def</span> <span class="nf">or_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Nullary</span><span class="p">[</span><span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Some</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span>
@@ -9895,7 +9935,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">xor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">is_null</span><span class="p">(</span><span class="n">option</span><span class="p">)</span> <span class="k">else</span> <span class="n">Null</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">is_null</span><span class="p">(</span><span class="n">option</span><span class="p">)</span> <span class="k">else</span> <span class="n">NULL</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="n">Null</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Null</span><span class="p">:</span>
@@ -9931,7 +9971,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
         <span class="k">if</span> <span class="n">is_some</span><span class="p">(</span><span class="n">option</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">Null</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">NULL</span>
 
     <span class="nd">@overload</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">zip_with_await</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="n">Null</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">AsyncBinary</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Null</span><span class="p">:</span>
@@ -9949,7 +9989,7 @@ to <a class="autorefs autorefs-internal" href="#wraps.option.Option"><code>Optio
         <span class="k">if</span> <span class="n">is_some</span><span class="p">(</span><span class="n">option</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="k">await</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">Null</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">NULL</span>
 
     <span class="k">def</span> <span class="nf">unzip</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Some</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Some</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">Some</span><span class="p">[</span><span class="n">V</span><span class="p">]]:</span>
         <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
@@ -10004,11 +10044,11 @@ except it works as a <em>type guard</em>.</p>
 
           <details class="quote">
             <summary>Source code in <code>wraps/option.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1467</span>
-<span class="normal">1468</span>
-<span class="normal">1469</span>
-<span class="normal">1470</span>
-<span class="normal">1471</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_some</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Some</span><span class="p">[</span><span class="n">T</span><span class="p">]]:</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1470</span>
+<span class="normal">1471</span>
+<span class="normal">1472</span>
+<span class="normal">1473</span>
+<span class="normal">1474</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_some</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Some</span><span class="p">[</span><span class="n">T</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is the same as [`Option.is_some`][wraps.option.OptionProtocol.is_some],</span>
 <span class="sd">    except it works as a *type guard*.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -10038,11 +10078,11 @@ except it works as a <em>type guard</em>.</p>
 
           <details class="quote">
             <summary>Source code in <code>wraps/option.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1474</span>
-<span class="normal">1475</span>
-<span class="normal">1476</span>
-<span class="normal">1477</span>
-<span class="normal">1478</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_null</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Null</span><span class="p">]:</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1477</span>
+<span class="normal">1478</span>
+<span class="normal">1479</span>
+<span class="normal">1480</span>
+<span class="normal">1481</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_null</span><span class="p">(</span><span class="n">option</span><span class="p">:</span> <span class="n">Option</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">Null</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is the same as [`Option.is_null`][wraps.option.OptionProtocol.is_null],</span>
 <span class="sd">    except it works as a *type guard*.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
