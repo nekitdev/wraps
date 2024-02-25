@@ -162,6 +162,16 @@ class EitherProtocol(Protocol[L, R]):  # type: ignore[misc]
         ...
 
     @required
+    def map_either(self, left: Unary[L, M], right: Unary[R, S]) -> Either[M, S]:
+        ...
+
+    @required
+    async def map_either_await(
+        self, left: AsyncUnary[L, M], right: AsyncUnary[R, S]
+    ) -> Either[M, S]:
+        ...
+
+    @required
     def either(self, left: Unary[L, T], right: Unary[R, T]) -> T:
         ...
 
@@ -353,6 +363,12 @@ class Left(EitherProtocol[L, Never]):
     async def map_await(self: Left[T], function: AsyncUnary[T, U]) -> Left[U]:
         return self.create(await function(self.value))
 
+    def map_either(self, left: Unary[L, M], right: Unary[R, S]) -> Left[M]:
+        return self.create(left(self.value))
+
+    async def map_either_await(self, left: AsyncUnary[L, M], right: Unary[R, S]) -> Left[M]:
+        return self.create(await left(self.value))
+
     def either(self, left: Unary[L, T], right: Unary[R, T]) -> T:
         return left(self.value)
 
@@ -506,6 +522,12 @@ class Right(EitherProtocol[Never, R]):
 
     async def map_await(self: Right[T], function: AsyncUnary[T, U]) -> Right[U]:
         return self.create(await function(self.value))
+
+    def map_either(self, left: Unary[L, M], right: Unary[R, S]) -> Right[S]:
+        return self.create(right(self.value))
+
+    async def map_either_await(self, left: AsyncUnary[L, M], right: AsyncUnary[R, S]) -> Right[S]:
+        return self.create(await right(self.value))
 
     def either(self, left: Unary[L, T], right: Unary[R, T]) -> T:
         return right(self.value)

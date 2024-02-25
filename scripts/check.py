@@ -3,8 +3,8 @@ from named import get_name
 
 from wraps.either import EitherProtocol
 from wraps.future.either import FutureEither
-from wraps.future.result import FutureResult
 from wraps.future.option import FutureOption
+from wraps.future.result import FutureResult
 from wraps.option import OptionProtocol
 from wraps.result import ResultProtocol
 

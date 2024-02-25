@@ -44,7 +44,7 @@ Or by directly specifying it in the configuration like so:
 
 ```toml
 [tool.poetry.dependencies]
-wraps = "^0.8.0"
+wraps = "^0.9.0"
 ```
 
 Alternatively, you can add it directly from the source:
@@ -185,7 +185,7 @@ If you are interested in contributing to `wraps`, make sure to take a look at th
 
 [Email]: mailto:support@nekit.dev
 
-[Discord]: https://nekit.dev/discord
+[Discord]: https://nekit.dev/chat
 
 [Actions]: https://github.com/nekitdev/wraps/actions
 
@@ -200,7 +200,7 @@ If you are interested in contributing to `wraps`, make sure to take a look at th
 [Coverage]: https://codecov.io/gh/nekitdev/wraps
 [Documentation]: https://nekitdev.github.io/wraps
 
-[Discord Badge]: https://img.shields.io/badge/chat-discord-5865f2
+[Discord Badge]: https://img.shields.io/discord/728012506899021874
 [License Badge]: https://img.shields.io/pypi/l/wraps
 [Version Badge]: https://img.shields.io/pypi/v/wraps
 [Downloads Badge]: https://img.shields.io/pypi/dm/wraps

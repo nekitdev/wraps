@@ -16,9 +16,6 @@ T = TypeVar("T", covariant=True)
 U = TypeVar("U")
 
 
-# NOTE: functions here are suffixed with `future` to avoid name clashes with derived types
-
-
 def reawaitable_converter(awaitable: Awaitable[T]) -> ReAwaitable[T]:
     return ReAwaitable(awaitable)
 
@@ -132,7 +129,7 @@ class Future(Awaitable[T]):
 
         value = 42
 
-        future = Future.create(async_identity(value))
+        future = Future(async_identity(value))
         ```
 
         Example:

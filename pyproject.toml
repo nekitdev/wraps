@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wraps"
-version = "0.8.0"
+version = "0.9.0"
 description = "Meaningful and safe wrapping types."
 authors = ["nekitdev"]
 license = "MIT"
@@ -22,7 +22,8 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-Discord = "https://nekit.dev/discord"
+Chat = "https://nekit.dev/chat"
+Funding = "https://nekit.dev/funding"
 Issues = "https://github.com/nekitdev/wraps/issues"
 
 [[tool.poetry.packages]]
@@ -33,30 +34,36 @@ python = ">= 3.8"
 
 attrs = "^23.2.0"
 
-funcs = "^0.8.0"
+funcs = "^0.9.0"
 
-typing-aliases = "^1.4.1"
+typing-aliases = "^1.7.0"
 typing-extensions = "^4.9.0"
 
 [tool.poetry.group.format.dependencies]
-ruff = "0.1.11"
+ruff = "0.2.2"
 
 [tool.poetry.group.check.dependencies]
 mypy = "1.8.0"
 
+[tool.poetry.group.check.dependencies.pre-commit]
+version = "3.6.2"
+python = ">= 3.9"
+
 [tool.poetry.group.test.dependencies]
-coverage = "7.4.0"
-pytest = "7.4.4"
+coverage = "7.4.3"
+pytest = "8.0.2"
 pytest-cov = "4.1.0"
-anyio = "4.2.0"
-trio = "0.23.2"
+
+[tool.poetry.group.test.dependencies.anyio]
+version = "4.3.0"
+extras = ["trio"]
 
 [tool.poetry.group.docs]
 optional = true
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "1.5.3"
-mkdocs-material = "9.5.3"
+mkdocs-material = "9.5.11"
 
 [tool.poetry.group.docs.dependencies.mkdocstrings]
 version = "0.24.0"
@@ -66,7 +73,7 @@ extras = ["python"]
 optional = true
 
 [tool.poetry.group.scripts.dependencies]
-entrypoint = "2.0.0"
+entrypoint = "2.0.1"
 
 [tool.poetry.group.release]
 optional = true
@@ -110,7 +117,7 @@ strict = true
 
 [tool.changelogging]
 name = "wraps"
-version = "0.8.0"
+version = "0.9.0"
 url = "https://github.com/nekitdev/wraps"
 directory = "changes"
 output = "CHANGELOG.md"
@@ -127,5 +134,5 @@ wrap_size = 100
 display = ["feature", "change", "fix", "security", "deprecation", "removal", "internal"]
 
 [build-system]
-requires = ["poetry-core >= 1.8.1"]
+requires = ["poetry-core >= 1.9.0"]
 build-backend = "poetry.core.masonry.api"
