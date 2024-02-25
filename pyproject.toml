@@ -115,6 +115,8 @@ directory = "coverage"
 [tool.mypy]
 strict = true
 
+exclude = ["scripts"]
+
 [tool.changelogging]
 name = "wraps"
 version = "0.9.0"
