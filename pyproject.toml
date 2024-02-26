@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wraps"
-version = "0.9.0"
+version = "0.9.1"
 description = "Meaningful and safe wrapping types."
 authors = ["nekitdev"]
 license = "MIT"
@@ -32,12 +32,12 @@ include = "wraps"
 [tool.poetry.dependencies]
 python = ">= 3.8"
 
-attrs = "^23.2.0"
+attrs = ">= 23.2.0"
 
-funcs = "^0.9.0"
+funcs = ">= 0.9.1"
 
-typing-aliases = "^1.7.0"
-typing-extensions = "^4.9.0"
+typing-aliases = ">= 1.7.1"
+typing-extensions = ">= 4.10.0"
 
 [tool.poetry.group.format.dependencies]
 ruff = "0.2.2"
@@ -79,7 +79,7 @@ entrypoint = "2.0.1"
 optional = true
 
 [tool.poetry.group.release.dependencies]
-changelogging = "1.3.0"
+changelogging = "1.4.1"
 
 [tool.ruff]
 line-length = 100
@@ -119,7 +119,7 @@ exclude = ["scripts"]
 
 [tool.changelogging]
 name = "wraps"
-version = "0.9.0"
+version = "0.9.1"
 url = "https://github.com/nekitdev/wraps"
 directory = "changes"
 output = "CHANGELOG.md"

@@ -2,6 +2,17 @@
 
 <!-- changelogging: start -->
 
+## 0.9.1 (2024-02-26)
+
+No significant changes.
+
+## 0.9.0 (2024-02-25)
+
+### Features
+
+- Added `map_either` and `map_either_await` to `Either[L, R]`.
+- Updated `FutureEither[L, R]` to be in sync with `Either[L, R]`.
+
 ## 0.8.0 (2024-01-08)
 
 ### Features
