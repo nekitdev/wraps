@@ -73,7 +73,7 @@ extras = ["python"]
 optional = true
 
 [tool.poetry.group.scripts.dependencies]
-entrypoint = "2.0.1"
+entrypoint = "2.0.2"
 
 [tool.poetry.group.release]
 optional = true
