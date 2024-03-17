@@ -2,6 +2,12 @@
 
 <!-- changelogging: start -->
 
+## 0.9.2 (2024-03-16)
+
+### Changes
+
+- Improved type narrowing via using `TypeIs` instead of `TypeGuard`.
+
 ## 0.9.1 (2024-02-26)
 
 No significant changes.

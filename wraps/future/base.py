@@ -75,7 +75,7 @@ class Future(Awaitable[T]):
     async def actual_base_map_future_await(self, function: AsyncUnary[T, U]) -> U:
         return await function(await self.awaitable)
 
-    def then(self, function: Unary[T, Future[U]]) -> Future[U]:
+    def then(self, function: FutureUnary[T, U]) -> Future[U]:
         """Chains computation by applying the `function` to the result, returning the resulting
         [`Future[U]`][wraps.future.base.Future].
 
@@ -136,7 +136,9 @@ class Future(Awaitable[T]):
             ```python
             value = 42
 
-            assert await Future.from_value(value) is value
+            future = Future.from_value(value)
+
+            assert await future is value
             ```
 
         Arguments:
@@ -146,3 +148,6 @@ class Future(Awaitable[T]):
             The future wrapping the given value.
         """
         return cls.create(async_identity(value))
+
+
+from wraps.future.typing import FutureUnary

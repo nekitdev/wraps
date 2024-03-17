@@ -7,7 +7,7 @@ This library implements several types:
 - [`Either[L, R]`][wraps.either.Either] for either values;
 - [`Future[T]`][wraps.future.base.Future] for asynchronous abstractions.
 
-The following types are implemented for conveniece:
+The following types are implemented for convenience:
 
 - [`Future[Option[T]] -> FutureOption[T]`][wraps.future.option.FutureOption];
 - [`Future[Result[T, E]] -> FutureResult[T, E]`][wraps.future.result.FutureResult];
@@ -22,7 +22,7 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.9.1"
+__version__ = "0.9.2"
 
 from wraps.early import early_option, early_option_await, early_result, early_result_await
 from wraps.either import Either, Left, Right, is_left, is_right

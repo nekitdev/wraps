@@ -44,7 +44,17 @@ match result:
 
 from __future__ import annotations
 
-from typing import AsyncIterable, AsyncIterator, Iterable, Iterator, TypeVar, Union
+from typing import (
+    AsyncIterable,
+    AsyncIterator,
+    Iterable,
+    Iterator,
+    Literal,
+    Protocol,
+    TypeVar,
+    Union,
+    final,
+)
 
 from attrs import frozen
 from typing_aliases import (
@@ -59,7 +69,7 @@ from typing_aliases import (
     Unary,
     required,
 )
-from typing_extensions import Literal, Never, ParamSpec, Protocol, TypeGuard, final
+from typing_extensions import Never, ParamSpec, TypeIs
 
 from wraps.errors import EarlyResult
 from wraps.option import NULL, Null, Option, Some
@@ -1860,14 +1870,14 @@ and [`Error[E]`][wraps.result.Error].
 """
 
 
-def is_ok(result: Result[T, E]) -> TypeGuard[Ok[T]]:
+def is_ok(result: Result[T, E]) -> TypeIs[Ok[T]]:
     """This is the same as [`Result.is_ok`][wraps.result.ResultProtocol.is_ok],
     except it works as a *type guard*.
     """
     return result.is_ok()
 
 
-def is_error(result: Result[T, E]) -> TypeGuard[Error[E]]:
+def is_error(result: Result[T, E]) -> TypeIs[Error[E]]:
     """This is the same as [`Result.is_error`][wraps.result.ResultProtocol.is_error],
     except it works as a *type guard*.
     """

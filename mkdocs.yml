@@ -20,6 +20,7 @@ nav:
       - Option: "reference/future/option.md"
       - Result: "reference/future/result.md"
       - Either: "reference/future/either.md"
+      - Typing: "reference/future/typing.md"
     - Wraps: "reference/wraps.md"
     - Markers: "reference/markers.md"
     - Panics: "reference/panics.md"

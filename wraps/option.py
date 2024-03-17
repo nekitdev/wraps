@@ -57,10 +57,13 @@ from typing import (
     AsyncIterator,
     Iterable,
     Iterator,
+    Literal,
     Optional,
+    Protocol,
     Tuple,
     TypeVar,
     Union,
+    final,
     overload,
 )
 
@@ -78,7 +81,7 @@ from typing_aliases import (
     Unary,
     required,
 )
-from typing_extensions import Literal, Never, Protocol, TypeGuard, final
+from typing_extensions import Never, TypeIs
 
 from wraps.errors import EarlyOption
 from wraps.panics import panic
@@ -1393,34 +1396,28 @@ class Some(OptionProtocol[T]):
         return self if is_null(option) else NULL
 
     @overload
-    def zip(self, option: Null) -> Null:
-        ...
+    def zip(self, option: Null) -> Null: ...
 
     @overload
-    def zip(self, option: Some[U]) -> Some[Tuple[T, U]]:
-        ...
+    def zip(self, option: Some[U]) -> Some[Tuple[T, U]]: ...
 
     @overload
-    def zip(self, option: Option[U]) -> Option[Tuple[T, U]]:
-        ...
+    def zip(self, option: Option[U]) -> Option[Tuple[T, U]]: ...
 
     def zip(self, option: Option[U]) -> Option[Tuple[T, U]]:
         if is_some(option):
             return self.create((self.value, option.value))
 
-        return option  # type: ignore
+        return option
 
     @overload
-    def zip_with(self, option: Null, function: Binary[T, U, V]) -> Null:
-        ...
+    def zip_with(self, option: Null, function: Binary[T, U, V]) -> Null: ...
 
     @overload
-    def zip_with(self, option: Some[U], function: Binary[T, U, V]) -> Some[V]:
-        ...
+    def zip_with(self, option: Some[U], function: Binary[T, U, V]) -> Some[V]: ...
 
     @overload
-    def zip_with(self, option: Option[U], function: Binary[T, U, V]) -> Option[V]:
-        ...
+    def zip_with(self, option: Option[U], function: Binary[T, U, V]) -> Option[V]: ...
 
     def zip_with(self, option: Option[U], function: Binary[T, U, V]) -> Option[V]:
         if is_some(option):
@@ -1429,16 +1426,15 @@ class Some(OptionProtocol[T]):
         return NULL
 
     @overload
-    async def zip_with_await(self, option: Null, function: AsyncBinary[T, U, V]) -> Null:
-        ...
+    async def zip_with_await(self, option: Null, function: AsyncBinary[T, U, V]) -> Null: ...
 
     @overload
-    async def zip_with_await(self, option: Some[U], function: AsyncBinary[T, U, V]) -> Some[V]:
-        ...
+    async def zip_with_await(self, option: Some[U], function: AsyncBinary[T, U, V]) -> Some[V]: ...
 
     @overload
-    async def zip_with_await(self, option: Option[U], function: AsyncBinary[T, U, V]) -> Option[V]:
-        ...
+    async def zip_with_await(
+        self, option: Option[U], function: AsyncBinary[T, U, V]
+    ) -> Option[V]: ...
 
     async def zip_with_await(self, option: Option[U], function: AsyncBinary[T, U, V]) -> Option[V]:
         if is_some(option):
@@ -1467,14 +1463,14 @@ NULL = Null()
 """The instance of [`Null`][wraps.option.Null]."""
 
 
-def is_some(option: Option[T]) -> TypeGuard[Some[T]]:
+def is_some(option: Option[T]) -> TypeIs[Some[T]]:
     """This is the same as [`Option.is_some`][wraps.option.OptionProtocol.is_some],
     except it works as a *type guard*.
     """
     return option.is_some()
 
 
-def is_null(option: Option[T]) -> TypeGuard[Null]:
+def is_null(option: Option[T]) -> TypeIs[Null]:
     """This is the same as [`Option.is_null`][wraps.option.OptionProtocol.is_null],
     except it works as a *type guard*.
     """
