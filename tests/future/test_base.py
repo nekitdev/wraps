@@ -1,7 +1,7 @@
 import pytest
-from funcs import asyncify
+from funcs.functions import asyncify
 
-from wraps.future.base import Future
+from wraps.futures.base import Future
 
 
 @pytest.mark.anyio
@@ -26,12 +26,12 @@ async def test_future_async_iter() -> None:
 
 
 @pytest.mark.anyio
-async def test_future_base_map() -> None:
+async def test_future_map_result() -> None:
     value = 69
 
     expected = str(value)
 
-    future = Future.from_value(value).base_map(str)
+    future = Future.from_value(value).map_result(str)
 
     result = await future
 
@@ -42,12 +42,12 @@ async_str = asyncify(str)
 
 
 @pytest.mark.anyio
-async def test_future_base_map_await() -> None:
+async def test_future_map_result_await() -> None:
     value = 7
 
     expected = str(value)
 
-    future = Future.from_value(value).base_map_await(async_str)
+    future = Future.from_value(value).map_result_await(async_str)
 
     result = await future
 
@@ -72,12 +72,12 @@ async def test_future_then() -> None:
 
 
 @pytest.mark.anyio
-async def test_future_base_flatten() -> None:
+async def test_future_flatten_result() -> None:
     value = 13
 
     nested = Future.from_value(Future.from_value(value))
 
-    future = nested.base_flatten()
+    future = nested.flatten_result()
 
     result = await future
 

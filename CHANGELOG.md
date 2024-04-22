@@ -2,6 +2,12 @@
 
 <!-- changelogging: start -->
 
+## 0.10.0 (2024-04-22)
+
+### Changes
+
+- The entire library was refactored.
+
 ## 0.9.2 (2024-03-16)
 
 ### Changes

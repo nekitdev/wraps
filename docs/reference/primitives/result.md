@@ -1,0 +1,1 @@
+::: wraps.primitives.result

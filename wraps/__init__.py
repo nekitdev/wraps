@@ -2,16 +2,16 @@
 
 This library implements several types:
 
-- [`Option[T]`][wraps.option.Option] for optional values;
-- [`Result[T, E]`][wraps.result.Result] for error handling;
-- [`Either[L, R]`][wraps.either.Either] for either values;
-- [`Future[T]`][wraps.future.base.Future] for asynchronous abstractions.
+- [`Option[T]`][wraps.primitives.option.Option] for optional values;
+- [`Result[T, E]`][wraps.primitives.result.Result] for error handling;
+- [`Either[L, R]`][wraps.primitives.either.Either] for either values;
+- [`Future[T]`][wraps.futures.base.Future] for asynchronous abstractions.
 
 The following types are implemented for convenience:
 
-- [`Future[Option[T]] -> FutureOption[T]`][wraps.future.option.FutureOption];
-- [`Future[Result[T, E]] -> FutureResult[T, E]`][wraps.future.result.FutureResult];
-- [`Future[Either[L, R]] -> FutureEither[L, R]`][wraps.future.either.FutureEither].
+- [`Future[Option[T]] -> FutureOption[T]`][wraps.futures.option.FutureOption];
+- [`Future[Result[T, E]] -> FutureResult[T, E]`][wraps.futures.result.FutureResult];
+- [`Future[Either[L, R]] -> FutureEither[L, R]`][wraps.futures.either.FutureEither].
 
 The library also provides various decorators to wrap functions in order to return the types above.
 """
@@ -22,23 +22,43 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.9.2"
+__version__ = "0.10.0"
 
-from wraps.early import early_option, early_option_await, early_result, early_result_await
-from wraps.either import Either, Left, Right, is_left, is_right
-from wraps.future.base import Future
-from wraps.future.either import FutureEither
-from wraps.future.option import FutureOption
-from wraps.future.result import FutureResult
-from wraps.option import NULL, Null, Option, Some, is_null, is_some
+from wraps.early import (
+    EarlyOption,
+    EarlyResult,
+    early_option,
+    early_option_await,
+    early_result,
+    early_result_await,
+)
+from wraps.futures import Future, FutureEither, FutureOption, FutureResult
 from wraps.panics import Panic, panic
-from wraps.reawaitable import ReAwaitable, reawaitable
-from wraps.result import Error, Ok, Result, is_error, is_ok
+from wraps.primitives import (
+    NULL,
+    Either,
+    Error,
+    Left,
+    Null,
+    Ok,
+    Option,
+    ReAwaitable,
+    Result,
+    Right,
+    Some,
+    is_error,
+    is_left,
+    is_null,
+    is_ok,
+    is_right,
+    is_some,
+)
 from wraps.wraps import (
     WrapOption,
     WrapOptionAwait,
     WrapResult,
     WrapResultAwait,
+    reawaitable,
     wrap_future,
     wrap_future_either,
     wrap_future_option,
@@ -70,17 +90,21 @@ __all__ = (
     "Right",
     "is_left",
     "is_right",
-    # panic
+    # panics
     "Panic",
     "panic",
-    # early
+    # early decorators
     "early_option",
     "early_option_await",
     "early_result",
     "early_result_await",
+    # early errors
+    "EarlyOption",
+    "EarlyResult",
+    # decorators
+    "reawaitable",
     # re-awaitable
     "ReAwaitable",
-    "reawaitable",
     # future
     "Future",
     # future either
@@ -103,4 +127,5 @@ __all__ = (
     "wrap_future_option",
     "wrap_future_result",
     "wrap_future_either",
+    "reawaitable",
 )

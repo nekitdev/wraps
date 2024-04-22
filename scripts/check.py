@@ -1,12 +1,12 @@
 from entrypoint import entrypoint
 from named import get_name
 
-from wraps.either import EitherProtocol
-from wraps.future.either import FutureEither
-from wraps.future.option import FutureOption
-from wraps.future.result import FutureResult
-from wraps.option import OptionProtocol
-from wraps.result import ResultProtocol
+from wraps.futures.either import FutureEither
+from wraps.futures.option import FutureOption
+from wraps.futures.result import FutureResult
+from wraps.primitives.either import EitherProtocol
+from wraps.primitives.option import OptionProtocol
+from wraps.primitives.result import ResultProtocol
 
 PROTOCOL_TO_FUTURE = {
     EitherProtocol: FutureEither,

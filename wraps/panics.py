@@ -8,7 +8,7 @@ class Panic(AnyError):
     """Represents panics as errors.
 
     Panics should not be explicitly handled in general, therefore [`Panic`][wraps.panics.Panic]
-    is derived from [`AnyError`][typing_aliases.typing.AnyError].
+    is derived from [`AnyError`][typing_aliases.AnyError].
     """
 
 
