@@ -22,7 +22,7 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.10.0"
+__version__ = "0.11.0"
 
 from wraps.early import (
     EarlyOption,
@@ -58,16 +58,20 @@ from wraps.wraps import (
     WrapOptionAwait,
     WrapResult,
     WrapResultAwait,
-    reawaitable,
     wrap_future,
     wrap_future_either,
     wrap_future_option,
     wrap_future_result,
     wrap_option,
     wrap_option_await,
+    wrap_option_await_on,
+    wrap_option_on,
     wrap_optional,
+    wrap_reawaitable,
     wrap_result,
     wrap_result_await,
+    wrap_result_await_on,
+    wrap_result_on,
 )
 
 __all__ = (
@@ -101,8 +105,6 @@ __all__ = (
     # early errors
     "EarlyOption",
     "EarlyResult",
-    # decorators
-    "reawaitable",
     # re-awaitable
     "ReAwaitable",
     # future
@@ -118,14 +120,18 @@ __all__ = (
     "WrapOptionAwait",
     "WrapResult",
     "WrapResultAwait",
+    "wrap_option_on",
+    "wrap_option_await_on",
     "wrap_option",
     "wrap_option_await",
     "wrap_optional",
+    "wrap_result_on",
+    "wrap_result_await_on",
     "wrap_result",
     "wrap_result_await",
+    "wrap_reawaitable",
     "wrap_future",
     "wrap_future_option",
     "wrap_future_result",
     "wrap_future_either",
-    "reawaitable",
 )

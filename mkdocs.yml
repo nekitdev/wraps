@@ -32,6 +32,7 @@ nav:
       - Result: "reference/wraps/result.md"
       - Futures: "reference/wraps/futures.md"
       - ReAwaitable: "reference/wraps/reawaitable.md"
+      - Error Types: "reference/wraps/error_types.md"
     - Markers: "reference/markers.md"
     - Panics: "reference/panics.md"
   - Changelog: "changelog.md"

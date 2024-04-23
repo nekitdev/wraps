@@ -7,23 +7,23 @@ from typing_extensions import ParamSpec
 from wraps.primitives.reawaitable import ReAwaitable
 from wraps.primitives.typing import ReAwaitableCallable
 
-__all__ = ("reawaitable",)
+__all__ = ("wrap_reawaitable",)
 
 P = ParamSpec("P")
 
 R = TypeVar("R")
 
 
-def reawaitable(function: AsyncCallable[P, R]) -> ReAwaitableCallable[P, R]:
+def wrap_reawaitable(function: AsyncCallable[P, R]) -> ReAwaitableCallable[P, R]:
     """Wraps the asynchronous `function` to allow re-awaiting.
 
     Example:
         Wrap the `function` to make it re-awaitable:
 
         ```python
-        from wraps import reawaitable
+        from wraps import wrap_reawaitable
 
-        @reawaitable
+        @wrap_reawaitable
         async def function() -> int:
             return 42
         ```

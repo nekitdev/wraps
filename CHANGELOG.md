@@ -2,6 +2,19 @@
 
 <!-- changelogging: start -->
 
+## 0.11.0 (2024-04-23)
+
+### Features
+
+- Added `wrap_option_on`, `wrap_option_await_on`, `wrap_result_on` and `wrap_result_await_on`.
+
+### Changes
+
+- `wrap_option`, `wrap_option_await`, `wrap_result` and `wrap_result_await` are no longer
+  subscriptable: their `wrap_on` counterparts should be used to specify error types to handle.
+
+- `reawaitable` was renamed to `wrap_reawaitable` for consistency.
+
 ## 0.10.0 (2024-04-22)
 
 ### Changes

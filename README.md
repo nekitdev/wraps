@@ -10,7 +10,7 @@
 [![Test][Test Badge]][Actions]
 [![Coverage][Coverage Badge]][Coverage]
 
-**Meaningful and safe wrapping types.**
+> *Meaningful and safe wrapping types.*
 
 ## Installing
 
@@ -44,7 +44,7 @@ Or by directly specifying it in the configuration like so:
 
 ```toml
 [tool.poetry.dependencies]
-wraps = "^0.10.0"
+wraps = "^0.11.0"
 ```
 
 Alternatively, you can add it directly from the source:
@@ -105,20 +105,20 @@ def divide(numerator: float, denominator: float) -> Result[float, DivideError]:
 ### Early Return
 
 Early return functionality (like the *question-mark* (`?`) operator in Rust) is implemented via `early` methods
-(for both [`Option`][wraps.primitives.option.Option] and [`Result`][wraps.primitives.result.Result] types)
+(for both [`Option[T]`][wraps.primitives.option.Option] and [`Result[T, E]`][wraps.primitives.result.Result] types)
 combined with the [`@early_option`][wraps.early.decorators.early_option] and
 [`@early_result`][wraps.early.decorators.early_result] decorators respectively.
 
 ```python
-from wraps import Option, early_option, wrap_option
+from wraps import Option, early_option, wrap_option_on
 
 
-@wrap_option[ValueError]
+@wrap_option_on(ValueError)
 def parse(string: str) -> float:
     return float(string)
 
 
-@wrap_option[ZeroDivisionError]
+@wrap_option_on(ZeroDivisionError)
 def divide(numerator: float, denominator: float) -> float:
     return numerator / denominator
 
@@ -126,35 +126,6 @@ def divide(numerator: float, denominator: float) -> float:
 @early_option
 def function(x: str, y: str) -> Option[float]:
     return divide(parse(x).early(), parse(y).early())
-```
-
-### Decorators
-
-In Python 3.9 the restrictions on the decorators' syntax have been lifted, which allows for nifty
-syntax which can be seen above. On older versions of Python, one can use:
-
-```python
-from wraps import wrap_option
-
-@wrap_option
-def parse(string: str) -> int:
-    return int(string)
-```
-
-However, this isn't the best way to handle errors, as *any* normal errors will be caught, without
-a way to distinguish between them.
-To counter this, one can use [`WrapOption`][wraps.wraps.option.WrapOption] directly,
-passing the concrete error type:
-
-```python
-from wraps import WrapOption
-
-wrap_value_error = WrapOption(ValueError)
-
-
-@wrap_value_error
-def parse(string: str) -> int:
-    return int(string)
 ```
 
 ## Documentation
@@ -219,8 +190,6 @@ If you are interested in contributing to `wraps`, make sure to take a look at th
 [wraps.primitives.result.Error]: https://nekitdev.github.io/wraps/reference/primitives/result#wraps.primitives.result.Error
 
 [wraps.wraps.option.wrap_option]: https://nekitdev.github.io/wraps/reference/wraps/option#wraps.wraps.option.wrap_option
-
-[wraps.wraps.option.WrapOption]: https://nekitdev.github.io/wraps/reference/wraps/option#wraps.wraps.option.WrapOption
 
 [wraps.early.decorators.early_option]: https://nekitdev.github.io/wraps/reference/early/decorators#wraps.early.decorators.early_option
 [wraps.early.decorators.early_result]: https://nekitdev.github.io/wraps/reference/early/decorators#wraps.early.decorators.early_result

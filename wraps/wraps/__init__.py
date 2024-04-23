@@ -9,30 +9,38 @@ from wraps.wraps.option import (
     WrapOptionAwait,
     wrap_option,
     wrap_option_await,
+    wrap_option_await_on,
+    wrap_option_on,
     wrap_optional,
 )
-from wraps.wraps.reawaitable import reawaitable
+from wraps.wraps.reawaitable import wrap_reawaitable
 from wraps.wraps.result import (
     WrapResult,
     WrapResultAwait,
     wrap_result,
     wrap_result_await,
+    wrap_result_await_on,
+    wrap_result_on,
 )
 
 __all__ = (
     # option
     "WrapOption",
     "WrapOptionAwait",
+    "wrap_option_on",
+    "wrap_option_await_on",
     "wrap_option",
     "wrap_option_await",
     "wrap_optional",
     # result
     "WrapResult",
     "WrapResultAwait",
+    "wrap_result_on",
+    "wrap_result_await_on",
     "wrap_result",
     "wrap_result_await",
     # re-awaitable
-    "reawaitable",
+    "wrap_reawaitable",
     # futures
     "wrap_future",
     "wrap_future_option",
