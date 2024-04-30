@@ -135,6 +135,24 @@ class FutureResult(Future[Result[T, E]]):
     async def actual_unwrap_or_else_await(self, default: AsyncNullary[T]) -> T:
         return await (await self.awaitable).unwrap_or_else_await(default)
 
+    def or_raise(self, error: AnyError) -> Future[T]:
+        return super().create(self.actual_or_raise(error))
+
+    def or_raise_with(self, error: Nullary[AnyError]) -> Future[T]:
+        return super().create(self.actual_or_raise_with(error))
+
+    def or_raise_with_await(self, error: AsyncNullary[AnyError]) -> Future[T]:
+        return super().create(self.actual_or_raise_with_await(error))
+
+    async def actual_or_raise(self, error: AnyError) -> T:
+        return (await self.awaitable).or_raise(error)
+
+    async def actual_or_raise_with(self, error: Nullary[AnyError]) -> T:
+        return (await self.awaitable).or_raise_with(error)
+
+    async def actual_or_raise_with_await(self, error: AsyncNullary[AnyError]) -> T:
+        return await (await self.awaitable).or_raise_with_await(error)
+
     def unwrap_error(self) -> Future[E]:
         return super().create(self.actual_unwrap_error())
 

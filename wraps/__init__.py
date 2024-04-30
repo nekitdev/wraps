@@ -22,7 +22,7 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 
 from wraps.early import (
     EarlyOption,

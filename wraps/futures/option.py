@@ -7,6 +7,7 @@ from typing import Awaitable, Optional, Tuple, TypeVar, final
 from attrs import field, frozen
 from funcs.functions import identity
 from typing_aliases import (
+    AnyError,
     AsyncBinary,
     AsyncInspect,
     AsyncNullary,
@@ -121,6 +122,24 @@ class FutureOption(Future[Option[T]]):
 
     async def actual_unwrap_or_else_await(self, default: AsyncNullary[T]) -> T:
         return await (await self.awaitable).unwrap_or_else_await(default)
+
+    def or_raise(self, error: AnyError) -> Future[T]:
+        return super().create(self.actual_or_raise(error))
+
+    def or_raise_with(self, error: Nullary[AnyError]) -> Future[T]:
+        return super().create(self.actual_or_raise_with(error))
+
+    def or_raise_with_await(self, error: AsyncNullary[AnyError]) -> Future[T]:
+        return super().create(self.actual_or_raise_with_await(error))
+
+    async def actual_or_raise(self, error: AnyError) -> T:
+        return (await self.awaitable).or_raise(error)
+
+    async def actual_or_raise_with(self, error: Nullary[AnyError]) -> T:
+        return (await self.awaitable).or_raise_with(error)
+
+    async def actual_or_raise_with_await(self, error: AsyncNullary[AnyError]) -> T:
+        return await (await self.awaitable).or_raise_with_await(error)
 
     def inspect(self, function: Inspect[T]) -> FutureOption[T]:
         return self.create(self.actual_inspect(function))

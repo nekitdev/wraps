@@ -400,6 +400,56 @@ class ResultProtocol(AsyncIterable[T], Iterable[T], Protocol[T, E]):  # type: ig
         ...
 
     @required
+    def or_raise(self, error: AnyError) -> T:
+        """Returns the contained [`Some[T]`][wraps.primitives.option.Some] value
+        or raises the `error` provided.
+
+        Arguments:
+            error: The error to raise if the option is [`Null`][wraps.primitives.option.Null].
+
+        Raises:
+            AnyError: The error provided, if the option is [`Null`][wraps.primitives.option.Null].
+
+        Returns:
+            The contained value.
+        """
+        ...
+
+    @required
+    def or_raise_with(self, error: Nullary[AnyError]) -> T:
+        """Returns the contained [`Ok[T]`][wraps.primitives.result.Ok] value
+        or raises the error computed from `error`.
+
+        Arguments:
+            error: The error to raise if the result is [`Error[E]`][wraps.primitives.result.Error].
+
+        Raises:
+            AnyError: The error computed, if the result is
+                [`Error[E]`][wraps.primitives.result.Error].
+
+        Returns:
+            The contained value.
+        """
+        ...
+
+    @required
+    async def or_raise_with_await(self, error: AsyncNullary[AnyError]) -> T:
+        """Returns the contained [`Ok[T]`][wraps.primitives.result.Ok] value
+        or raises the error computed asynchronously from `error`.
+
+        Arguments:
+            error: The error to raise if the result is [`Error[E]`][wraps.primitives.result.Error].
+
+        Raises:
+            AnyError: The error computed, if the result is
+                [`Error[E]`][wraps.primitives.result.Error].
+
+        Returns:
+            The contained value.
+        """
+        ...
+
+    @required
     def unwrap_error(self) -> E:
         """Returns the contained [`Error[E]`][wraps.primitives.result.Error] value.
 
@@ -1527,6 +1577,15 @@ class Ok(ResultProtocol[T, Never]):
     async def unwrap_or_else_await(self, default: AsyncNullary[U]) -> T:
         return self.value
 
+    def or_raise(self, error: AnyError) -> T:
+        return self.value
+
+    def or_raise_with(self, error: Nullary[AnyError]) -> T:
+        return self.value
+
+    async def or_raise_with_await(self, error: AsyncNullary[AnyError]) -> T:
+        return self.value
+
     def unwrap_error(self) -> Never:
         panic(UNWRAP_ERROR_ON_OK)
 
@@ -1717,6 +1776,15 @@ class Error(ResultProtocol[Never, E]):
 
     async def unwrap_or_else_await(self, default: AsyncNullary[U]) -> U:
         return await default()
+
+    def or_raise(self, error: AnyError) -> Never:
+        raise error
+
+    def or_raise_with(self, error: Nullary[AnyError]) -> Never:
+        raise error()
+
+    async def or_raise_with_await(self, error: AsyncNullary[AnyError]) -> Never:
+        raise await error()
 
     def unwrap_error_or(self, default: F) -> E:
         return self.value

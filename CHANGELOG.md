@@ -2,6 +2,13 @@
 
 <!-- changelogging: start -->
 
+## 0.12.0 (2024-04-30)
+
+### Features
+
+- Added `or_raise`, `or_raise_with` and `or_raise_with_await` for
+  `Option[T]`, `Result[T, E]` and their future counterparts.
+
 ## 0.11.0 (2024-04-23)
 
 ### Features

@@ -70,6 +70,7 @@ from typing import (
 from attrs import frozen
 from funcs.functions import identity
 from typing_aliases import (
+    AnyError,
     AsyncBinary,
     AsyncInspect,
     AsyncNullary,
@@ -337,6 +338,54 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
 
         Returns:
             The contained value or the `await default()` one.
+        """
+        ...
+
+    @required
+    def or_raise(self, error: AnyError) -> T:
+        """Returns the contained [`Some[T]`][wraps.primitives.option.Some] value
+        or raises the `error` provided.
+
+        Arguments:
+            error: The error to raise if the option is [`Null`][wraps.primitives.option.Null].
+
+        Raises:
+            AnyError: The error provided, if the option is [`Null`][wraps.primitives.option.Null].
+
+        Returns:
+            The contained value.
+        """
+        ...
+
+    @required
+    def or_raise_with(self, error: Nullary[AnyError]) -> T:
+        """Returns the contained [`Some[T]`][wraps.primitives.option.Some] value
+        or raises the error computed from `error`.
+
+        Arguments:
+            error: The error to raise if the option is [`Null`][wraps.primitives.option.Null].
+
+        Raises:
+            AnyError: The error computed, if the option is [`Null`][wraps.primitives.option.Null].
+
+        Returns:
+            The contained value.
+        """
+        ...
+
+    @required
+    async def or_raise_with_await(self, error: AsyncNullary[AnyError]) -> T:
+        """Returns the contained [`Some[T]`][wraps.primitives.option.Some] value
+        or raises the error computed asynchronously from `error`.
+
+        Arguments:
+            error: The error to raise if the option is [`Null`][wraps.primitives.option.Null].
+
+        Raises:
+            AnyError: The error computed, if the option is [`Null`][wraps.primitives.option.Null].
+
+        Returns:
+            The contained value.
         """
         ...
 
@@ -1169,6 +1218,15 @@ class Null(OptionProtocol[Never]):
     async def unwrap_or_else_await(self, default: AsyncNullary[U]) -> U:
         return await default()
 
+    def or_raise(self, error: AnyError) -> Never:
+        raise error
+
+    def or_raise_with(self, error: Nullary[AnyError]) -> Never:
+        raise error()
+
+    async def or_raise_with_await(self, error: AsyncNullary[AnyError]) -> Never:
+        raise await error()
+
     def inspect(self, function: Inspect[T]) -> Null:
         return self
 
@@ -1295,6 +1353,15 @@ class Some(OptionProtocol[T]):
         return self.value
 
     def unwrap_or_else(self, default: Nullary[T]) -> T:
+        return self.value
+
+    def or_raise(self, error: AnyError) -> T:
+        return self.value
+
+    def or_raise_with(self, error: Nullary[AnyError]) -> T:
+        return self.value
+
+    async def or_raise_with_await(self, error: AsyncNullary[AnyError]) -> T:
         return self.value
 
     async def unwrap_or_else_await(self, default: AsyncNullary[T]) -> T:
