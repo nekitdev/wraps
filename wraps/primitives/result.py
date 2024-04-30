@@ -401,14 +401,14 @@ class ResultProtocol(AsyncIterable[T], Iterable[T], Protocol[T, E]):  # type: ig
 
     @required
     def or_raise(self, error: AnyError) -> T:
-        """Returns the contained [`Some[T]`][wraps.primitives.option.Some] value
+        """Returns the contained [`Ok[T]`][wraps.primitives.result.Ok] value
         or raises the `error` provided.
 
         Arguments:
-            error: The error to raise if the option is [`Null`][wraps.primitives.option.Null].
+            error: The error to raise if the result is [`Error[E]`][wraps.primitives.result.Error].
 
         Raises:
-            AnyError: The error provided, if the option is [`Null`][wraps.primitives.option.Null].
+            AnyError: The error provided, if the result is [`Error[E]`][wraps.primitives.result.Error].
 
         Returns:
             The contained value.
