@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import Callable, Generic, Optional, Type, final
 
-from attrs import field, frozen
+from attrs import frozen
 from funcs.decorators import wraps
 from typing_aliases import AnyError, AsyncCallable, NormalError
 from typing_extensions import ParamSpec, TypeVar
 
 from wraps.primitives.option import NULL, Option, Some
 from wraps.primitives.typing import OptionAsyncCallable, OptionCallable
-from wraps.wraps.error_types import ErrorTypes, expect_error_types, expect_error_types_runtime
+from wraps.wraps.error_types import ErrorTypes
 
 __all__ = (
     # decorators
@@ -43,7 +43,7 @@ class WrapOption(Generic[E]):
     `value` into [`Some(value)`][wraps.primitives.option.Some].
     """
 
-    error_types: ErrorTypes[E] = field(converter=expect_error_types_runtime)
+    error_types: ErrorTypes[E]
     """The error types to handle. See [`ErrorTypes[E]`][wraps.wraps.error_types.ErrorTypes]."""
 
     def __call__(self, function: Callable[P, T]) -> OptionCallable[P, T]:
@@ -52,17 +52,16 @@ class WrapOption(Generic[E]):
             try:
                 return Some(function(*args, **kwargs))
 
-            except self.error_types:
+            except self.error_types.extract():
                 return NULL
 
         return wrap
 
 
-def wrap_option_on(*error_types: Type[E]) -> WrapOption[E]:
+def wrap_option_on(head: Type[E], *tail: Type[E]) -> WrapOption[E]:
     """Creates [`WrapOption[E]`][wraps.wraps.option.WrapOption] decorators.
 
-    Warning:
-        This function will panic if no error types are provided!
+    This function enforces at least one error type to be provided.
 
     Example:
         ```python
@@ -75,12 +74,13 @@ def wrap_option_on(*error_types: Type[E]) -> WrapOption[E]:
         ```
 
     Arguments:
-        *error_types: The error types to handle.
+        head: The head of the error types to handle.
+        *tail: The tail of the error types to handle.
 
     Returns:
         The [`WrapOption[E]`][wraps.wraps.option.WrapOption] decorator created.
     """
-    return WrapOption(expect_error_types(error_types))
+    return WrapOption(ErrorTypes[E].from_head_and_tail(head, *tail))
 
 
 wrap_option = wrap_option_on(NormalError)
@@ -100,7 +100,7 @@ class WrapOptionAwait(Generic[E]):
     `value` into [`Some(value)`][wraps.primitives.option.Some].
     """
 
-    error_types: ErrorTypes[E] = field(converter=expect_error_types_runtime)
+    error_types: ErrorTypes[E]
     """The error types to handle. See [`ErrorTypes[E]`][wraps.wraps.error_types.ErrorTypes]."""
 
     def __call__(self, function: AsyncCallable[P, T]) -> OptionAsyncCallable[P, T]:
@@ -109,17 +109,16 @@ class WrapOptionAwait(Generic[E]):
             try:
                 return Some(await function(*args, **kwargs))
 
-            except self.error_types:
+            except self.error_types.extract():
                 return NULL
 
         return wrap
 
 
-def wrap_option_await_on(*error_types: Type[E]) -> WrapOptionAwait[E]:
+def wrap_option_await_on(head: Type[E], *tail: Type[E]) -> WrapOptionAwait[E]:
     """Creates [`WrapOptionAwait[E]`][wraps.wraps.option.WrapOptionAwait] decorators.
 
-    Warning:
-        This function will panic if no error types are provided!
+    This function enforces at least one error type to be provided.
 
     Example:
         ```python
@@ -132,12 +131,13 @@ def wrap_option_await_on(*error_types: Type[E]) -> WrapOptionAwait[E]:
         ```
 
     Arguments:
-        *error_types: The error types to handle.
+        head: The head of the error types to handle.
+        *tail: The tail of the error types to handle.
 
     Returns:
         The [`WrapOptionAwait[E]`][wraps.wraps.option.WrapOptionAwait] decorator created.
     """
-    return WrapOptionAwait(expect_error_types(error_types))
+    return WrapOptionAwait(ErrorTypes[E].from_head_and_tail(head, *tail))
 
 
 wrap_option_await = wrap_option_await_on(NormalError)
