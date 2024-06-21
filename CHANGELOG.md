@@ -2,6 +2,13 @@
 
 <!-- changelogging: start -->
 
+## [0.13.0](https://github.com/nekitdev/wraps/tree/v0.13.0) (2024-06-21)
+
+### Changes
+
+- Error types are now truly forced to be non-empty.
+  ([#55](https://github.com/nekitdev/wraps/pull/55))
+
 ## 0.12.0 (2024-04-30)
 
 ### Features
