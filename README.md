@@ -44,7 +44,7 @@ Or by directly specifying it in the configuration like so:
 
 ```toml
 [tool.poetry.dependencies]
-wraps = "^0.12.0"
+wraps = "^0.13.0"
 ```
 
 Alternatively, you can add it directly from the source:
