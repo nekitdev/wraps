@@ -26,17 +26,8 @@ jobs:
         with:
           python-version: ${{ env.python-version }}
 
-      - name: Install Poetry
-        run: pipx install poetry
-
-      - name: Configure Poetry
-        run: poetry config virtualenvs.in-project true
-
-      - name: Specify the version
-        run: poetry env use python
-
-      - name: Install dependencies
-        run: poetry install --with docs
+      - name: Setup uv
+        uses: yezz123/setup-uv@v4
 
       - name: Setup bot user
         run: |
@@ -44,4 +35,4 @@ jobs:
           git config --local user.email ${{ env.bot-email }}
 
       - name: Deploy the documentation
-        run: poetry run mkdocs gh-deploy --force
+        run: uv run mkdocs gh-deploy --force

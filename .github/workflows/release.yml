@@ -30,20 +30,11 @@ jobs:
         with:
           python-version: ${{ env.python-version }}
 
-      - name: Install Poetry
-        run: pipx install poetry
-
-      - name: Configure Poetry
-        run: poetry config virtualenvs.in-project true
-
-      - name: Specify the version
-        run: poetry env use python
-
-      - name: Install dependencies
-        run: poetry install --with release
+      - name: Setup uv
+        uses: yezz123/setup-uv@v4
 
       - name: Build changelog ${{ inputs.version }}
-        run: poetry run changelogging preview > ${{ env.changelog }}
+        run: uv run changelogging preview > ${{ env.changelog }}
 
       - name: Upload changelog ${{ inputs.version }}
         uses: actions/upload-artifact@v4
@@ -52,7 +43,7 @@ jobs:
           path: ${{ env.changelog }}
 
       - name: Build changelog
-        run: poetry run changelogging build --stage --remove
+        run: uv run changelogging build --stage --remove
 
       - name: Setup bot user
         run: |
@@ -101,17 +92,11 @@ jobs:
         with:
           python-version: ${{ env.python-version }}
 
-      - name: Install Poetry
-        run: pipx install poetry
-
-      - name: Configure Poetry
-        run: poetry config virtualenvs.in-project true
-
-      - name: Specify the version
-        run: poetry env use python
+      - name: Setup uv
+        uses: yezz123/setup-uv@v4
 
       - name: Build
-        run: poetry build
+        run: uv build
 
       - name: Upload packages
         uses: actions/upload-artifact@v4

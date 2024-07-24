@@ -74,6 +74,7 @@ from typing_extensions import Never, ParamSpec, TypeIs
 
 from wraps.iters import async_empty, async_once, empty, once
 from wraps.panics import panic
+from wraps.reprs import wrap_repr
 
 __all__ = ("Result", "Ok", "Error", "is_ok", "is_error")
 
@@ -1537,6 +1538,9 @@ class Ok(ResultProtocol[T, Never]):
 
     value: T
 
+    def __repr__(self) -> str:
+        return wrap_repr(self, self.value)
+
     @classmethod
     def create(cls, value: U) -> Ok[U]:
         return cls(value)  # type: ignore[arg-type, return-value]
@@ -1727,6 +1731,9 @@ class Error(ResultProtocol[Never, E]):
 
     def __bool__(self) -> Literal[False]:
         return False
+
+    def __repr__(self) -> str:
+        return wrap_repr(self, self.value)
 
     @classmethod
     def create(cls, error: F) -> Error[F]:

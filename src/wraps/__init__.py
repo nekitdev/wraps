@@ -34,6 +34,7 @@ from wraps.early import (
 )
 from wraps.futures import Future, FutureEither, FutureOption, FutureResult
 from wraps.panics import Panic, panic
+from wraps.parse import FromString, ParseError, ToString, to_string
 from wraps.primitives import (
     NULL,
     Either,
@@ -94,6 +95,11 @@ __all__ = (
     "Right",
     "is_left",
     "is_right",
+    # parse
+    "ParseError",
+    "FromString",
+    "ToString",
+    "to_string",
     # panics
     "Panic",
     "panic",

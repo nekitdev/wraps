@@ -26,6 +26,7 @@ from typing_extensions import Never, TypeIs
 
 from wraps.iters import async_empty, async_once, empty, once
 from wraps.panics import panic
+from wraps.reprs import wrap_repr
 
 __all__ = ("Either", "Left", "Right", "is_left", "is_right")
 
@@ -219,6 +220,9 @@ class Left(EitherProtocol[L, Never]):
 
     value: L
 
+    def __repr__(self) -> str:
+        return wrap_repr(self, self.value)
+
     @classmethod
     def create(cls, value: M) -> Left[M]:
         return cls(value)  # type: ignore[arg-type, return-value]
@@ -378,6 +382,9 @@ class Right(EitherProtocol[Never, R]):
     """[`Right[R]`][wraps.primitives.either.Right] variant of [`Either[L, R]`][wraps.primitives.either.Either]."""
 
     value: R
+
+    def __repr__(self) -> str:
+        return wrap_repr(self, self.value)
 
     @classmethod
     def create(cls, value: S) -> Right[S]:

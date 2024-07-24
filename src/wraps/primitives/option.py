@@ -87,6 +87,7 @@ from typing_extensions import Never, TypeIs
 
 from wraps.iters import async_empty, async_once, empty, once
 from wraps.panics import panic
+from wraps.reprs import empty_repr, wrap_repr
 
 __all__ = ("NULL", "Option", "Some", "Null", "is_some", "is_null")
 
@@ -1184,6 +1185,9 @@ class Null(OptionProtocol[Never]):
     def __bool__(self) -> Literal[False]:
         return False
 
+    def __repr__(self) -> str:
+        return empty_repr(self)
+
     @classmethod
     def create(cls) -> Null:
         return cls()
@@ -1321,8 +1325,8 @@ class Some(OptionProtocol[T]):
 
     value: T
 
-    def __iter__(self) -> Iterator[T]:
-        return self.iter()
+    def __repr__(self) -> str:
+        return wrap_repr(self, self.value)
 
     @classmethod
     def create(cls, value: U) -> Some[U]:
