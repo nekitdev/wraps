@@ -113,6 +113,20 @@ class ToString(Protocol):
         """
         ...
 
+    def to_short_string(self) -> str:
+        """Converts `self` to its short string representation.
+
+        The default implementation is simply:
+
+        ```python
+        self.to_string()
+        ```
+
+        Returns:
+            The short string representation of `self`.
+        """
+        return self.to_string()
+
     def __str__(self) -> str:
         """Returns the result of [`to_string`][wraps.parse.ToString.to_string].
 
