@@ -1,6 +1,5 @@
 import pytest
 from funcs.functions import asyncify
-
 from wraps.futures.base import Future
 
 

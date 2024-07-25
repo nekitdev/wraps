@@ -1,6 +1,5 @@
 from entrypoint import entrypoint
 from named import get_name
-
 from wraps.futures.either import FutureEither
 from wraps.futures.option import FutureOption
 from wraps.futures.result import FutureResult
