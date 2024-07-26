@@ -6,22 +6,22 @@ from typing_extensions import Self
 
 from wraps.primitives.result import Result
 
-__all__ = ("ResultParseError", "ResultFromString")
+__all__ = ("FromString", "ParseError")
 
 T = TypeVar("T", covariant=True)
 E = TypeVar("E", covariant=True)
 
-RESULT_PARSE_FAILED = "parsing `{}` into `{}` failed ({})"
-result_parse_failed = RESULT_PARSE_FAILED.format
+PARSE_FAILED = "parsing `{}` into `{}` failed ({})"
+parse_failed = PARSE_FAILED.format
 
 
-class ResultParseError(ValueError, Generic[T, E]):
+class ParseError(ValueError, Generic[T, E]):
     def __init__(self, string: str, type: Type[T], error: E) -> None:
         self._string = string
         self._type = type
         self._error = error
 
-        super().__init__(result_parse_failed(string, get_name(type), error))  # type: ignore[arg-type]
+        super().__init__(parse_failed(string, get_name(type), error))  # type: ignore[arg-type]
 
     @property
     def string(self) -> str:
@@ -37,7 +37,7 @@ class ResultParseError(ValueError, Generic[T, E]):
 
 
 @runtime_checkable
-class ResultFromString(Protocol[E]):
+class FromString(Protocol[E]):
     @classmethod
     @required
     def from_string(cls, string: str) -> Result[Self, E]: ...
@@ -49,4 +49,4 @@ class ResultFromString(Protocol[E]):
         if result.is_ok():
             return result.unwrap()
 
-        raise ResultParseError(string, cls, result.unwrap_error())
+        raise ParseError(string, cls, result.unwrap_error())

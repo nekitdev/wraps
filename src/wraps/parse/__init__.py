@@ -1,14 +1,14 @@
 from wraps.parse.format import ToString, to_short_string, to_string
-from wraps.parse.option import OptionFromString, OptionParseError
-from wraps.parse.result import ResultFromString, ResultParseError
+from wraps.parse.normal import FromString, ParseError
+from wraps.parse.simple import SimpleFromString, SimpleParseError
 
 __all__ = (
-    # option
-    "OptionFromString",
-    "OptionParseError",
-    # result
-    "ResultFromString",
-    "ResultParseError",
+    # normal
+    "FromString",
+    "ParseError",
+    # simple
+    "SimpleFromString",
+    "SimpleParseError",
     # format
     "ToString",
     "to_string",

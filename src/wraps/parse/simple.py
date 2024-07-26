@@ -6,20 +6,20 @@ from typing_extensions import Self
 
 from wraps.primitives.option import Option
 
-__all__ = ("OptionParseError", "OptionFromString")
+__all__ = ("SimpleFromString", "SimpleParseError")
 
 T = TypeVar("T", covariant=True)
 
-OPTION_PARSE_FAILED = "parsing `{}` into `{}` failed"
-option_parse_failed = OPTION_PARSE_FAILED.format
+SIMPLE_PARSE_FAILED = "parsing `{}` into `{}` failed"
+simple_parse_failed = SIMPLE_PARSE_FAILED.format
 
 
-class OptionParseError(ValueError, Generic[T]):
+class SimpleParseError(ValueError, Generic[T]):
     def __init__(self, string: str, type: Type[T]) -> None:
         self._string = string
         self._type = type
 
-        super().__init__(option_parse_failed(string, get_name(type)))  # type: ignore[arg-type]
+        super().__init__(simple_parse_failed(string, get_name(type)))  # type: ignore[arg-type]
 
     @property
     def string(self) -> str:
@@ -31,11 +31,11 @@ class OptionParseError(ValueError, Generic[T]):
 
 
 @runtime_checkable
-class OptionFromString(Protocol):
+class SimpleFromString(Protocol):
     @classmethod
     @required
     def from_string(cls, string: str) -> Option[Self]: ...
 
     @classmethod
     def parse(cls, string: str) -> Self:
-        return cls.from_string(string).or_raise(OptionParseError(string, cls))
+        return cls.from_string(string).or_raise(SimpleParseError(string, cls))
