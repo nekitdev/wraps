@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wraps"
-version = "0.13.0"
+version = "0.14.0"
 description = "Meaningful and safe wrapping types."
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -50,19 +50,20 @@ Repository = "https://github.com/nekitdev/wraps"
 [tool.uv]
 dev-dependencies = [
     # checks
-    "ruff >= 0.5.5",
+    "ruff >= 0.5.7",
     "mypy >= 1.11.0",
     # tests
     "coverage >= 7.6.0",
     "pytest >= 8.3.1",
     "pytest-cov >= 5.0.0",
     "anyio[trio] >= 4.4.0",
+    "hypothesis >= 6.111.0",
     # docs
     "mkdocs >= 1.6.0",
     "mkdocs-material >= 9.5.29",
     "mkdocstrings[python] >= 0.25.1",
     # changelogs
-    "changelogging >= 2.4.1",
+    "changelogging >= 2.4.4",
     # scripts
     "entrypoint >= 2.1.0",
 ]
@@ -76,8 +77,13 @@ ignore = [
     "E402",
 ]
 
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+
 [tool.mypy]
+mypy_path = "src"
 strict = true
+show_error_codes = true
 
 [tool.coverage.run]
 source = ["src"]
@@ -104,7 +110,7 @@ testpaths = ["tests"]
 
 [tool.changelogging.context]
 name = "wraps"
-version = "0.13.0"
+version = "0.14.0"
 url = "https://github.com/nekitdev/wraps"
 
 [tool.changelogging.formats]

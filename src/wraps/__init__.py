@@ -1,20 +1,6 @@
-"""Meaningful and safe wrapping types.
+"""Meaningful and safe wrapping types."""
 
-This library implements several types:
-
-- [`Option[T]`][wraps.primitives.option.Option] for optional values;
-- [`Result[T, E]`][wraps.primitives.result.Result] for error handling;
-- [`Either[L, R]`][wraps.primitives.either.Either] for either values;
-- [`Future[T]`][wraps.futures.base.Future] for asynchronous abstractions.
-
-The following types are implemented for convenience:
-
-- [`Future[Option[T]] -> FutureOption[T]`][wraps.futures.option.FutureOption];
-- [`Future[Result[T, E]] -> FutureResult[T, E]`][wraps.futures.result.FutureResult];
-- [`Future[Either[L, R]] -> FutureEither[L, R]`][wraps.futures.either.FutureEither].
-
-The library also provides various decorators to wrap functions in order to return the types above.
-"""
+from __future__ import annotations
 
 __description__ = "Meaningful and safe wrapping types."
 __url__ = "https://github.com/nekitdev/wraps"
@@ -22,8 +8,9 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.13.0"
+__version__ = "0.14.0"
 
+from wraps import typing
 from wraps.early import (
     EarlyOption,
     EarlyResult,
@@ -32,8 +19,46 @@ from wraps.early import (
     early_result,
     early_result_await,
 )
-from wraps.futures import Future, FutureEither, FutureOption, FutureResult
-from wraps.panics import Panic, panic
+from wraps.either import Either, Left, Right, is_left, is_right
+from wraps.futures import (
+    Future,
+    FutureEither,
+    FutureOption,
+    FutureResult,
+    ReAwaitable,
+    future_either,
+    future_error,
+    future_left,
+    future_null,
+    future_ok,
+    future_option,
+    future_result,
+    future_right,
+    future_some,
+    future_value,
+    wrap_future,
+    wrap_future_either,
+    wrap_future_option,
+    wrap_future_result,
+    wrap_reawaitable,
+)
+from wraps.markers import UNREACHABLE, unreachable
+from wraps.option import (
+    NULL,
+    Null,
+    Option,
+    Some,
+    WrapOption,
+    WrapOptionAwait,
+    is_null,
+    is_some,
+    wrap_option,
+    wrap_option_await,
+    wrap_option_await_on,
+    wrap_option_on,
+    wrap_optional,
+)
+from wraps.panics import PANIC, Panic, panic
 from wraps.parse import (
     FromString,
     ParseError,
@@ -43,40 +68,14 @@ from wraps.parse import (
     to_short_string,
     to_string,
 )
-from wraps.primitives import (
-    NULL,
-    Either,
+from wraps.result import (
     Error,
-    Left,
-    Null,
     Ok,
-    Option,
-    ReAwaitable,
     Result,
-    Right,
-    Some,
-    is_error,
-    is_left,
-    is_null,
-    is_ok,
-    is_right,
-    is_some,
-)
-from wraps.wraps import (
-    WrapOption,
-    WrapOptionAwait,
     WrapResult,
     WrapResultAwait,
-    wrap_future,
-    wrap_future_either,
-    wrap_future_option,
-    wrap_future_result,
-    wrap_option,
-    wrap_option_await,
-    wrap_option_await_on,
-    wrap_option_on,
-    wrap_optional,
-    wrap_reawaitable,
+    is_error,
+    is_ok,
     wrap_result,
     wrap_result_await,
     wrap_result_await_on,
@@ -91,29 +90,34 @@ __all__ = (
     "NULL",
     "is_some",
     "is_null",
+    # optional
+    "wrap_optional",
+    # option decorators
+    "WrapOption",
+    "WrapOptionAwait",
+    "wrap_option_on",
+    "wrap_option_await_on",
+    "wrap_option",
+    "wrap_option_await",
     # result
     "Result",
     "Ok",
     "Error",
     "is_ok",
     "is_error",
+    # result decorators
+    "WrapResult",
+    "WrapResultAwait",
+    "wrap_result_on",
+    "wrap_result_await_on",
+    "wrap_result",
+    "wrap_result_await",
     # either
     "Either",
     "Left",
     "Right",
     "is_left",
     "is_right",
-    # parse
-    "FromString",
-    "ParseError",
-    "SimpleFromString",
-    "SimpleParseError",
-    "ToString",
-    "to_string",
-    "to_short_string",
-    # panics
-    "Panic",
-    "panic",
     # early decorators
     "early_option",
     "early_option_await",
@@ -122,33 +126,48 @@ __all__ = (
     # early errors
     "EarlyOption",
     "EarlyResult",
-    # re-awaitable
-    "ReAwaitable",
+    # panics
+    "PANIC",
+    "Panic",
+    "panic",
+    # markers
+    "UNREACHABLE",
+    "unreachable",
     # future
     "Future",
-    # future either
-    "FutureEither",
+    "future_value",
+    "wrap_future",
+    # reawaitable
+    "ReAwaitable",
+    "wrap_reawaitable",
     # future option
     "FutureOption",
+    "future_option",
+    "future_some",
+    "future_null",
+    "wrap_future_option",
     # future result
     "FutureResult",
-    # wraps
-    "WrapOption",
-    "WrapOptionAwait",
-    "WrapResult",
-    "WrapResultAwait",
-    "wrap_option_on",
-    "wrap_option_await_on",
-    "wrap_option",
-    "wrap_option_await",
-    "wrap_optional",
-    "wrap_result_on",
-    "wrap_result_await_on",
-    "wrap_result",
-    "wrap_result_await",
-    "wrap_reawaitable",
-    "wrap_future",
-    "wrap_future_option",
+    "future_result",
+    "future_ok",
+    "future_error",
     "wrap_future_result",
+    # future either
+    "FutureEither",
+    "future_either",
+    "future_left",
+    "future_right",
     "wrap_future_either",
+    # normal
+    "FromString",
+    "ParseError",
+    # simple
+    "SimpleFromString",
+    "SimpleParseError",
+    # format
+    "ToString",
+    "to_string",
+    "to_short_string",
+    # typing
+    "typing",
 )

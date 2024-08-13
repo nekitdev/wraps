@@ -1,11 +1,13 @@
+from __future__ import annotations
+
 from entrypoint import entrypoint
 from named import get_name
+from wraps.either import EitherProtocol
 from wraps.futures.either import FutureEither
 from wraps.futures.option import FutureOption
 from wraps.futures.result import FutureResult
-from wraps.primitives.either import EitherProtocol
-from wraps.primitives.option import OptionProtocol
-from wraps.primitives.result import ResultProtocol
+from wraps.option import OptionProtocol
+from wraps.result import ResultProtocol
 
 PROTOCOL_TO_FUTURE = {
     EitherProtocol: FutureEither,
@@ -16,9 +18,11 @@ PROTOCOL_TO_FUTURE = {
 UNDER = "_"
 starts_with = str.startswith
 
+ITER = "iter"
+
 
 def is_skipped(name: str) -> bool:
-    return starts_with(name, UNDER)
+    return starts_with(name, UNDER) or ITER in name
 
 
 CHECKING_INTEGRITY = "checking integrity of `{}` with `{}`..."

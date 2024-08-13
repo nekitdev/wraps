@@ -16,7 +16,7 @@
 
 **Python 3.8 or above is required.**
 
-### pip
+### `pip`
 
 Installing the library with `pip` is quite simple:
 
@@ -27,106 +27,28 @@ $ pip install wraps
 Alternatively, the library can be installed from the source:
 
 ```console
-$ git clone https://github.com/nekitdev/wraps.git
-$ cd wraps
-$ python -m pip install .
+$ pip install git+https://github.com/nekitdev/wraps.git
 ```
 
-### poetry
+Or via cloning the repository:
+
+```console
+$ git clone https://github.com/nekitdev/wraps.git
+$ cd wraps
+$ pip install .
+```
+
+### `uv`
 
 You can add `wraps` as a dependency with the following command:
 
 ```console
-$ poetry add wraps
-```
-
-Or by directly specifying it in the configuration like so:
-
-```toml
-[tool.poetry.dependencies]
-wraps = "^0.13.0"
-```
-
-Alternatively, you can add it directly from the source:
-
-```toml
-[tool.poetry.dependencies.wraps]
-git = "https://github.com/nekitdev/wraps.git"
+$ uv add wraps
 ```
 
 ## Examples
 
-### Option
-
-[`Option[T]`][wraps.primitives.option.Option] type represents an optional value: every option is either
-[`Some[T]`][wraps.primitives.option.Some] and contains a value, or [`Null`][wraps.primitives.option.Null], and does not.
-
-Here is an example of using [`wrap_option`][wraps.wraps.option.wrap_option] to catch any errors:
-
-```python
-from typing import List, TypeVar
-from wraps import wrap_option
-
-T = TypeVar("T", covariant=True)
-
-
-class Array(List[T]):
-    @wrap_option
-    def get(self, index: int) -> T:
-        return self[index]
-
-
-array = Array([1, 2, 3])
-
-print(array.get(0).unwrap())  # 1
-print(array.get(5).unwrap_or(0))  # 0
-```
-
-### Result
-
-[`Result[T, E]`][wraps.primitives.result.Result] is the type used for returning and propagating errors.
-It has two variants, [`Ok[T]`][wraps.primitives.result.Ok], representing success and containing a value,
-and [`Error[E]`][wraps.primitives.result.Error], representing error and containing an error value.
-
-```python
-from enum import Enum
-
-from wraps import Error, Ok, Result
-
-
-class DivideError(Enum):
-    DIVISION_BY_ZERO = "division by zero"
-
-
-def divide(numerator: float, denominator: float) -> Result[float, DivideError]:
-    return Ok(numerator / denominator) if denominator else Error(DivideError.DIVISION_BY_ZERO)
-```
-
-### Early Return
-
-Early return functionality (like the *question-mark* (`?`) operator in Rust) is implemented via `early` methods
-(for both [`Option[T]`][wraps.primitives.option.Option] and [`Result[T, E]`][wraps.primitives.result.Result] types)
-combined with the [`@early_option`][wraps.early.decorators.early_option] and
-[`@early_result`][wraps.early.decorators.early_result] decorators respectively.
-
-```python
-from wraps import Option, early_option, wrap_option_on
-
-
-@wrap_option_on(ValueError)
-def parse(string: str) -> float:
-    return float(string)
-
-
-@wrap_option_on(ZeroDivisionError)
-def divide(numerator: float, denominator: float) -> float:
-    return numerator / denominator
-
-
-@early_option
-def function(x: str, y: str) -> Option[float]:
-    return divide(parse(x).early(), parse(y).early())
-```
+TODO
 
 ## Documentation
 
@@ -180,16 +102,3 @@ If you are interested in contributing to `wraps`, make sure to take a look at th
 [Check Badge]: https://github.com/nekitdev/wraps/workflows/check/badge.svg
 [Test Badge]: https://github.com/nekitdev/wraps/workflows/test/badge.svg
 [Coverage Badge]: https://codecov.io/gh/nekitdev/wraps/branch/main/graph/badge.svg
-
-[wraps.primitives.option.Option]: https://nekitdev.github.io/wraps/reference/primitives/option#wraps.primitives.option.Option
-[wraps.primitives.option.Some]: https://nekitdev.github.io/wraps/reference/primitives/option#wraps.primitives.option.Some
-[wraps.primitives.option.Null]: https://nekitdev.github.io/wraps/reference/primitives/option#wraps.primitives.option.Null
-
-[wraps.primitives.result.Result]: https://nekitdev.github.io/wraps/reference/primitives/result#wraps.primitives.result.Result
-[wraps.primitives.result.Ok]: https://nekitdev.github.io/wraps/reference/primitives/result#wraps.primitives.result.Ok
-[wraps.primitives.result.Error]: https://nekitdev.github.io/wraps/reference/primitives/result#wraps.primitives.result.Error
-
-[wraps.wraps.option.wrap_option]: https://nekitdev.github.io/wraps/reference/wraps/option#wraps.wraps.option.wrap_option
-
-[wraps.early.decorators.early_option]: https://nekitdev.github.io/wraps/reference/early/decorators#wraps.early.decorators.early_option
-[wraps.early.decorators.early_result]: https://nekitdev.github.io/wraps/reference/early/decorators#wraps.early.decorators.early_result

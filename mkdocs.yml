@@ -10,32 +10,28 @@ remote_branch: github-pages
 nav:
   - Index: "index.md"
   - Reference:
-      - Primitives:
-          - Option: "reference/primitives/option.md"
-          - Result: "reference/primitives/result.md"
-          - Either: "reference/primitives/either.md"
-          - ReAwaitable: "reference/primitives/reawaitable.md"
-          - Typing: "reference/primitives/typing.md"
+      - Option: "reference/option.md"
+      - Result: "reference/result.md"
+      - Either: "reference/either.md"
       - Early:
           - Decorators: "reference/early/decorators.md"
           - Errors: "reference/early/errors.md"
       - Futures:
-          - Base: "reference/futures/base.md"
+          - ReAwaitable: "reference/futures/reawaitable.md"
+          - Future: "reference/futures/future.md"
           - Option: "reference/futures/option.md"
           - Result: "reference/futures/result.md"
           - Either: "reference/futures/either.md"
-          - Typing:
-              - Base: "reference/futures/typing/base.md"
-              - Derived: "reference/futures/typing/derived.md"
-      - Wraps:
-          - Option: "reference/wraps/option.md"
-          - Result: "reference/wraps/result.md"
-          - Futures: "reference/wraps/futures.md"
-          - ReAwaitable: "reference/wraps/reawaitable.md"
-          - Error Types: "reference/wraps/error_types.md"
-      - Parse: "reference/parse.md"
+          - Typing: "reference/futures/typing.md"
+      - Parse:
+          - Simple: "reference/parse/simple.md"
+          - Normal: "reference/parse/normal.md"
+          - Format: "reference/parse/format.md"
       - Markers: "reference/markers.md"
       - Panics: "reference/panics.md"
+      - Errors: "reference/errors.md"
+      - Typing: "reference/typing.md"
+  - Internals: "internals.md"
   - Changelog: "changelog.md"
   - Security: "security.md"
   - Code of Conduct: "code_of_conduct.md"
@@ -76,6 +72,8 @@ plugins:
         python:
           options:
             members_order: source
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
             show_signature_annotations: true
 
           import:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import AsyncIterator, Iterator, TypeVar
 
 from typing_extensions import Never

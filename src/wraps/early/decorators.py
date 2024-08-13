@@ -1,19 +1,23 @@
 """Early return decorators."""
 
-from typing import TypeVar
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, TypeVar
 
 from funcs.decorators import wraps
 from typing_extensions import ParamSpec
 
 from wraps.early.errors import EarlyOption, EarlyResult
-from wraps.primitives.option import NULL, Option
-from wraps.primitives.result import Error, Result
-from wraps.primitives.typing import (
-    OptionAsyncCallable,
-    OptionCallable,
-    ResultAsyncCallable,
-    ResultCallable,
-)
+from wraps.option import NULL, Option
+from wraps.result import Error, Result
+
+if TYPE_CHECKING:
+    from wraps.typing import (
+        OptionAsyncCallable,
+        OptionCallable,
+        ResultAsyncCallable,
+        ResultCallable,
+    )
 
 __all__ = (
     # option
@@ -31,7 +35,7 @@ E = TypeVar("E", covariant=True)
 
 
 def early_option(function: OptionCallable[P, T]) -> OptionCallable[P, T]:
-    """Decorates the `function` returning [`Option[T]`][wraps.primitives.result.Option]
+    """Decorates the `function` returning [`Option[T]`][wraps.option.Option]
     to handle *early returns* via the `early` (`?` in Rust) operator.
 
     Arguments:
@@ -53,7 +57,7 @@ def early_option(function: OptionCallable[P, T]) -> OptionCallable[P, T]:
 
 
 def early_option_await(function: OptionAsyncCallable[P, T]) -> OptionAsyncCallable[P, T]:
-    """Decorates the asynchronous `function` returning [`Option[T]`][wraps.primitives.result.Option]
+    """Decorates the asynchronous `function` returning [`Option[T]`][wraps.option.Option]
     to handle *early returns* via the `early` (`?` in Rust) operator.
 
     Arguments:
@@ -75,7 +79,7 @@ def early_option_await(function: OptionAsyncCallable[P, T]) -> OptionAsyncCallab
 
 
 def early_result(function: ResultCallable[P, T, E]) -> ResultCallable[P, T, E]:
-    """Decorates the `function` returning [`Result[T, E]`][wraps.primitives.result.Result]
+    """Decorates the `function` returning [`Result[T, E]`][wraps.result.Result]
     to handle *early returns* via the `early` (`?` in Rust) operator.
 
     Arguments:
@@ -97,7 +101,7 @@ def early_result(function: ResultCallable[P, T, E]) -> ResultCallable[P, T, E]:
 
 
 def early_result_await(function: ResultAsyncCallable[P, T, E]) -> ResultAsyncCallable[P, T, E]:
-    """Decorates the asynchronous `function` returning [`Result[T, E]`][wraps.primitives.result.Result]
+    """Decorates the asynchronous `function` returning [`Result[T, E]`][wraps.result.Result]
     to handle *early returns* via the `early` (`?` in Rust) operator.
 
     Arguments:

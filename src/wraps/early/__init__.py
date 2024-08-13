@@ -1,3 +1,7 @@
+"""Early returns."""
+
+from __future__ import annotations
+
 from wraps.early.decorators import (
     early_option,
     early_option_await,
