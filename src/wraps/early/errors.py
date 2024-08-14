@@ -31,4 +31,5 @@ class EarlyResult(AnyError, Generic[E]):
 
     @property
     def error(self) -> E:
+        """The error to return early."""
         return self._error
