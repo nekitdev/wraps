@@ -2,6 +2,10 @@
 
 <!-- changelogging: start -->
 
+## [0.14.1](https://github.com/nekitdev/wraps/tree/v0.14.1) (2024-08-16)
+
+No significant changes.
+
 ## [0.14.0](https://github.com/nekitdev/wraps/tree/v0.14.0) (2024-08-13)
 
 No significant changes.
