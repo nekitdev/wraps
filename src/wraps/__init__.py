@@ -27,7 +27,7 @@ from wraps.futures import (
     FutureResult,
     ReAwaitable,
     future_either,
-    future_error,
+    future_err,
     future_left,
     future_null,
     future_ok,
@@ -69,12 +69,12 @@ from wraps.parse import (
     to_string,
 )
 from wraps.result import (
-    Error,
+    Err,
     Ok,
     Result,
     WrapResult,
     WrapResultAwait,
-    is_error,
+    is_err,
     is_ok,
     wrap_result,
     wrap_result_await,
@@ -102,9 +102,9 @@ __all__ = (
     # result
     "Result",
     "Ok",
-    "Error",
+    "Err",
     "is_ok",
-    "is_error",
+    "is_err",
     # result decorators
     "WrapResult",
     "WrapResultAwait",
@@ -150,7 +150,7 @@ __all__ = (
     "FutureResult",
     "future_result",
     "future_ok",
-    "future_error",
+    "future_err",
     "wrap_future_result",
     # future either
     "FutureEither",

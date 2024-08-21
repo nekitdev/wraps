@@ -82,4 +82,4 @@ class FromString(Protocol[E]):
         if result.is_ok():
             return result.unwrap()
 
-        raise ParseError(string, cls, result.unwrap_error())
+        raise ParseError(string, cls, result.unwrap_err())

@@ -535,8 +535,8 @@ class Right(EitherProtocol[Never, R]):
     def contains(self: Right[T], value: U) -> bool:
         return self.value == value
 
-    def into_result(self) -> Error[R]:
-        return Error(self.value)
+    def into_result(self) -> Err[R]:
+        return Err(self.value)
 
 
 Either = Union[Left[L], Right[R]]
@@ -556,4 +556,4 @@ def is_right(either: Either[L, R]) -> TypeIs[Right[R]]:
 # import cycle solution
 
 from wraps.option import NULL, Null, Option, Some
-from wraps.result import Error, Ok, Result
+from wraps.result import Err, Ok, Result

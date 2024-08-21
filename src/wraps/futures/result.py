@@ -24,13 +24,13 @@ from wraps.either import Either
 from wraps.futures.future import Future
 from wraps.futures.reawaitable import ReAwaitable
 from wraps.option import Option
-from wraps.result import Error, Ok, Result
+from wraps.result import Err, Ok, Result
 
 if TYPE_CHECKING:
     from wraps.futures.typing import FutureResultCallable
     from wraps.typing import ResultAsyncCallable
 
-__all__ = ("FutureResult", "future_result", "future_ok", "future_error", "wrap_future_result")
+__all__ = ("FutureResult", "future_result", "future_ok", "future_err", "wrap_future_result")
 
 P = ParamSpec("P")
 
@@ -65,8 +65,8 @@ class FutureResult(Future[Result[T, E]]):
         return cls.from_result(Ok(value))
 
     @classmethod
-    def from_error(cls, value: F) -> FutureResult[Never, F]:
-        return cls.from_result(Error(value))
+    def from_err(cls, error: F) -> FutureResult[Never, F]:
+        return cls.from_result(Err(error))
 
     def is_ok(self) -> Future[bool]:
         return super().create(self.raw_is_ok())
@@ -86,35 +86,35 @@ class FutureResult(Future[Result[T, E]]):
     async def raw_is_ok_and_await(self, predicate: AsyncPredicate[T]) -> bool:
         return await (await self.awaitable).is_ok_and_await(predicate)
 
-    def is_error(self) -> Future[bool]:
-        return super().create(self.raw_is_error())
+    def is_err(self) -> Future[bool]:
+        return super().create(self.raw_is_err())
 
-    def is_error_and(self, predicate: Predicate[E]) -> Future[bool]:
-        return super().create(self.raw_is_error_and(predicate))
+    def is_err_and(self, predicate: Predicate[E]) -> Future[bool]:
+        return super().create(self.raw_is_err_and(predicate))
 
-    def is_error_and_await(self, predicate: AsyncPredicate[E]) -> Future[bool]:
-        return super().create(self.raw_is_error_and_await(predicate))
+    def is_err_and_await(self, predicate: AsyncPredicate[E]) -> Future[bool]:
+        return super().create(self.raw_is_err_and_await(predicate))
 
-    async def raw_is_error(self) -> bool:
-        return (await self.awaitable).is_error()
+    async def raw_is_err(self) -> bool:
+        return (await self.awaitable).is_err()
 
-    async def raw_is_error_and(self, predicate: Predicate[E]) -> bool:
-        return (await self.awaitable).is_error_and(predicate)
+    async def raw_is_err_and(self, predicate: Predicate[E]) -> bool:
+        return (await self.awaitable).is_err_and(predicate)
 
-    async def raw_is_error_and_await(self, predicate: AsyncPredicate[E]) -> bool:
-        return await (await self.awaitable).is_error_and_await(predicate)
+    async def raw_is_err_and_await(self, predicate: AsyncPredicate[E]) -> bool:
+        return await (await self.awaitable).is_err_and_await(predicate)
 
     def expect(self, message: str) -> Future[T]:
         return super().create(self.raw_expect(message))
 
-    def expect_error(self, message: str) -> Future[E]:
-        return super().create(self.raw_expect_error(message))
+    def expect_err(self, message: str) -> Future[E]:
+        return super().create(self.raw_expect_err(message))
 
     async def raw_expect(self, message: str) -> T:
         return (await self.awaitable).expect(message)
 
-    async def raw_expect_error(self, message: str) -> E:
-        return (await self.awaitable).expect_error(message)
+    async def raw_expect_err(self, message: str) -> E:
+        return (await self.awaitable).expect_err(message)
 
     def unwrap(self) -> Future[T]:
         return super().create(self.raw_unwrap())
@@ -158,29 +158,41 @@ class FutureResult(Future[Result[T, E]]):
     async def raw_or_raise_with_await(self, error: AsyncNullary[AnyError]) -> T:
         return await (await self.awaitable).or_raise_with_await(error)
 
-    def unwrap_error(self) -> Future[E]:
-        return super().create(self.raw_unwrap_error())
+    def or_raise_from(self, error: Unary[E, AnyError]) -> Future[T]:
+        return super().create(self.raw_or_raise_from(error))
 
-    def unwrap_error_or(self, default: E) -> Future[E]:  # type: ignore[misc]
-        return super().create(self.raw_unwrap_error_or(default))
+    def or_raise_from_await(self, error: AsyncUnary[E, AnyError]) -> Future[T]:
+        return super().create(self.raw_or_raise_from_await(error))
 
-    def unwrap_error_or_else(self, default: Nullary[E]) -> Future[E]:
-        return super().create(self.raw_unwrap_error_or_else(default))
+    async def raw_or_raise_from(self, error: Unary[E, AnyError]) -> T:
+        return (await self.awaitable).or_raise_from(error)
 
-    def unwrap_error_or_else_await(self, default: AsyncNullary[E]) -> Future[E]:
-        return super().create(self.raw_unwrap_error_or_else_await(default))
+    async def raw_or_raise_from_await(self, error: AsyncUnary[E, AnyError]) -> T:
+        return await (await self.awaitable).or_raise_from_await(error)
 
-    async def raw_unwrap_error(self) -> E:
-        return (await self.awaitable).unwrap_error()
+    def unwrap_err(self) -> Future[E]:
+        return super().create(self.raw_unwrap_err())
 
-    async def raw_unwrap_error_or(self, default: E) -> E:  # type: ignore[misc]
-        return (await self.awaitable).unwrap_error_or(default)
+    def unwrap_err_or(self, default: E) -> Future[E]:  # type: ignore[misc]
+        return super().create(self.raw_unwrap_err_or(default))
 
-    async def raw_unwrap_error_or_else(self, default: Nullary[E]) -> E:
-        return (await self.awaitable).unwrap_error_or_else(default)
+    def unwrap_err_or_else(self, default: Nullary[E]) -> Future[E]:
+        return super().create(self.raw_unwrap_err_or_else(default))
 
-    async def raw_unwrap_error_or_else_await(self, default: AsyncNullary[E]) -> E:
-        return await (await self.awaitable).unwrap_error_or_else_await(default)
+    def unwrap_err_or_else_await(self, default: AsyncNullary[E]) -> Future[E]:
+        return super().create(self.raw_unwrap_err_or_else_await(default))
+
+    async def raw_unwrap_err(self) -> E:
+        return (await self.awaitable).unwrap_err()
+
+    async def raw_unwrap_err_or(self, default: E) -> E:  # type: ignore[misc]
+        return (await self.awaitable).unwrap_err_or(default)
+
+    async def raw_unwrap_err_or_else(self, default: Nullary[E]) -> E:
+        return (await self.awaitable).unwrap_err_or_else(default)
+
+    async def raw_unwrap_err_or_else_await(self, default: AsyncNullary[E]) -> E:
+        return await (await self.awaitable).unwrap_err_or_else_await(default)
 
     def raising(self: FutureResult[T, AnyError]) -> Future[T]:
         return super().create(self.raw_raising())
@@ -191,38 +203,38 @@ class FutureResult(Future[Result[T, E]]):
     def ok(self) -> FutureOption[T]:
         return FutureOption(self.raw_ok())
 
-    def error(self) -> FutureOption[E]:
-        return FutureOption(self.raw_error())
+    def err(self) -> FutureOption[E]:
+        return FutureOption(self.raw_err())
 
     async def raw_ok(self) -> Option[T]:
         return (await self.awaitable).ok()
 
-    async def raw_error(self) -> Option[E]:
-        return (await self.awaitable).error()
+    async def raw_err(self) -> Option[E]:
+        return (await self.awaitable).err()
 
     def inspect(self, function: Inspect[T]) -> FutureResult[T, E]:
         return self.create(self.raw_inspect(function))
 
-    def inspect_error(self, function: Inspect[E]) -> FutureResult[T, E]:
-        return self.create(self.raw_inspect_error(function))
+    def inspect_err(self, function: Inspect[E]) -> FutureResult[T, E]:
+        return self.create(self.raw_inspect_err(function))
 
     def inspect_await(self, function: AsyncInspect[T]) -> FutureResult[T, E]:
         return self.create(self.raw_inspect_await(function))
 
-    def inspect_error_await(self, function: AsyncInspect[E]) -> FutureResult[T, E]:
-        return self.create(self.raw_inspect_error_await(function))
+    def inspect_err_await(self, function: AsyncInspect[E]) -> FutureResult[T, E]:
+        return self.create(self.raw_inspect_err_await(function))
 
     async def raw_inspect(self, function: Inspect[T]) -> Result[T, E]:
         return (await self.awaitable).inspect(function)
 
-    async def raw_inspect_error(self, function: Inspect[E]) -> Result[T, E]:
-        return (await self.awaitable).inspect_error(function)
+    async def raw_inspect_err(self, function: Inspect[E]) -> Result[T, E]:
+        return (await self.awaitable).inspect_err(function)
 
     async def raw_inspect_await(self, function: AsyncInspect[T]) -> Result[T, E]:
         return await (await self.awaitable).inspect_await(function)
 
-    async def raw_inspect_error_await(self, function: AsyncInspect[E]) -> Result[T, E]:
-        return await (await self.awaitable).inspect_error_await(function)
+    async def raw_inspect_err_await(self, function: AsyncInspect[E]) -> Result[T, E]:
+        return await (await self.awaitable).inspect_err_await(function)
 
     def map(self, function: Unary[T, U]) -> FutureResult[U, E]:
         return self.create(self.raw_map(function))
@@ -236,17 +248,17 @@ class FutureResult(Future[Result[T, E]]):
     def map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> Future[U]:
         return super().create(self.raw_map_or_else_await(default, function))
 
-    def map_error(self, function: Unary[E, F]) -> FutureResult[T, F]:
-        return self.create(self.raw_map_error(function))
+    def map_err(self, function: Unary[E, F]) -> FutureResult[T, F]:
+        return self.create(self.raw_map_err(function))
 
-    def map_error_or(self, default: F, function: Unary[E, F]) -> Future[F]:
-        return super().create(self.raw_map_error_or(default, function))
+    def map_err_or(self, default: F, function: Unary[E, F]) -> Future[F]:
+        return super().create(self.raw_map_err_or(default, function))
 
-    def map_error_or_else(self, default: Nullary[F], function: Unary[E, F]) -> Future[F]:
-        return super().create(self.raw_map_error_or_else(default, function))
+    def map_err_or_else(self, default: Nullary[F], function: Unary[E, F]) -> Future[F]:
+        return super().create(self.raw_map_err_or_else(default, function))
 
-    def map_error_or_else_await(self, default: AsyncNullary[F], function: Unary[E, F]) -> Future[F]:
-        return super().create(self.raw_map_error_or_else_await(default, function))
+    def map_err_or_else_await(self, default: AsyncNullary[F], function: Unary[E, F]) -> Future[F]:
+        return super().create(self.raw_map_err_or_else_await(default, function))
 
     async def raw_map(self, function: Unary[T, U]) -> Result[U, E]:
         return (await self.awaitable).map(function)
@@ -260,19 +272,17 @@ class FutureResult(Future[Result[T, E]]):
     async def raw_map_or_else_await(self, default: AsyncNullary[U], function: Unary[T, U]) -> U:
         return await (await self.awaitable).map_or_else_await(default, function)
 
-    async def raw_map_error(self, function: Unary[E, F]) -> Result[T, F]:
-        return (await self.awaitable).map_error(function)
+    async def raw_map_err(self, function: Unary[E, F]) -> Result[T, F]:
+        return (await self.awaitable).map_err(function)
 
-    async def raw_map_error_or(self, default: F, function: Unary[E, F]) -> F:
-        return (await self.awaitable).map_error_or(default, function)
+    async def raw_map_err_or(self, default: F, function: Unary[E, F]) -> F:
+        return (await self.awaitable).map_err_or(default, function)
 
-    async def raw_map_error_or_else(self, default: Nullary[F], function: Unary[E, F]) -> F:
-        return (await self.awaitable).map_error_or_else(default, function)
+    async def raw_map_err_or_else(self, default: Nullary[F], function: Unary[E, F]) -> F:
+        return (await self.awaitable).map_err_or_else(default, function)
 
-    async def raw_map_error_or_else_await(
-        self, default: AsyncNullary[F], function: Unary[E, F]
-    ) -> F:
-        return await (await self.awaitable).map_error_or_else_await(default, function)
+    async def raw_map_err_or_else_await(self, default: AsyncNullary[F], function: Unary[E, F]) -> F:
+        return await (await self.awaitable).map_err_or_else_await(default, function)
 
     def map_await(self, function: AsyncUnary[T, U]) -> FutureResult[U, E]:
         return self.create(self.raw_map_await(function))
@@ -288,19 +298,19 @@ class FutureResult(Future[Result[T, E]]):
     ) -> Future[U]:
         return super().create(self.raw_map_await_or_else_await(default, function))
 
-    def map_error_await(self, function: AsyncUnary[E, F]) -> FutureResult[T, F]:
-        return self.create(self.raw_map_error_await(function))
+    def map_err_await(self, function: AsyncUnary[E, F]) -> FutureResult[T, F]:
+        return self.create(self.raw_map_err_await(function))
 
-    def map_error_await_or(self, default: F, function: AsyncUnary[E, F]) -> Future[F]:
-        return super().create(self.raw_map_error_await_or(default, function))
+    def map_err_await_or(self, default: F, function: AsyncUnary[E, F]) -> Future[F]:
+        return super().create(self.raw_map_err_await_or(default, function))
 
-    def map_error_await_or_else(self, default: Nullary[F], function: AsyncUnary[E, F]) -> Future[F]:
-        return super().create(self.raw_map_error_await_or_else(default, function))
+    def map_err_await_or_else(self, default: Nullary[F], function: AsyncUnary[E, F]) -> Future[F]:
+        return super().create(self.raw_map_err_await_or_else(default, function))
 
-    def map_error_await_or_else_await(
+    def map_err_await_or_else_await(
         self, default: AsyncNullary[F], function: AsyncUnary[E, F]
     ) -> Future[F]:
-        return super().create(self.raw_map_error_await_or_else_await(default, function))
+        return super().create(self.raw_map_err_await_or_else_await(default, function))
 
     async def raw_map_await(self, function: AsyncUnary[T, U]) -> Result[U, E]:
         return await (await self.awaitable).map_await(function)
@@ -316,21 +326,19 @@ class FutureResult(Future[Result[T, E]]):
     ) -> U:
         return await (await self.awaitable).map_await_or_else_await(default, function)
 
-    async def raw_map_error_await(self, function: AsyncUnary[E, F]) -> Result[T, F]:
-        return await (await self.awaitable).map_error_await(function)
+    async def raw_map_err_await(self, function: AsyncUnary[E, F]) -> Result[T, F]:
+        return await (await self.awaitable).map_err_await(function)
 
-    async def raw_map_error_await_or(self, default: F, function: AsyncUnary[E, F]) -> F:
-        return await (await self.awaitable).map_error_await_or(default, function)
+    async def raw_map_err_await_or(self, default: F, function: AsyncUnary[E, F]) -> F:
+        return await (await self.awaitable).map_err_await_or(default, function)
 
-    async def raw_map_error_await_or_else(
-        self, default: Nullary[F], function: AsyncUnary[E, F]
-    ) -> F:
-        return await (await self.awaitable).map_error_await_or_else(default, function)
+    async def raw_map_err_await_or_else(self, default: Nullary[F], function: AsyncUnary[E, F]) -> F:
+        return await (await self.awaitable).map_err_await_or_else(default, function)
 
-    async def raw_map_error_await_or_else_await(
+    async def raw_map_err_await_or_else_await(
         self, default: AsyncNullary[F], function: AsyncUnary[E, F]
     ) -> F:
-        return await (await self.awaitable).map_error_await_or_else_await(default, function)
+        return await (await self.awaitable).map_err_await_or_else_await(default, function)
 
     def and_then(self, function: Unary[T, Result[U, E]]) -> FutureResult[U, E]:
         return self.create(self.raw_and_then(function))
@@ -359,7 +367,7 @@ class FutureResult(Future[Result[T, E]]):
     def try_flatten(self: FutureResult[FutureResult[T, E], E]) -> FutureResult[T, E]:
         return self.and_then_await(identity)
 
-    def try_flatten_error(self: FutureResult[T, FutureResult[T, E]]) -> FutureResult[T, E]:
+    def try_flatten_err(self: FutureResult[T, FutureResult[T, E]]) -> FutureResult[T, E]:
         return self.or_else_await(identity)
 
     def contains(self, value: U) -> Future[bool]:
@@ -368,11 +376,11 @@ class FutureResult(Future[Result[T, E]]):
     async def raw_contains(self, value: U) -> bool:
         return (await self.awaitable).contains(value)
 
-    def contains_error(self, error: F) -> Future[bool]:
-        return super().create(self.raw_contains_error(error))
+    def contains_err(self, error: F) -> Future[bool]:
+        return super().create(self.raw_contains_err(error))
 
-    async def raw_contains_error(self, error: F) -> bool:
-        return (await self.awaitable).contains_error(error)
+    async def raw_contains_err(self, error: F) -> bool:
+        return (await self.awaitable).contains_err(error)
 
     def flip(self) -> FutureResult[E, T]:
         return self.create(self.raw_flip())
@@ -380,11 +388,11 @@ class FutureResult(Future[Result[T, E]]):
     async def raw_flip(self) -> Result[E, T]:
         return (await self.awaitable).flip()
 
-    def into_ok_or_error(self: FutureResult[T, T]) -> Future[T]:
-        return super().create(self.raw_into_ok_or_error())
+    def into_ok_or_err(self: FutureResult[T, T]) -> Future[T]:
+        return super().create(self.raw_into_ok_or_err())
 
-    async def raw_into_ok_or_error(self: FutureResult[T, T]) -> T:
-        return (await self.awaitable).into_ok_or_error()
+    async def raw_into_ok_or_err(self: FutureResult[T, T]) -> T:
+        return (await self.awaitable).into_ok_or_err()
 
     def into_either(self) -> FutureEither[T, E]:
         return FutureEither.create(self.raw_into_either())
@@ -408,8 +416,8 @@ future_result = FutureResult.from_result
 future_ok = FutureResult.from_ok
 """An alias of [`FutureResult.from_ok`][wraps.futures.result.FutureResult.from_ok]."""
 
-future_error = FutureResult.from_error
-"""An alias of [`FutureResult.from_error`][wraps.futures.result.FutureResult.from_error]."""
+future_err = FutureResult.from_err
+"""An alias of [`FutureResult.from_err`][wraps.futures.result.FutureResult.from_err]."""
 
 
 def wrap_future_result(function: ResultAsyncCallable[P, T, E]) -> FutureResultCallable[P, T, E]:
