@@ -387,7 +387,8 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
         or raises the error computed from `error`.
 
         Arguments:
-            error: The error to raise if the option is [`Null`][wraps.option.Null].
+            error: The function computing the error to raise
+                if the option is [`Null`][wraps.option.Null].
 
         Raises:
             AnyError: The error computed, if the option is [`Null`][wraps.option.Null].
@@ -403,7 +404,8 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
         or raises the error computed asynchronously from `error`.
 
         Arguments:
-            error: The error to raise if the option is [`Null`][wraps.option.Null].
+            error: The asynchronous function computing the error to raise
+                if the option is [`Null`][wraps.option.Null].
 
         Raises:
             AnyError: The error computed, if the option is [`Null`][wraps.option.Null].
@@ -681,17 +683,17 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
         """Transforms an [`Option[T]`][wraps.option.Option]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
         to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
-        to [`Error(error)`][wraps.result.Error].
+        to [`Err(error)`][wraps.result.Err].
 
         Example:
             ```python
-            error = Error(13)
+            error = 13
 
             some = Some(42)
             assert some.ok_or(error).is_ok()
 
             null = NULL
-            assert null.ok_or(error).is_error()
+            assert null.ok_or(error).is_err()
             ```
 
         Arguments:
@@ -707,18 +709,18 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
         """Transforms an [`Option[T]`][wraps.option.Option]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
         to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
-        to [`Error(error())`][wraps.result.Error].
+        to [`Err(error())`][wraps.result.Err].
 
         Example:
             ```python
-            def error() -> Error[int]:
-                return Error(0)
+            def error() -> Err[int]:
+                return Err(0)
 
             some = Some(7)
             assert some.ok_or_else(error).is_ok()
 
             null = NULL
-            assert null.ok_or_else(error).is_error()
+            assert null.ok_or_else(error).is_err()
             ```
 
         Arguments:
@@ -734,12 +736,12 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
         """Transforms an [`Option[T]`][wraps.option.Option]
         into a [`Result[T, E]`][wraps.result.Result], mapping [`Some(value)`][wraps.option.Some]
         to [`Ok(value)`][wraps.result.Ok] and [`Null`][wraps.option.Null]
-        to [`Error(await error())`][wraps.result.Error].
+        to [`Err(await error())`][wraps.result.Err].
 
         Example:
             ```python
-            async def error() -> Error[int]:
-                return Error(0)
+            async def error() -> Err[int]:
+                return Err(0)
 
             some = Some(7)
             result = await some.ok_or_else_await(error)
@@ -749,7 +751,7 @@ class OptionProtocol(AsyncIterable[T], Iterable[T], Protocol[T]):  # type: ignor
             null = NULL
             result = await null.ok_or_else_await(error)
 
-            assert result.is_error()
+            assert result.is_err()
             ```
 
         Arguments:
@@ -1286,14 +1288,14 @@ class Null(OptionProtocol[Never]):
     ) -> U:
         return await default()
 
-    def ok_or(self, error: E) -> Error[E]:
-        return Error(error)
+    def ok_or(self, error: E) -> Err[E]:
+        return Err(error)
 
-    def ok_or_else(self, error: Nullary[E]) -> Error[E]:
-        return Error(error())
+    def ok_or_else(self, error: Nullary[E]) -> Err[E]:
+        return Err(error())
 
-    async def ok_or_else_await(self, error: AsyncNullary[E]) -> Error[E]:
-        return Error(await error())
+    async def ok_or_else_await(self, error: AsyncNullary[E]) -> Err[E]:
+        return Err(await error())
 
     def iter(self) -> Iterator[Never]:
         return empty()
@@ -1557,7 +1559,7 @@ def wrap_optional(optional: Optional[T]) -> Option[T]:
 # import cycle solution
 
 from wraps.early.errors import EarlyOption
-from wraps.result import Error, Ok, Result
+from wraps.result import Err, Ok, Result
 
 if TYPE_CHECKING:
     from wraps.typing import OptionAsyncCallable, OptionCallable

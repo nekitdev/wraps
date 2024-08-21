@@ -9,7 +9,7 @@ from typing_extensions import ParamSpec
 
 from wraps.early.errors import EarlyOption, EarlyResult
 from wraps.option import NULL, Option
-from wraps.result import Error, Result
+from wraps.result import Err, Result
 
 if TYPE_CHECKING:
     from wraps.typing import (
@@ -95,7 +95,7 @@ def early_result(function: ResultCallable[P, T, E]) -> ResultCallable[P, T, E]:
             return function(*args, **kwargs)
 
         except EarlyResult[E] as early:
-            return Error(early.error)
+            return Err(early.error)
 
     return wrap
 
@@ -117,6 +117,6 @@ def early_result_await(function: ResultAsyncCallable[P, T, E]) -> ResultAsyncCal
             return await function(*args, **kwargs)
 
         except EarlyResult[E] as early:
-            return Error(early.error)
+            return Err(early.error)
 
     return wrap

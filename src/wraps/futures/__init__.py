@@ -19,7 +19,7 @@ from wraps.futures.option import (
 from wraps.futures.reawaitable import ReAwaitable, wrap_reawaitable
 from wraps.futures.result import (
     FutureResult,
-    future_error,
+    future_err,
     future_ok,
     future_result,
     wrap_future_result,
@@ -43,7 +43,7 @@ __all__ = (
     "FutureResult",
     "future_result",
     "future_ok",
-    "future_error",
+    "future_err",
     "wrap_future_result",
     # either
     "FutureEither",

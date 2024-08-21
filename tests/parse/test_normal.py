@@ -4,7 +4,7 @@ from attrs import frozen
 from pytest import fail
 from typing_extensions import Self
 from wraps.parse.normal import FromString, ParseError
-from wraps.result import Error, Ok, Result
+from wraps.result import Err, Ok, Result
 
 from tests.parse.base import Integer, is_digits
 
@@ -15,7 +15,7 @@ NON_DIGIT = "non-digit character found"
 class NormalInteger(FromString[str], Integer):
     @classmethod
     def from_string(cls, string: str) -> Result[Self, str]:
-        return Ok(cls(int(string))) if is_digits(string) else Error(NON_DIGIT)
+        return Ok(cls(int(string))) if is_digits(string) else Err(NON_DIGIT)
 
 
 def test_from_string_some() -> None:
@@ -33,7 +33,7 @@ def test_from_string_null() -> None:
 
     result = NormalInteger.from_string(string)
 
-    assert result.is_error() and result.unwrap_error() == NON_DIGIT
+    assert result.is_err() and result.unwrap_err() == NON_DIGIT
 
 
 def test_parse() -> None:
