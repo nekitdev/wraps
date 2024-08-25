@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wraps"
-version = "0.14.1"
+version = "0.15.0"
 description = "Meaningful and safe wrapping types."
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -110,7 +110,7 @@ testpaths = ["tests"]
 
 [tool.changelogging.context]
 name = "wraps"
-version = "0.14.1"
+version = "0.15.0"
 url = "https://github.com/nekitdev/wraps"
 
 [tool.changelogging.formats]

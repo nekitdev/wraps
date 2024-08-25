@@ -8,7 +8,7 @@ __url__ = "https://github.com/nekitdev/wraps"
 __title__ = "wraps"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.14.1"
+__version__ = "0.15.0"
 
 from wraps import typing
 from wraps.early import (
