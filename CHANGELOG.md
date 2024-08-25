@@ -2,6 +2,13 @@
 
 <!-- changelogging: start -->
 
+## [0.15.0](https://github.com/nekitdev/wraps/tree/v0.15.0) (2024-08-25)
+
+### Changes
+
+- Renamed `Error` to `Err`, as well as all the methods.
+  ([#56](https://github.com/nekitdev/wraps/pull/56))
+
 ## [0.14.1](https://github.com/nekitdev/wraps/tree/v0.14.1) (2024-08-16)
 
 No significant changes.
